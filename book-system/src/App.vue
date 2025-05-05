@@ -3,6 +3,8 @@
 import { RouterView } from 'vue-router'
 import SearchBar from '@/components/SearchBar.vue'
 import Footer    from '@/components/Footer.vue'
+
+
 </script>
 
 <template>
@@ -10,14 +12,17 @@ import Footer    from '@/components/Footer.vue'
   <SearchBar />
 
   <!-- 動態切換頁面 -->
-  <main class="pt-12">
+  <main class="main-content">
     <RouterView />
   </main>
 
   <!-- 常駐頁尾 -->
-
+  <Footer />
 </template>
 
 <style>
 /* App 內如果還有全域樣式可以放這 */
+.main-content {
+  margin-top: 5rem;  /* ✅ 往下推 5rem，可視 SearchBar 高度調整 */
+}
 </style>

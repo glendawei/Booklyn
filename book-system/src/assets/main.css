@@ -1,13 +1,13 @@
-
-/* src/assets/main.css */
 @import './base.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* 移除全域限制寬度，讓 app 根據內容自適應 */
 #app {
-  max-width: 1280px;
+  width: 100%;               /* ✅ 讓內容寬度佔滿 */
+  max-width: none;           /* ✅ 移除最大寬度限制 */
   margin: 0 auto;
   padding: 2rem;
   font-weight: normal;
@@ -27,15 +27,15 @@ a,
   }
 }
 
+/* ✅ 移除強制 grid 排版，避免壓縮頁面 */
 @media (min-width: 1024px) {
   body {
-    display: flex;
-    place-items: center;
+    display: block; /* ✅ 改回預設，讓內容自然排版 */
+    place-items: unset;
   }
 
   #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
+    display: block;
+    padding: 2rem;
   }
 }
