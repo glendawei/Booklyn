@@ -7,7 +7,7 @@
         :key="name"
         class="shelf-item"
       >
-        <span @click="$emit('select', name)">
+        <span class="shelf-name" @click="$emit('select', name)">
           {{ name }} ({{ count }})
         </span>
         <button class="remove-btn" @click="$emit('remove-shelf', name)">X</button>
@@ -36,27 +36,54 @@ export default {
 <style scoped>
 .sidebar {
   width: 180px;
-  background-color: #f5f5f5;
+  background-color: #f8ebdc; /* 書櫥背景色 */
   padding: 20px;
 }
+
+h3 {
+  margin-bottom: 12px;
+  color: #1f2937;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
 .shelf-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin: 8px 0;
+  padding: 0;
 }
+
+.shelf-name {
+  text-align: left;
+  flex-grow: 1;
+  margin-left: 0;
+  cursor: pointer;
+}
+
 .remove-btn {
   background: none;
   border: none;
-  color: rgb(0, 0, 0);
+  color: #111827;
+  font-size: 1rem;
   cursor: pointer;
+  padding: 0;
 }
+
 .add-btn {
   margin-top: 20px;
   width: 100%;
   padding: 8px;
-  background-color: #ccc;
+  background-color: #e6cd88;
   font-weight: bold;
   border: none;
+  cursor: pointer;
 }
 </style>
