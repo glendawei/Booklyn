@@ -1,6 +1,6 @@
 <template>
   <div class="text-center text-xl text-gray-700 mt-10">
-    It is the BoojDetail.vue page
+    It is the BookDetail page
   </div>
 </template>
 
