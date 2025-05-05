@@ -46,7 +46,7 @@ export default {
   right: 0px;
   background: none;
   border: none;
-  color: #900;
+  color: rgb(23, 55, 43);
   font-size: 18px;
   cursor: pointer;
 }

@@ -18,8 +18,8 @@
 </template>
 
 <script>
-import Sidebar from '@/components/Sidebar.vue'
-import BookHeader from '@/components/Bookheader.vue'
+import Sidebar from '@/components/MyBooks/Sidebar.vue'
+import BookHeader from '@/components/MyBooks/Bookheader.vue'
 import { bookshelves } from '@/data/mockBookshelves.js'
 
 export default {
