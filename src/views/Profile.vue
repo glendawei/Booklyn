@@ -17,6 +17,8 @@ import BookList from '@/components/Profile/BookList.vue'
 
 const route = useRoute()
 const decodedName = decodeURIComponent(route.params.id)
+//找到名字
+
 
 let author = null
 for (const key in authors) {
