@@ -1,13 +1,13 @@
 <!-- src/App.vue -->
 <script setup>
 import { RouterView } from 'vue-router'
-import NavBar from '@/components/NavBar.vue'
+import SearchBar from '@/components/SearchBar.vue'
 import Footer    from '@/components/Footer.vue'
 </script>
 
 <template>
   <!-- 常駐搜尋列 -->
-  <NavBar />
+  <SearchBar />
 
   <!-- 動態切換頁面 -->
   <main class="pt-12">
