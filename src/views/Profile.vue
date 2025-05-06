@@ -19,7 +19,6 @@
   </div>
 </template>
 
-
 <script setup>
 import { useRoute } from 'vue-router'
 import { authors } from '@/data/authors'
@@ -39,6 +38,8 @@ for (const key in authors) {
   }
 }
 </script>
+
+
 <style scoped>
 .profile-page {
   display: flex;

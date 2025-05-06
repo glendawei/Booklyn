@@ -1,18 +1,17 @@
 <template>
-    <div class="author-info">
-      <img :src="author.avatar" class="avatar" />
-      <h2 class="name">{{ author.name }}</h2>
-      <p class="meta">Works: {{ author.works }} | Follower: {{ author.followers.toLocaleString() }}</p>
-   
-    </div>
-  </template>
-  
-  <script setup>
-  defineProps(['author'])
-  </script>
-  
-  <style scoped>
-  .author-info {
+  <div class="author-info">
+    <img :src="author.avatar" class="avatar" />
+    <h2 class="name">{{ author.name }}</h2>
+    <p class="meta">Works: {{ author.works }} | Follower: {{ author.followers.toLocaleString() }}</p>
+  </div>
+</template>
+
+<script setup>
+defineProps(['author'])
+</script>
+
+<style scoped>
+.author-info {
   background-color: #eedaad;
   width: 100%;
   text-align: center;         /* Center text and inline content */
@@ -28,6 +27,8 @@
   display: block;
   margin-left: auto;
   margin-right: auto;         /* Center the image block */
+  object-fit: cover;          /* Ensures the image covers the circle area without distortion */
+  object-position: center;    /* Centers the image */
 }
 
 .name {
@@ -47,6 +48,4 @@
   color: #363535;
   margin-top: 1rem;
 }
-
-  </style>
-  
+</style>
