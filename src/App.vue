@@ -24,7 +24,7 @@ import Footer    from '@/components/Footer.vue'
 /* App 內如果還有全域樣式可以放這 */
 .main-content {
   margin-top: 0rem;  /* ✅ 往下推 5rem，可視 SearchBar 高度調整 */
-  padding: 5rem 3rem 3rem 3rem;
+  padding: 6rem 3rem 3rem 3rem;
   background-color: #fffdef;
 }
 </style>
