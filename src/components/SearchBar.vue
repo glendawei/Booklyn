@@ -2,7 +2,7 @@
   <nav :class="['navbar', { 'navbar-scrolled': isScrolled }]">
     <router-link to="/" class="logo">Booklyn</router-link>
 
-    <div class="tabs"">
+    <div class="tabs">
       <div
         v-for="tab in tabs"
         :key="tab.name"
