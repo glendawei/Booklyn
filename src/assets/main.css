@@ -9,8 +9,9 @@
   width: 100%;               /* ✅ 讓內容寬度佔滿 */
   max-width: none;           /* ✅ 移除最大寬度限制 */
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0rem;
   font-weight: normal;
+  overscroll-behavior: none;
 }
 
 a,
@@ -36,6 +37,6 @@ a,
 
   #app {
     display: block;
-    padding: 2rem;
+    padding: 0rem;
   }
 }

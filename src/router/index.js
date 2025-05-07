@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
+import Home from '../views/HomePage.vue'
 import MyBook from '../views/MyBooks.vue'
 import Community from '../views/Community.vue'
 import Category from '../views/Category.vue' // 修正這一行
