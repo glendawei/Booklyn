@@ -28,26 +28,30 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed, ref, onMounted, onUnmounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
+const route = useRoute()
+
 const tabs = [
-  { name: 'My books',  path: '/MyBooks' },
+  { name: 'My books', path: '/MyBooks' },
   { name: 'Community', path: '/Community' },
-  { name: 'Category',  path: '/Category' },
+  { name: 'Category', path: '/Category' },
 ]
 
-const selected = ref(tabs[0].name)
+const selected = computed(() => {
+  const currentTab = tabs.find(tab => tab.path === route.path)
+  return currentTab ? currentTab.name : null
+})
+
 const query = ref('')
 const isScrolled = ref(false)
 
 function select(tab) {
-  selected.value = tab.name
   router.push(tab.path)
 }
 
-// Scroll effect
 function handleScroll() {
   isScrolled.value = window.scrollY > 20
 }
@@ -78,12 +82,12 @@ onUnmounted(() => {
   padding: 0 24px;
   background: #283618;
   color: #fefae0;
-  height: 70px;
+  height: 90px;
   transition: all 0.3s ease;
   box-shadow: none;
 }
 .navbar-scrolled {
-  height: 56px;
+  height: 66px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 

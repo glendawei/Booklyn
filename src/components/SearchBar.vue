@@ -28,26 +28,30 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed, ref, onMounted, onUnmounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
+const route = useRoute()
+
 const tabs = [
-  { name: 'My books',  path: '/MyBooks' },
+  { name: 'My books', path: '/MyBooks' },
   { name: 'Community', path: '/Community' },
-  { name: 'Category',  path: '/Category' },
+  { name: 'Category', path: '/Category' },
 ]
 
-const selected = ref(tabs[0].name)
+const selected = computed(() => {
+  const currentTab = tabs.find(tab => tab.path === route.path)
+  return currentTab ? currentTab.name : null
+})
+
 const query = ref('')
 const isScrolled = ref(false)
 
 function select(tab) {
-  selected.value = tab.name
   router.push(tab.path)
 }
 
-// Scroll effect
 function handleScroll() {
   isScrolled.value = window.scrollY > 20
 }
@@ -78,12 +82,12 @@ onUnmounted(() => {
   padding: 0 24px;
   background: #283618;
   color: #fefae0;
-  height: 70px;
+  height: 80px;
   transition: all 0.3s ease;
   box-shadow: none;
 }
 .navbar-scrolled {
-  height: 56px;
+  height: 66px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
@@ -105,13 +109,14 @@ onUnmounted(() => {
   display: flex;
   gap: 12px;
   flex: 1;
-  justify-content: center;
+  justify-content: right;
   flex-wrap: wrap;
+  padding: 0px 15px;
 }
 
 .tab {
   padding: 6px 16px;
-  border: 2px solid #fefae0;
+  /*border: 2px solid #fefae0;*/
   border-radius: 999px;
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
@@ -177,4 +182,3 @@ onUnmounted(() => {
   }
 }
 </style>
-
