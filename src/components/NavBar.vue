@@ -1,6 +1,9 @@
 <template>
   <nav :class="['navbar', { 'navbar-scrolled': isScrolled }]">
-    <router-link to="/" class="logo">Booklyn</router-link>
+    <router-link to="/" class="logo">
+      <img src="../../logo.png" style="width: 100px; height:100px;">
+      Booklyn
+    </router-link>
 
     <div class="tabs">
       <div

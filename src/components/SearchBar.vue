@@ -1,6 +1,9 @@
 <template>
   <nav :class="['navbar', { 'navbar-scrolled': isScrolled }]">
-    <router-link to="/" class="logo">Booklyn</router-link>
+    <router-link to="/" class="logo" style="display:grid; grid-template-columns: 1fr 1fr; line-height: 50px; width: 185px;">
+      <img src="../../logo.png" style="width: 50px; height:50px;">
+      Booklyn
+    </router-link>
 
     <div class="tabs">
       <div
@@ -98,7 +101,7 @@ onUnmounted(() => {
   text-decoration: none;
   padding: 8px 16px;
   border-radius: 8px;
-  background-color: #606C38;
+  /*background-color: #606C38;*/
   transition: background-color 0.3s ease;
 }
 .logo:hover {
