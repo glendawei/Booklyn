@@ -20,7 +20,9 @@
         </svg>
         <input v-model="query" type="text" placeholder="Search..." />
       </div>
-      <svg class="icon icon-user" viewBox="0 0 24 24">
+
+      <!-- ✅ 已加上點擊事件 -->
+      <svg class="icon icon-user" viewBox="0 0 24 24" @click="handleUserClick">
         <path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-3.866 0-7 1.343-7 4v2h14v-2c0-2.657-3.134-4-7-4z"/>
       </svg>
     </div>
@@ -54,6 +56,17 @@ function select(tab) {
 
 function handleScroll() {
   isScrolled.value = window.scrollY > 20
+}
+
+// ✅ 處理點擊使用者 icon，根據登入狀態導頁
+function handleUserClick() {
+  console.log('user icon clicked')
+  const isLoggedIn = localStorage.getItem('loggedIn') === 'true'
+  if (isLoggedIn) {
+    router.push('/Setting')
+  } else {
+    router.push('/Login')
+  }
 }
 
 onMounted(() => {
