@@ -61,14 +61,15 @@
   </script>
   
   <style scoped>
-  .login-container {
-    max-width: 400px;
-    margin: 100px auto;
-    padding: 2rem;
-    border: 1px solid #ccc;
-    border-radius: 12px;
-    background: #fffef2;
-  }
+ .login-container {
+  max-width: 400px;
+  margin: 100px auto;
+  padding: 2rem;
+  border-radius: 12px;
+  background: #4b610c;
+  color: rgb(238, 223, 196); /* ⬅️ 加這行 */
+}
+
   
   .form-group {
     margin-bottom: 1rem;
@@ -85,8 +86,8 @@
   button {
     width: 100%;
     padding: 0.6rem;
-    background-color: #606C38;
-    color: white;
+    background-color:rgb(236, 221, 193);
+    color: #4b610c;
     border: none;
     border-radius: 6px;
     cursor: pointer;
@@ -94,7 +95,7 @@
   }
   
   button:hover {
-    background-color: #4e562e;
+    background-color: #b5c965;
   }
   
   .error {
@@ -110,7 +111,7 @@
   .link {
     margin-top: 1rem;
     text-decoration: underline;
-    color: #283618;
+    color: #b5c965;;
     cursor: pointer;
   }
   </style>
