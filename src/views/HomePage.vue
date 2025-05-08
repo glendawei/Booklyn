@@ -38,7 +38,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { bookshelves } from '@/data/mockBookShelves.js'
+import { bookshelves } from '@/data/mockBookshelves.js'
 import 'vue3-carousel/carousel.css'
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
 

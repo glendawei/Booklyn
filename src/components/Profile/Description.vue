@@ -23,10 +23,21 @@
 
 <!-- HTML 組件 -->
 <div class="social-icons">
-  <i class="fab fa-x-twitter"></i>
-  <i class="fab fa-instagram"></i>
-  <i class="fab fa-youtube"></i>
-  <i class="fab fa-linkedin"></i>
+  <a v-if="author.x" :href="author.x" target="_blank" title="X (Twitter)">
+        <i class="fab fa-x-twitter"></i>
+      </a>
+      <a v-if="author.ig" :href="author.ig" target="_blank" title="Instagram">
+        <i class="fab fa-instagram"></i>
+      </a>
+      <a v-if="author.fb" :href="author.fb" target="_blank" title="Facebook">
+        <i class="fab fa-facebook"></i>
+      </a>
+      <a v-if="author.youtube" :href="author.youtube" target="_blank" title="YouTube">
+        <i class="fab fa-youtube"></i>
+      </a>
+      <a v-if="author.linkedin" :href="author.linkedin" target="_blank" title="LinkedIn">
+        <i class="fab fa-linkedin"></i>
+      </a>
 </div>
 
     </div>
@@ -106,5 +117,21 @@ export default {
     font-size: 1.2rem;
     color: #444;
   }
+  .social-icons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.social-icons a {
+  font-size: 1.5rem;
+  color: #eba225;
+  transition: color 0.2s;
+}
+
+.social-icons a:hover {
+  color: #1eaf99;
+}
+
   </style>
   

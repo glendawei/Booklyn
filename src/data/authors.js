@@ -5,6 +5,8 @@ export const authors = {
     followers: 200000,
     works: 3,
     description: "Joanne Rowling, known by her pen name J.K. Rowling, is a British author best known for the Harry Potter fantasy series.",
+    x :"https://x.com/jk_rowling?lang=zh-Hant",
+    fb: "https://www.facebook.com/JKRowling/?locale=zh_TW",
     books: [
       {
         id: 1,
