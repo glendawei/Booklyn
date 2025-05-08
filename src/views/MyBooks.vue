@@ -92,14 +92,17 @@ export default {
         console.log('刪除後書櫃列表：', this.booksByShelf)
       }
     },
-    handleChooseBook(book) {
-      this.booksByShelf[this.selectedShelf].push({
-        ...book,
-        id: this.nextId++
-      })
-      this.showChoose = false
-      console.log('新增書籍後列表：', this.booksByShelf)
-    },
+    handleChooseBook(bookList) {
+  for (const book of bookList) {
+    this.booksByShelf[this.selectedShelf].push({
+      ...book,
+      id: this.nextId++,
+    })
+  }
+  this.showChoose = false
+  console.log('新增書籍後列表：', this.booksByShelf)
+}
+,
     removeBook(bookId) {
       const list = this.booksByShelf[this.selectedShelf]
       this.booksByShelf[this.selectedShelf] = list.filter(b => b.id !== bookId)
