@@ -12,7 +12,14 @@
         :books="filteredBooks"
         @remove-book="removeBook"
       />
-      <button @click="addBook" class="add-btn">+ Add Book</button>
+      <button @click="showChoose = true" class="add-btn">+ Add Book</button>
+
+      <ChooseBook
+        v-if="showChoose"
+        :books="booksByShelf['All'] || []"
+        @choose="handleChooseBook"
+        @cancel="showChoose = false"
+      />
     </div>
   </div>
 </template>
@@ -20,15 +27,17 @@
 <script>
 import Sidebar from '@/components/MyBooks/Sidebar.vue'
 import BookHeader from '@/components/MyBooks/Bookheader.vue'
+import ChooseBook from '@/components/MyBooks/ChooseBook.vue'
 import { bookshelves } from '@/data/mockBookshelves.js'
 
 export default {
-  components: { Sidebar, BookHeader },
+  components: { Sidebar, BookHeader, ChooseBook },
   data() {
     return {
       booksByShelf: {},
       selectedShelf: '',
-      nextId: 1000
+      nextId: 1000,
+      showChoose: false
     }
   },
   computed: {
@@ -44,7 +53,7 @@ export default {
     }
   },
   created() {
-    this.booksByShelf = JSON.parse(JSON.stringify(bookshelves)) // ← 每次重新載入都從 mock 開始
+    this.booksByShelf = JSON.parse(JSON.stringify(bookshelves))
     this.selectedShelf = Object.keys(this.booksByShelf)[0] || ''
     console.log('初始書櫃：', this.booksByShelf)
   },
@@ -57,8 +66,8 @@ export default {
         alert('書櫃名稱不能為空或重複！')
         return
       }
-      this.booksByShelf[name] = []  // Vue 3 可直接設值
-      this.booksByShelf = { ...this.booksByShelf }  // 確保 reactivity
+      this.booksByShelf[name] = []
+      this.booksByShelf = { ...this.booksByShelf }
       this.selectedShelf = name
       console.log('新增後書櫃列表：', this.booksByShelf)
     },
@@ -77,30 +86,23 @@ export default {
 
       if (confirm(confirmMessage)) {
         delete this.booksByShelf[name]
-        this.booksByShelf = { ...this.booksByShelf }  // 確保 reactivity
+        this.booksByShelf = { ...this.booksByShelf }
         const remaining = Object.keys(this.booksByShelf)
         this.selectedShelf = remaining[0] || ''
         console.log('刪除後書櫃列表：', this.booksByShelf)
       }
     },
-    addBook() {
-      const title = prompt('書名？')
-      const author = prompt('作者？')
-      const rate = prompt('評分？')
-      const cover = prompt('封面網址？')
-
-      if (title && author) {
-        const newBook = {
-          id: this.nextId++,
-          title,
-          author,
-          rate: rate || '0/5',
-          cover: cover || ''
-        }
-        this.booksByShelf[this.selectedShelf].push(newBook)
-        console.log('新增書籍後列表：', this.booksByShelf)
-      }
-    },
+    handleChooseBook(bookList) {
+  for (const book of bookList) {
+    this.booksByShelf[this.selectedShelf].push({
+      ...book,
+      id: this.nextId++,
+    })
+  }
+  this.showChoose = false
+  console.log('新增書籍後列表：', this.booksByShelf)
+}
+,
     removeBook(bookId) {
       const list = this.booksByShelf[this.selectedShelf]
       this.booksByShelf[this.selectedShelf] = list.filter(b => b.id !== bookId)
@@ -108,8 +110,6 @@ export default {
     }
   }
 }
-
-
 </script>
 
 <style scoped>
