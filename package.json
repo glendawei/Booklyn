@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
+    "@rollup/rollup-darwin-x64": "^4.40.2",
     "axios": "^1.9.0",
     "pinia": "^3.0.2",
     "vue": "^3.5.13",
