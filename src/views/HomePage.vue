@@ -12,11 +12,13 @@
           class="custom-slide"
         >
           <div class="carousel__item">
+            <router-link :to="`/BookDetail/${book.id}`">
             <img
               :src="book.cover"
               :alt="book.title"
               style="width: 200px; height: 300px; object-fit: cover; border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem;"
             />
+          </router-link>
             <div style="padding: 0.5rem; width: 200px;">
               <h3 style="font-weight: 600; font-size: 0.875rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ book.title }}</h3>
               <p style="color: #4B5563; font-size: 0.75rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ book.author }}</p>
@@ -36,7 +38,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { bookshelves } from '@/data/mockBookShelves.js'
+import { bookshelves } from '@/data/mockBookshelves.js'
 import 'vue3-carousel/carousel.css'
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
 

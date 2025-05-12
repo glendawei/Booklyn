@@ -5,6 +5,11 @@ import Community from '../views/Community.vue'
 import Category from '../views/Category.vue' // 修正這一行
 import BookDetail from '../views/BookDetail.vue'
 import Profile from '../views/Profile.vue'
+import Login from '../views/Login.vue'
+import Setting from '../views/Setting.vue'
+
+import Signin from '../views/Signin.vue'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -14,8 +19,11 @@ const router = createRouter({
       component: Home,
     },
     { path: '/MyBooks', component: MyBook },
+    { path: '/Login', component: Login },
     { path: '/Community', component: Community },
     { path: '/Category', component: Category },
+    { path: '/Setting', component: Setting },
+    { path: '/Signin', component: Signin },
     {
       path: '/BookDetail/:id',
       name: 'BookDetail',
