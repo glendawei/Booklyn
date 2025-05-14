@@ -8,7 +8,7 @@ RUN cargo build --release
 
 FROM scratch AS runner
 WORKDIR /usr/src/Booklyn/backend
-COPY --from=builder /usr/src/Booklyn/backend/target/release/Booklyn-backend ./
+COPY --from=builder /usr/src/Booklyn/backend/target/release/Booklyn_backend ./
 
 EXPOSE 8080
-CMD ["./Booklyn-backend"]
+CMD ["./Booklyn_backend"]

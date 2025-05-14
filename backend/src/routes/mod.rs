@@ -40,7 +40,7 @@ pub async fn update_review() -> impl Responder {
     not_implemented!()
 }
 
-#[delete("/delete/{review_id}")]
+#[delete("/review/{review_id}")]
 pub async fn delete_review_by_id(id: web::Path<i64>) -> impl Responder {
     not_implemented!()
 }
