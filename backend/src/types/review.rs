@@ -3,9 +3,9 @@ use serde::Serialize;
 #[allow(non_snake_case)]
 #[derive(Clone, Serialize)]
 pub struct Review {
-    user: String,
-    id: u64,
-    rating: u8,
-    reviewTime: String,
-    reviewContent: String,
+    pub user: String,
+    pub id: u64,
+    pub rating: u8,
+    pub reviewTime: String,
+    pub reviewContent: String,
 }
