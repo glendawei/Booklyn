@@ -1,10 +1,14 @@
-use actix_web::{App, HttpServer};
+use actix_web::{middleware, App, HttpServer};
 use Booklyn_backend::routes::*;
+use env_logger::Env;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    env_logger::init_from_env(Env::new().default_filter_or("info"));
+    
     HttpServer::new(|| {
         App::new()
+            .wrap(middleware::Logger::default())
             .service(login)
             .service(logout)
             .service(get_books)
