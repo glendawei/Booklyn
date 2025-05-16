@@ -13,7 +13,7 @@ export const bookshelves = {
         {
           reviewer: 'The Guardian',
           comment: 'An engaging and immersive story that makes readers feel part of the magical world.',
-          rating: 5
+          rating: 2.5
         },
         {
           reviewer: 'Heights Forum',
