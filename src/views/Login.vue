@@ -52,7 +52,7 @@
     localStorage.setItem('loggedIn', 'true')
     errorMessage.value = ''
     successMessage.value = ' Login successful!'
-    setTimeout(() => router.push('/Setting'), 800)
+    setTimeout(() => router.push('/Profile/:id'), 800)
   }
   
   function goToSignup() {
