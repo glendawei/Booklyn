@@ -13,12 +13,14 @@ export const bookshelves = {
         {
           reviewer: 'The Guardian',
           comment: 'An engaging and immersive story that makes readers feel part of the magical world.',
-          rating: 2.5
+          rating: 2.5,
+          aiRating: 0.6
         },
         {
           reviewer: 'Heights Forum',
           comment: 'Deserves every bit of its historic success; a series that captivates readers of all ages.',
-          rating: 5
+          rating: 5,
+          aiRating: 0.5
         }
       ]
     },
