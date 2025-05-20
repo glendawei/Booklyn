@@ -3,7 +3,7 @@ WORKDIR /usr/src/Booklyn/backend
 RUN apk add --no-cache musl-dev
 RUN cargo init
 COPY ./src ./src
-COPY Cargo.toml ./
+COPY Cargo.toml Cargo.lock ./
 RUN cargo build --release
 
 FROM scratch AS runner
