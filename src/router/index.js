@@ -62,6 +62,11 @@ const router = createRouter({
     { path: '/interests',    
       name: 'Interests',  
       component: SigninInterestPage },
+    {
+    path: '/review-detail',
+    name: 'ReviewDetail',
+    component: () => import('@/views/ReviewDetail.vue')
+    }
     
   ],
 })

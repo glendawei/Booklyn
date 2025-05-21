@@ -88,7 +88,8 @@
     </div>
 
     <ul class="filtered-reviews">
-      <li v-for="(review, index) in filteredReviews" :key="index" class="filtered-review-card">
+      <li v-for="(review, index) in filteredReviews" :key="index" class="filtered-review-card"  @click="$router.push({ name: 'ReviewDetail', query: { review: encodeURIComponent(JSON.stringify(review)) } })"
+  style="cursor: pointer;">
         <div class="review-header">
           <div class="user-info">
             <div class="user-avatar"></div>
