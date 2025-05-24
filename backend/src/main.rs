@@ -12,6 +12,8 @@ use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 use api_doc::ApiDoc;
 
+const DB_CONN_MAX: u32 = 32;
+
 struct AppData {
     db_conn: PgPool,
 }
@@ -24,7 +26,7 @@ async fn main() -> std::io::Result<()> {
     let db_url =
         std::env::var("DATABASE_URL").expect("Please setup database URL with environment variable DATABASE_URL.");
     let pool = PgPoolOptions::new()
-        .max_connections(10)
+        .max_connections(DB_CONN_MAX)
         .connect(&db_url)
         .await
         .expect("Failed to connect database.");
