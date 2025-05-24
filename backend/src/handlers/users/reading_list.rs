@@ -51,9 +51,10 @@ pub async fn get_reading_list_items(data: web::Data<AppData>, id: web::Path<i64>
         id
     )
         .fetch_optional(&mut *tx)
-        .await?.is_none()
+        .await?
+        .is_none()
     {
-        return Ok(HttpResponse::NotFound().finish())
+        return Ok(HttpResponse::NotFound().finish());
     }
     
     let items = sqlx::query_as!(
