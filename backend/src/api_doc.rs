@@ -13,8 +13,8 @@ use crate::handlers::{
     paths(
         books::get_books,
         books::get_book_by_id,
-        authors::get_authors_by_id,
-        users::get_users_by_id,
+        authors::get_author_by_id,
+        users::get_user_by_id,
         users::update_user_by_id,
         users::get_reading_list_items,
         users::create_reading_list_item,

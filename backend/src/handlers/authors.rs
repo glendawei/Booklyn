@@ -4,6 +4,10 @@ use serde::Serialize;
 use time::OffsetDateTime;
 use utoipa::{schema, ToSchema};
 
+use crate::database;
+use crate::AppData;
+use crate::error::Error;
+
 #[derive(Serialize, ToSchema)]
 pub struct Author {
     pub author_id: i64,
@@ -11,8 +15,8 @@ pub struct Author {
     pub name: String,
     pub bio: Option<String>,
     pub website: Option<String>,
-    /* Time format: "yyyy-mm-dd HH:MM:SS[+|-][hh]" */
-    pub created_at: String,
+    #[schema(value_type = String)]
+    pub created_at: Option<OffsetDateTime>,
 }
 
 #[utoipa::path(
@@ -22,14 +26,19 @@ pub struct Author {
     ),
     responses(
         (status = 200, description = "Successful operation.", body = Author),
-        (status = 404, description = "Author not found.")
+        (status = 404, description = "Author not found."),
+        (status = 500, description = "Internal server error.", body = String)
     )
 )]
 #[get("/authors/{author_id}")]
-pub async fn get_authors_by_id(id: web::Path<i64>) -> impl Responder {
-    HttpResponse::Ok()
+pub async fn get_author_by_id(data: web::Data<AppData>, id: web::Path<i64>) -> Result<impl Responder, Error> {
+    if let Some(author) = database::get_author_by_id(&data.db_conn, id.into_inner()).await? {
+        Ok(HttpResponse::Ok().json(author))
+    } else {
+        Ok(HttpResponse::NotFound().finish())
+    }
 }
 
 pub fn config(cfg: &mut ServiceConfig) {
-    cfg.service(get_authors_by_id);
+    cfg.service(get_author_by_id);
 }
