@@ -67,19 +67,19 @@ pub async fn get_books(data: web::Data<AppData>, query: web::Query<SearchQuery>)
             JOIN "book_authors" AS "ba" ON "b"."book_id" = "ba"."book_id"
             JOIN "authors" AS "a" ON "ba"."author_id" = "a"."author_id"
         WHERE
-            CASE WHEN $2::text IS NOT NULL THEN "b"."title" LIKE CONCAT('%', $2, '%')
+            CASE WHEN $2::text IS NOT NULL THEN LOWER("b"."title") LIKE CONCAT('%', LOWER($2), '%')
                  ELSE true
             END AND
             CASE WHEN $3::text IS NOT NULL THEN "b"."isbn_13" = $3
                  ELSE true
             END AND
-            CASE WHEN $4::text IS NOT NULL THEN "a"."name" LIKE CONCAT('%', $4, '%')
+            CASE WHEN $4::text IS NOT NULL THEN LOWER("a"."name") LIKE CONCAT('%', LOWER($4), '%')
                  ELSE true
             END AND
             CASE WHEN $5::text IS NOT NULL THEN "b"."publisher" = $5
                  ELSE true
             END AND
-            CASE WHEN $6::text IS NOT NULL THEN "b"."categories" @> '{$6}'
+            CASE WHEN $6::text IS NOT NULL THEN LOWER("b"."categories"::text)::text[] @> ARRAY[LOWER($6)]
                  ELSE true
             END
         LIMIT $1;
