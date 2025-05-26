@@ -39,13 +39,16 @@
         </div>
       </div>
       <p class="drawer-comment">{{ selectedReview.comment }}</p>
+      <div style="display: grid; grid-template-columns: 150px auto;">
       <ProgressCircle
-  height="100"
-  width="100"
-  color="#ff0000"
+  height="150"
+  width="150"
+  color="#BC6C25"
   :name="ad"
-  :progress="0.67"
+  :progress= selectedReview.aiRating
+  style="padding:20px;"
 />
+<div style="padding-top:65px; color: #BC6C25;">Is this AI-generated?</div></div>
     </div>
   </div>
 
