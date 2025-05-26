@@ -1,19 +1,202 @@
-<!-- Setting.vue -->
 <template>
-    <div>
-      <h1>Setting Page</h1>
-      <button @click="logoutFake">Logout</button>
+  <div class="register-container">
+    <div class="form-box">
+      <h1>Register</h1>
+
+      <div class="form-group">
+        <label for="name">User name</label>
+        <input
+          id="name"
+          v-model="name"
+          type="text"
+          placeholder="Enter your name"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          id="email"
+          v-model="email"
+          type="email"
+          placeholder="Enter your email"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          id="password"
+          v-model="password"
+          type="password"
+          placeholder="Enter your password"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="confirm">Confirm your password</label>
+        <input
+          id="confirm"
+          v-model="confirm"
+          type="password"
+          placeholder="Confirm your password"
+          required
+        />
+      </div>
+
+      <div class="form-group terms">
+        <input
+          id="terms"
+          v-model="accepted"
+          type="checkbox"
+          required
+        />
+        <label for="terms">
+          I accept terms and conditions & privacy policy
+        </label>
+      </div>
+
+      <button @click="onRegister">Register</button>
+
+      <p class="link" @click="goToLogin">
+        Already have an account? <span>Login in</span>
+      </p>
+
+      <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+      <p v-if="successMessage" class="success">{{ successMessage }}</p>
     </div>
-  </template>
-  
-  <script setup>
-  import { useRouter } from 'vue-router'
-  
-  const router = useRouter()
-  
-  function logoutFake() {
-    localStorage.removeItem('loggedIn')
-    router.push('/Login') // 登出後回登入頁
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+const name     = ref('')
+const email    = ref('')
+const password = ref('')
+const confirm  = ref('')
+const accepted = ref(false)
+
+const errorMessage   = ref('')
+const successMessage = ref('')
+
+function onRegister() {
+  if (password.value !== confirm.value) {
+    errorMessage.value   = '密碼與確認密碼不符'
+    successMessage.value = ''
+    return
   }
-  </script>
-  
+  successMessage.value = 'Registered successfully!'
+  errorMessage.value   = ''
+  setTimeout(() => router.push('/interests'), 800)
+}
+
+function goToLogin() {
+  router.push('/login')
+}
+</script>
+
+<style scoped>
+:root, body, html {
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+.register-container {
+  width: 100vw;
+  height: calc(100vh - 80px - 60px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #fefae0;
+  box-sizing: border-box;
+}
+
+.form-box {
+  width: 400px;
+  background: #4b610c;            
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  color: rgb(238, 223, 196);      
+  font-family: Arial, sans-serif;
+}
+
+.form-box h1 {
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  margin-bottom: 0.25rem;
+  font-size: 0.95rem;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"] {
+  padding: 0.6rem;
+  border: none;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 0.9rem;
+}
+
+.terms {
+  flex-direction: row;
+  align-items: center;
+}
+
+.terms input {
+  margin-right: 0.5rem;
+}
+
+button {
+  width: 100%;
+  padding: 0.6rem;
+  background-color: rgb(236, 221, 193); 
+  color: #4b610c;                       
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+
+button:hover {
+  background-color: #b5c965;
+}
+
+.link {
+  margin-top: 1rem;
+  text-align: center;
+  text-decoration: underline;
+  color: rgb(236, 221, 193);
+  cursor: pointer;
+}
+
+.error {
+  color: #ff6961;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+.success {
+  color: #77dd77;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+</style>

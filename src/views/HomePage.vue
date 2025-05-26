@@ -6,22 +6,19 @@
       </h2>
 
       <Carousel v-bind="carouselConfig" style="height: 430px;">
-        <Slide
-          v-for="book in group.books"
-          :key="book.id"
-          class="custom-slide"
-        >
+        <Slide v-for="book in group.books" :key="book.id" class="custom-slide">
           <div class="carousel__item">
             <router-link :to="`/BookDetail/${book.id}`">
-            <img
-              :src="book.cover"
-              :alt="book.title"
-              style="width: 200px; height: 300px; object-fit: cover; border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem;"
-            />
-          </router-link>
+              <img :src="book.cover" :alt="book.title"
+                style="width: 200px; height: 300px; object-fit: cover; border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem;" />
+            </router-link>
             <div style="padding: 0.5rem; width: 200px;">
-              <h3 style="font-weight: 600; font-size: 0.875rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ book.title }}</h3>
-              <p style="color: #4B5563; font-size: 0.75rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ book.author }}</p>
+              <h3
+                style="font-weight: 600; font-size: 0.875rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                {{ book.title }}</h3>
+              <p
+                style="color: #4B5563; font-size: 0.75rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                {{ book.author }}</p>
               <p style="color: #D97706; font-size: 0.75rem; font-weight: 500; margin-top: 0.25rem;">{{ book.rate }}</p>
             </div>
           </div>
@@ -64,6 +61,7 @@ const bookGroups = ref(
   border-radius: 0.5rem;
   transition: transform 0.3s, box-shadow 0.3s;
 }
+
 .custom-slide:hover {
   transform: translateY(-4px);
 }
@@ -79,8 +77,11 @@ img:hover {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
 .scrollbar-hide {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 </style>
