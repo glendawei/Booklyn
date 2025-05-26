@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                UPDATE \"reviews\" SET\n                    \"helpful_total\" = \"helpful_total\" + 1,\n                    \"helpful_yes\" = \"helpful_yes\" + $1\n                WHERE \"review_id\" = $2;\n                ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "e7cf13b92e6950928dd97f4568d9bea62aa97879b5d68ab44a80558def3619c1"
+}

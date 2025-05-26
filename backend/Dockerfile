@@ -3,6 +3,7 @@ WORKDIR /usr/src/Booklyn/backend
 RUN apk add --no-cache musl-dev
 RUN cargo init
 COPY ./src ./src
+COPY ./.sqlx ./.sqlx
 COPY Cargo.toml Cargo.lock ./
 # The environment variable DATABASE_URL needs to be set to the URL of the database.
 # Otherwise, the compilation below will be failed.

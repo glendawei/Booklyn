@@ -1,0 +1,53 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        UPDATE \"comments\" SET\n            \"content\" = COALESCE($1, \"content\")\n        WHERE \"comment_id\" = $2\n        RETURNING \"comment_id\", \"review_id\", \"user_id\", \"parent_id\", \"content\", \"created_at\";\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "comment_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "review_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 2,
+        "name": "user_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 3,
+        "name": "parent_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 4,
+        "name": "content",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      true,
+      true,
+      true,
+      false,
+      true
+    ]
+  },
+  "hash": "dcae77f5e4732022bf919f0d24a4d2985a010b53c7a921b4dc673db17ffa081d"
+}
