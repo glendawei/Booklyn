@@ -58,6 +58,7 @@ pub async fn get_review_by_id(data: web::Data<AppData>, id: web::Path<i64>) -> R
 
 pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(get_review_by_id)
+        .service(get_comments)
         .service(get_comment_by_id)
         .service(create_comment)
         .service(update_comment_by_id)

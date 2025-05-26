@@ -23,6 +23,7 @@ use crate::handlers::{
         signup::signup,
         login::login,
         reviews::get_review_by_id,
+        reviews::get_comments,
         reviews::get_comment_by_id,
         reviews::create_comment,
         reviews::update_comment_by_id,

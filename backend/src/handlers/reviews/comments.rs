@@ -32,6 +32,34 @@ pub struct UpdateComment {
 #[utoipa::path(
     tag = "reviews",
     params(
+        ("review_id" = i64, Path, description = "ID for the related review")
+    ),
+    responses(
+        (status = 200, description = "Successful operation", body = [Comment]),
+        (status = 404, description = "Comments not found"),
+        (status = 500, description = "Internal server error", body = String)
+    )
+)]
+#[get("/reviews/{review_id}/comments")]
+pub async fn get_comments(data: web::Data<AppData>, id: web::Path<i64>) -> Result<impl Responder, Error> {
+    let comments = sqlx::query_as!(
+        Comment,
+        r#"
+        SELECT "comment_id", "review_id", "user_id", "parent_id", "content", "created_at"
+        FROM "comments"
+        WHERE "review_id" = $1;
+        "#,
+        id.into_inner()
+    )
+        .fetch_all(&data.db_conn)
+        .await?;
+
+    if comments.len() == 0 { Ok(HttpResponse::NotFound().finish()) } else { Ok(HttpResponse::Ok().json(comments)) }
+}
+
+#[utoipa::path(
+    tag = "reviews",
+    params(
         ("review_id" = i64, Path, description = "ID for the related review"),
         ("comment_id" = i64, Path, description = "ID for the comment")
     ),
