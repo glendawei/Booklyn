@@ -1,0 +1,52 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT \"a\".\"author_id\", \"user_id\", \"name\", \"bio\", \"website\", \"created_at\"\n            FROM \"book_authors\" AS \"ba\"\n                JOIN \"authors\" AS \"a\" ON \"ba\".\"author_id\" = \"a\".\"author_id\"\n            WHERE \"ba\".\"book_id\" = $1;\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "author_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "user_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 2,
+        "name": "name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "bio",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "website",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      true,
+      false,
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "96fa3ca32830805b44bd163dad768966af90f6e5a7333d1c09400cb1f94842bc"
+}

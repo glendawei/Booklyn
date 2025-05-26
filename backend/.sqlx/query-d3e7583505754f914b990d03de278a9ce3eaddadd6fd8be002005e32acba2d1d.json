@@ -1,0 +1,27 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT DISTINCT \"b\".\"book_id\"\n        FROM \"books\" AS \"b\"\n            JOIN \"book_authors\" AS \"ba\" ON \"b\".\"book_id\" = \"ba\".\"book_id\"\n            JOIN \"authors\" AS \"a\" ON \"ba\".\"author_id\" = \"a\".\"author_id\"\n        WHERE\n            CASE WHEN $2::text IS NOT NULL THEN LOWER(\"b\".\"title\") LIKE CONCAT('%', LOWER($2), '%')\n                 ELSE true\n            END AND\n            CASE WHEN $3::text IS NOT NULL THEN \"b\".\"isbn_13\" = $3\n                 ELSE true\n            END AND\n            CASE WHEN $4::text IS NOT NULL THEN LOWER(\"a\".\"name\") LIKE CONCAT('%', LOWER($4), '%')\n                 ELSE true\n            END AND\n            CASE WHEN $5::text IS NOT NULL THEN \"b\".\"publisher\" = $5\n                 ELSE true\n            END AND\n            CASE WHEN $6::text IS NOT NULL THEN LOWER(\"b\".\"categories\"::text)::text[] @> ARRAY[LOWER($6)]\n                 ELSE true\n            END\n        LIMIT $1;\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "book_id",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Text",
+        "Text",
+        "Text",
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "d3e7583505754f914b990d03de278a9ce3eaddadd6fd8be002005e32acba2d1d"
+}
