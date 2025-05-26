@@ -34,6 +34,7 @@ export default {
   components: { Sidebar, BookHeader, ChooseBook },
   data() {
     return {
+      isLoggedIn: false,
       booksByShelf: {},
       selectedShelf: '',
       nextId: 1000,
@@ -53,9 +54,13 @@ export default {
     }
   },
   created() {
-    this.booksByShelf = JSON.parse(JSON.stringify(bookshelves))
-    this.selectedShelf = Object.keys(this.booksByShelf)[0] || ''
-    console.log('初始書櫃：', this.booksByShelf)
+    // 讀取 localStorage 登入狀態
+    this.isLoggedIn = localStorage.getItem('loggedIn') === 'true'
+    if (this.isLoggedIn) {
+      this.booksByShelf = JSON.parse(JSON.stringify(bookshelves))
+      this.selectedShelf = Object.keys(this.booksByShelf)[0] || ''
+      console.log('初始書櫃：', this.booksByShelf)
+    }
   },
   methods: {
     handleShelfSelect(name) {
@@ -93,16 +98,15 @@ export default {
       }
     },
     handleChooseBook(bookList) {
-  for (const book of bookList) {
-    this.booksByShelf[this.selectedShelf].push({
-      ...book,
-      id: this.nextId++,
-    })
-  }
-  this.showChoose = false
-  console.log('新增書籍後列表：', this.booksByShelf)
-}
-,
+      for (const book of bookList) {
+        this.booksByShelf[this.selectedShelf].push({
+          ...book,
+          id: this.nextId++
+        })
+      }
+      this.showChoose = false
+      console.log('新增書籍後列表：', this.booksByShelf)
+    },
     removeBook(bookId) {
       const list = this.booksByShelf[this.selectedShelf]
       this.booksByShelf[this.selectedShelf] = list.filter(b => b.id !== bookId)
@@ -111,7 +115,6 @@ export default {
   }
 }
 </script>
-
 <style scoped>
 .main-container {
   display: flex;

@@ -1,22 +1,30 @@
 <template>
   <div class="choose-book">
     <h3>Choose books to add</h3>
-    <ul>
-      <li v-for="book in books" :key="book.id">
-        <label class="book-item">
-          <input
-            type="checkbox"
-            :value="book"
-            v-model="selectedBooks"
-          />
-          <img :src="book.cover" alt="Book Cover" class="book-cover" />
-          <div class="book-info">
-            <p class="book-title">{{ book.title }}</p>
-            <p class="book-author">{{ book.author }}</p>
-          </div>
-        </label>
-      </li>
-    </ul>
+    <input
+      v-model="searchQuery"
+      type="text"
+      placeholder="Search books..."
+      class="search-bar"
+    />
+
+   <ul>
+  <li v-for="book in filteredBooks" :key="book.id">
+    <label class="book-item">
+      <input
+        type="checkbox"
+        :value="book"
+        v-model="selectedBooks"
+      />
+      <img :src="book.cover" alt="Book Cover" class="book-cover" />
+      <div class="book-info">
+        <p class="book-title">{{ book.title }}</p>
+        <p class="book-author">{{ book.author }}</p>
+      </div>
+    </label>
+  </li>
+</ul>
+
     <div class="action-buttons">
       <button @click="emitSelectedBooks" class="confirm-btn">Add Selected Books</button>
       <button @click="$emit('cancel')" class="cancel-btn">Cancel</button>
@@ -25,12 +33,22 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 const props = defineProps(['books'])
 const emit = defineEmits(['choose', 'cancel'])
 
 const selectedBooks = ref([])
+const searchQuery = ref('')
+
+// 根據 searchQuery 過濾書名或作者
+const filteredBooks = computed(() => {
+  const query = searchQuery.value.toLowerCase()
+  return props.books.filter(book =>
+    book.title.toLowerCase().includes(query) ||
+    book.author.toLowerCase().includes(query)
+  )
+})
 
 function emitSelectedBooks() {
   emit('choose', selectedBooks.value)
