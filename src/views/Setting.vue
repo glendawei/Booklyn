@@ -1,11 +1,6 @@
 <template>
   <div class="setting-page">
     <h2>Settings</h2>
-    <p>Click below to logout:</p>
-
-    <button class="save-btn" @click="logoutFake">
-      Logout
-    </button>
   </div>
 </template>
 

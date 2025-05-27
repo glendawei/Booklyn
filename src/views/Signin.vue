@@ -94,6 +94,7 @@ function onRegister() {
   }
   successMessage.value = 'Registered successfully!'
   errorMessage.value   = ''
+  localStorage.setItem('loggedIn', 'true')
   setTimeout(() => router.push('/interests'), 800)
 }
 

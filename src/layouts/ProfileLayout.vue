@@ -15,6 +15,9 @@
           <router-link to="/profile-settings/settings">Settings</router-link>
         </li>
       </ul>
+
+      <!-- Logout 按鈕 -->
+      <button class="logout-btn" @click="logout">Logout</button>
     </aside>
 
     <main class="main">
@@ -23,13 +26,23 @@
   </div>
 </template>
 
+<script>
+export default {
+  methods: {
+    logout() {
+      localStorage.removeItem('loggedIn')
+      this.$router.push('/login');
+    }
+  }
+}
+</script>
+
 <style scoped>
 .container {
   position: relative;    
   display: flex;
   min-height: 100vh;
 }
-
 
 .close-btn {
   position: absolute;
@@ -56,6 +69,7 @@
   padding: 20px;
   background: #FEFAE0;
   border-right: 1px solid #eee;
+  position: relative;
 }
 
 .sidebar ul {
@@ -75,6 +89,24 @@
 .sidebar .active a {
   color: #606C38;
   font-weight: bold;
+}
+
+.logout-btn {
+  position: absolute;
+  bottom: 16px;
+  left: 20px;
+  padding: 8px 16px;
+  background-color: #BC6C25;
+  color: #FEFAE0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+
+.logout-btn:hover {
+  background-color: #A55D1E;
 }
 
 .main {
