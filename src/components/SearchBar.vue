@@ -1,13 +1,17 @@
 <template>
   <nav :class="['navbar', { 'navbar-scrolled': isScrolled }]">
-    <router-link to="/" class="logo"
-      style="display:grid; grid-template-columns: 1fr 1fr; line-height: 50px; width: 185px;">
+    <router-link to="/" class="logo" style="display:grid; grid-template-columns: 1fr 1fr; line-height: 50px; width: 185px;">
       <img src="../../logo.png" style="width: 50px; height:50px;">
       Booklyn
     </router-link>
 
     <div class="tabs">
-      <div v-for="tab in tabs" :key="tab.name" :class="['tab', { active: tab.name === selected }]" @click="select(tab)">
+      <div
+        v-for="tab in tabs"
+        :key="tab.name"
+        :class="['tab', { active: tab.name === selected }]"
+        @click="select(tab)"
+      >
         {{ tab.name }}
       </div>
     </div>
@@ -15,15 +19,14 @@
     <div class="actions">
       <div class="search-box">
         <svg class="icon icon-search" viewBox="0 0 24 24">
-          <path
-            d="M10 2a8 8 0 015.292 13.708l4.5 4.5-1.414 1.414-4.5-4.5A8 8 0 1110 2zm0 2a6 6 0 100 12 6 6 0 000-12z" />
+          <path d="M10 2a8 8 0 015.292 13.708l4.5 4.5-1.414 1.414-4.5-4.5A8 8 0 1110 2zm0 2a6 6 0 100 12 6 6 0 000-12z"/>
         </svg>
-        <input v-model="searchTerm" @keyup.enter="performSearch" placeholder="Search for a book..." />
+        <input v-model="query" type="text" placeholder="Search..." />
       </div>
 
       <!-- ✅ 已加上點擊事件 -->
       <svg class="icon icon-user" viewBox="0 0 24 24" @click="handleUserClick">
-        <path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-3.866 0-7 1.343-7 4v2h14v-2c0-2.657-3.134-4-7-4z" />
+        <path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-3.866 0-7 1.343-7 4v2h14v-2c0-2.657-3.134-4-7-4z"/>
       </svg>
     </div>
   </nav>
@@ -39,7 +42,7 @@ const route = useRoute()
 const tabs = [
   { name: 'My books', path: '/MyBooks' },
   { name: 'Community', path: '/Community' },
-  { name: 'Browse', path: '/Category' },
+  { name: 'Category', path: '/Category' },
 ]
 
 const selected = computed(() => {
@@ -47,15 +50,7 @@ const selected = computed(() => {
   return currentTab ? currentTab.name : null
 })
 
-const searchTerm = ref('');
-
-function performSearch() {
-  if (searchTerm.value.trim()) {
-    router.push({ path: '/Category', query: { q: searchTerm.value.trim() } });
-  } else {
-    router.push({ path: '/Category' });
-  }
-}
+const query = ref('')
 const isScrolled = ref(false)
 
 function select(tab) {
@@ -94,9 +89,7 @@ onUnmounted(() => {
 
 .navbar {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 0; left: 0; right: 0;
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -109,7 +102,6 @@ onUnmounted(() => {
   transition: all 0.3s ease;
   box-shadow: none;
 }
-
 .navbar-scrolled {
   height: 66px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
@@ -125,7 +117,6 @@ onUnmounted(() => {
   /*background-color: #606C38;*/
   transition: background-color 0.3s ease;
 }
-
 .logo:hover {
   background-color: #4e562e;
 }
@@ -146,12 +137,10 @@ onUnmounted(() => {
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
-
 .tab:hover {
   background-color: #606C38;
   color: #fefae0;
 }
-
 .tab.active {
   background: #fefae0;
   color: #283618;
@@ -172,7 +161,6 @@ onUnmounted(() => {
   border-radius: 999px;
   padding: 4px 12px;
 }
-
 .search-box input {
   border: none;
   outline: none;
@@ -181,7 +169,6 @@ onUnmounted(() => {
   border-radius: 999px;
   min-width: 140px;
 }
-
 .icon-search {
   position: absolute;
   left: 8px;
@@ -189,7 +176,6 @@ onUnmounted(() => {
   height: 16px;
   fill: #888;
 }
-
 .icon-user {
   width: 24px;
   height: 24px;
@@ -197,7 +183,6 @@ onUnmounted(() => {
   cursor: pointer;
   transition: transform 0.2s ease;
 }
-
 .icon-user:hover {
   transform: scale(1.1);
 }
@@ -208,7 +193,6 @@ onUnmounted(() => {
     flex-direction: column;
     height: auto;
   }
-
   .tabs {
     margin: 8px 0;
   }

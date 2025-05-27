@@ -4,10 +4,13 @@
 
     <div class="card">
       <div class="profile-pic">
-        <img src="https://i.pravatar.cc/150?img=32" />
+        <img :src="form.photoUrl" />
         <div>
-          <button class="upload">Upload new photo</button>
-          <button class="delete">Delete</button>
+          <label class="upload">
+            Upload new photo
+            <input type="file" accept="image/*" @change="onPhotoSelected" hidden>
+          </label>
+          <button class="delete" @click="deletePhoto">Delete</button>
         </div>
       </div>
 
@@ -42,6 +45,12 @@
             <input type="tel" v-model="form.phone" placeholder="+886-912-345-678" />
           </div>
         </div>
+        <div class="row">
+          <div class="field">
+            <label>Introduction</label>
+            <textarea v-model="form.introduction" rows="3" placeholder="Tell us about yourself..."></textarea>
+          </div>
+        </div>
         <button class="save" @click.prevent="save">Save</button>
       </form>
     </div>
@@ -56,11 +65,28 @@ const form = reactive({
   gender: '女性',
   age: 32,
   birthday: '',
-  phone: ''
+  phone: '',
+  introduction: '',
+  photoUrl: 'https://i.pravatar.cc/150?img=32'
 })
 
 function save() {
   alert('儲存成功：' + JSON.stringify(form, null, 2))
+}
+
+function onPhotoSelected(event) {
+  const file = event.target.files[0]
+  if (file) {
+    const reader = new FileReader()
+    reader.onload = () => {
+      form.photoUrl = reader.result
+    }
+    reader.readAsDataURL(file)
+  }
+}
+
+function deletePhoto() {
+  form.photoUrl = 'https://i.pravatar.cc/150?img=32'
 }
 </script>
 
@@ -101,6 +127,7 @@ h2 {
   padding: 8px 14px;
   border: none;
   border-radius: 8px;
+  cursor: pointer;
 }
 .delete {
   color: #BC6C25;
@@ -108,6 +135,7 @@ h2 {
   border: none;
   margin-left: 10px;
   font-weight: bold;
+  cursor: pointer;
 }
 
 .form {
@@ -119,6 +147,7 @@ h2 {
 .row {
   display: flex;
   gap: 20px;
+  flex-wrap: wrap;
 }
 
 .field {
@@ -134,10 +163,12 @@ label {
 }
 
 input,
-select {
+select,
+textarea {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 8px;
+  font-family: inherit;
 }
 
 .save {
