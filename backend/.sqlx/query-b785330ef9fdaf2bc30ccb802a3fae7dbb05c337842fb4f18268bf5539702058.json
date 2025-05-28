@@ -1,0 +1,55 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        INSERT INTO \"comments\" (\"review_id\", \"user_id\", \"parent_id\", \"content\", \"created_at\")\n        SELECT $1, $2, $3, $4, NOW()\n        WHERE EXISTS (\n            SELECT \"review_id\"\n            FROM \"reviews\"\n            WHERE \"review_id\" = $1\n        )\n        RETURNING \"comment_id\", \"review_id\", \"user_id\", \"parent_id\", \"content\", \"created_at\";\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "comment_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "review_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 2,
+        "name": "user_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 3,
+        "name": "parent_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 4,
+        "name": "content",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8",
+        "Int8",
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      true,
+      true,
+      true,
+      false,
+      true
+    ]
+  },
+  "hash": "b785330ef9fdaf2bc30ccb802a3fae7dbb05c337842fb4f18268bf5539702058"
+}
