@@ -1,0 +1,42 @@
+@import './base.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 移除全域限制寬度，讓 app 根據內容自適應 */
+#app {
+  width: 100%;               /* ✅ 讓內容寬度佔滿 */
+  max-width: none;           /* ✅ 移除最大寬度限制 */
+  margin: 0 auto;
+  padding: 0rem;
+  font-weight: normal;
+  overscroll-behavior: none;
+}
+
+a,
+.green {
+  text-decoration: none;
+  color: hsla(160, 100%, 37%, 1);
+  transition: 0.4s;
+  padding: 3px;
+}
+
+@media (hover: hover) {
+  a:hover {
+    background-color: hsla(160, 100%, 37%, 0.2);
+  }
+}
+
+/* ✅ 移除強制 grid 排版，避免壓縮頁面 */
+@media (min-width: 1024px) {
+  body {
+    display: block; /* ✅ 改回預設，讓內容自然排版 */
+    place-items: unset;
+  }
+
+  #app {
+    display: block;
+    padding: 0rem;
+  }
+}
