@@ -3,22 +3,20 @@
     <!-- 叉叉按鈕，回到首頁 -->
     <router-link to="/" class="close-btn">✕</router-link>
 
-    <aside class="sidebar">
-      <ul>
-        <li :class="{ active: $route.path === '/profile-settings/personal-info' }">
-          <router-link to="/profile-settings/personal-info">Personal-info</router-link>
-        </li>
-        <li :class="{ active: $route.path === '/profile-settings/book-preference' }">
-          <router-link to="/profile-settings/book-preference">Revise book-preference</router-link>
-        </li>
-        <li :class="{ active: $route.path === '/profile-settings/settings' }">
-          <router-link to="/profile-settings/settings">Settings</router-link>
-        </li>
-      </ul>
-
-      <!-- Logout 按鈕 -->
+<aside class="sidebar">
+  <ul>
+    <li :class="{ active: $route.path === '/profile-settings/personal-info' }">
+      <router-link to="/profile-settings/personal-info">Personal Info</router-link>
+    </li>
+    <li :class="{ active: $route.path === '/profile-settings/book-preference' }">
+      <router-link to="/profile-settings/book-preference">Revise Book Preference</router-link>
+    </li>
+    <li>
       <button class="logout-btn" @click="logout">Logout</button>
-    </aside>
+    </li>
+  </ul>
+</aside>
+
 
     <main class="main">
       <router-view />
@@ -92,9 +90,6 @@ export default {
 }
 
 .logout-btn {
-  position: absolute;
-  bottom: 16px;
-  left: 20px;
   padding: 8px 16px;
   background-color: #BC6C25;
   color: #FEFAE0;
