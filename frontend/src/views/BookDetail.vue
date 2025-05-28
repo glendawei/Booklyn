@@ -123,7 +123,7 @@ import { ref, computed } from 'vue'
 import { bookshelves } from '../data/mockBookshelves.js'
 import fullStar from '../assets/FullStar.png'
 import halfStar from '../assets/Star.png'
-import emptyStar from '@/assets/FullStar.png' 
+import emptyStar from '@/assets/FullStar.png' // reuse Star.png but with opacity for empty
 
 
 const route = useRoute()
@@ -172,6 +172,7 @@ const updateRating = (rating) => {
 </script>
 
 <style scoped>
+/* [Styling is unchanged — kept from your original version] */
 .book-detail {
   max-width: 960px;
   margin: 0 auto;
