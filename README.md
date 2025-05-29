@@ -50,6 +50,12 @@ The application requires two CSV files from the [Amazon Books Reviews dataset on
    python constructdb.py
    ```
 
+4. Set up review_ai, run
+   ```
+   source ./.env # set your OPENAI_API_KEY in .env
+   database/construct_db/LLM_review.ipynb
+   ```
+
 This script will:
 
 * Create the `booksdb` database schema
