@@ -9,6 +9,8 @@ services:
     ports:
       - "5173:5173"
     command: ["npm","run","dev"]
+    networks:
+      - booklyn_network
 
   backend:
     container_name: booklyn-backend
@@ -41,8 +43,12 @@ services:
     restart: unless-stopped
     networks:
       - booklyn_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d booklyn"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 networks:
   booklyn_network:
-    name: booklyn_network
     driver: bridge
