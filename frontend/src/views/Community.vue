@@ -1,8 +1,4 @@
 <template>
-<<<<<<< HEAD
-  <div class="text-center text-xl text-gray-700 mt-10">
-    It is the Community.vue page
-=======
   <div class="forum-container">
     <h1 class="forum-title">Community Forum</h1>
 
@@ -19,18 +15,10 @@
         <span class="comments-count">{{ post.comments }} comments</span>
       </div>
     </div>
->>>>>>> origin/frontend
   </div>
 </template>
 
 <script setup>
-<<<<<<< HEAD
-// 暫時不需要 script
-</script>
-
-<style scoped>
-/* 可選的樣式 */
-=======
 const posts = [
   {
     id: 1,
@@ -121,5 +109,4 @@ const posts = [
   color: #888;
   text-align: right;
 }
->>>>>>> origin/frontend
 </style>

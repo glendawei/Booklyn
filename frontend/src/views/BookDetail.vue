@@ -1,13 +1,4 @@
 <template>
-<<<<<<< HEAD
-  <div class="book-detail">
-    <div v-if="book">
-      <div style="display: grid; grid-template-columns: 200px 1fr; column-gap: 50px; margin-bottom: 25px;">
-        <img :src="book.cover" :alt="book.title"
-          style="width: 200px; height: 300px; object-fit: cover; border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem;" />
-        <div>
-          <h1 class="book-title">{{ book.title }}</h1>
-=======
   <!-- Floating Review Detail Side Panel -->
   <div v-if="selectedReview" class="drawer-overlay">
     <div class="drawer-panel">
@@ -63,7 +54,6 @@
             </button>
 
           </div>
->>>>>>> origin/frontend
           <p class="author">Author: {{ book.author }}</p>
           <p class="rating">Rating: {{ book.rate }}</p>
         </div>
@@ -73,11 +63,6 @@
       </div>
 
       <div class="reviews-section border-t pt-6">
-<<<<<<< HEAD
-        <h1 style="font-size: 1.25rem;      /* Tailwind's text-xl = 20px = 1.25rem */
-  font-weight: 600;        /* Tailwind's font-semibold = 600 */
-  margin-bottom: 1.25rem;">AI Smart Summary</h1>
-=======
         <h1 style="
             font-size: 1.25rem; /* Tailwind's text-xl = 20px = 1.25rem */
             font-weight: 600; /* Tailwind's font-semibold = 600 */
@@ -85,7 +70,6 @@
           ">
           AI Smart Summary
         </h1>
->>>>>>> origin/frontend
         <div class="review-header flex items-center justify-between">
           <div class="user-info flex items-center space-x-3">
             <div
@@ -98,16 +82,6 @@
         <div class="review-rating mt-2 text-yellow-500">
           <span v-for="n in 5" :key="n" class="star">
             <img v-if="n <= Math.floor(averageRating)" :src="fullStar" alt="Full Star" class="star" />
-<<<<<<< HEAD
-            <img v-else-if="n === Math.ceil(averageRating) && !Number.isInteger(averageRating)" :src="halfStar"
-              alt="Half Star" class="star" />
-            <img v-else :src="emptyStar" alt="Empty Star" class="star" style="opacity: 0.3; filter: grayscale(1);" />
-          </span>
-        </div>
-        <div class="review-comment mt-3 text-gray-700 italic">
-          “This is a mockup review that summarizes comments from all major book websites. The book is widely appreciated
-          for its narrative style and character depth, although some readers noted pacing issues.”
-=======
             <img v-else-if="
               n === Math.ceil(averageRating) &&
               !Number.isInteger(averageRating)
@@ -119,7 +93,6 @@
           “This is a mockup review that summarizes comments from all major book
           websites. The book is widely appreciated for its narrative style and
           character depth, although some readers noted pacing issues.”
->>>>>>> origin/frontend
         </div>
       </div>
     </div>
@@ -135,14 +108,6 @@
         <div class="stars">
           <span v-for="n in 5" :key="n" class="star">
             <img v-if="n <= Math.floor(averageRating)" :src="fullStar" alt="Full Star" class="star" />
-<<<<<<< HEAD
-            <img v-else-if="n === Math.ceil(averageRating) && !Number.isInteger(averageRatinging)" :src="halfStar"
-              alt="Half Star" class="star" />
-            <img v-else :src="emptyStar" alt="Empty Star" class="star" style="opacity: 0.3; filter: grayscale(1);" />
-          </span>
-        </div>
-        <div class="review-count">Based on {{ book.reviews.length }} reviews</div>
-=======
             <img v-else-if="
               n === Math.ceil(averageRating) &&
               !Number.isInteger(averageRatinging)
@@ -153,22 +118,16 @@
         <div class="review-count">
           Based on {{ book.reviews.length }} reviews
         </div>
->>>>>>> origin/frontend
       </div>
 
       <div class="ratings-breakdown">
         <div v-for="star in [5, 4, 3, 2, 1]" :key="star" class="rating-bar">
           <span class="rating-label">{{ star }}★</span>
           <div class="rating-bar-background">
-<<<<<<< HEAD
-            <div class="rating-bar-fill" :style="{ width: (ratingBreakdown[star] / book.reviews.length) * 100 + '%' }">
-            </div>
-=======
             <div class="rating-bar-fill" :style="{
               width:
                 (ratingBreakdown[star] / book.reviews.length) * 100 + '%',
             }"></div>
->>>>>>> origin/frontend
           </div>
           <span class="rating-count">{{ ratingBreakdown[star] }}</span>
         </div>
@@ -190,36 +149,12 @@
     </div>
 
     <ul class="filtered-reviews">
-<<<<<<< HEAD
-      <li v-for="(review, index) in filteredReviews" :key="index" class="filtered-review-card"  @click="$router.push({ name: 'ReviewDetail', query: { review: encodeURIComponent(JSON.stringify(review)) } })"
-  style="cursor: pointer;">
-=======
       <li v-for="(review, index) in filteredReviews" :key="index" class="filtered-review-card">
->>>>>>> origin/frontend
         <div class="review-header">
           <div class="user-info">
             <div class="user-avatar"></div>
             <div class="user-name">{{ review.reviewer }}</div>
           </div>
-<<<<<<< HEAD
-          <div class="review-date">{{ review.date || 'N/A' }}</div>
-        </div>
-        <div style="display:grid; grid-template-columns:min-content auto; column-gap: 10px;">
-          <div class="review-score" style="font-weight: bold;">{{ review.rating }}</div>
-          <div class="review-rating">
-            <span v-for="n in 5" :key="n" class="star">
-              <img v-if="n <= Math.floor(review.rating)" :src="fullStar" alt="Full Star" class="star" />
-              <img v-else-if="n === Math.ceil(review.rating) && !Number.isInteger(review.rating)" :src="halfStar"
-                alt="Half Star" class="star" />
-              <img v-else :src="emptyStar" alt="Empty Star" class="star" style="filter: grayscale(1); opacity: 0.3;" />
-            </span>
-
-          </div>
-        </div>
-        <span class="review-title">{{ review.title || '' }}</span>
-
-        <p class="review-comment">"{{ review.comment }}"</p>
-=======
           <div class="review-date">{{ review.date || "N/A" }}</div>
         </div>
         <div style="
@@ -247,66 +182,12 @@
         <button class="styled-button" @click="showDetailPanel(review)">
           View Details
         </button>
->>>>>>> origin/frontend
       </li>
     </ul>
   </div>
 </template>
 
 <script setup>
-<<<<<<< HEAD
-import { useRoute } from 'vue-router'
-import { ref, computed } from 'vue'
-import { bookshelves } from '../data/mockBookshelves.js'
-import fullStar from '../assets/FullStar.png'
-import halfStar from '../assets/Star.png'
-import emptyStar from '@/assets/FullStar.png' // reuse Star.png but with opacity for empty
-
-
-const route = useRoute()
-const book = ref(route.state?.book)
-
-if (!book.value) {
-  const bookId = Number(route.params.id)
-  const allBooks = Object.values(bookshelves).flat()
-  book.value = allBooks.find(b => b.id === bookId)
-
-  if (!book.value) {
-    console.warn(`Book with ID ${bookId} not found in fallback.`)
-  }
-}
-
-const searchTerm = ref('')
-const sortOrder = ref('desc')
-const userRating = ref(0)
-
-const ratingBreakdown = computed(() => {
-  const breakdown = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 }
-  book.value.reviews.forEach(r => {
-    breakdown[r.rating]++
-  })
-  return breakdown
-})
-
-const averageRating = computed(() => {
-  const total = book.value.reviews.reduce((sum, r) => sum + r.rating, 0)
-  return total / book.value.reviews.length
-})
-
-const filteredReviews = computed(() => {
-  let results = book.value.reviews.filter(r =>
-    r.comment.toLowerCase().includes(searchTerm.value.toLowerCase())
-  )
-  results.sort((a, b) =>
-    sortOrder.value === 'desc' ? b.rating - a.rating : a.rating - b.rating
-  )
-  return results
-})
-
-const updateRating = (rating) => {
-  userRating.value = rating
-}
-=======
 import { useRoute } from "vue-router";
 import { ref, computed } from "vue";
 import { bookshelves } from "../data/mockBookshelves.js";
@@ -370,7 +251,6 @@ const showDetailPanel = (review) => {
   isDetailPanelVisible.value = true;
 };
 
->>>>>>> origin/frontend
 </script>
 
 <style scoped>
@@ -573,8 +453,6 @@ const showDetailPanel = (review) => {
   font-style: italic;
   color: #555;
 }
-<<<<<<< HEAD
-=======
 
 .slide-enter-from,
 .slide-leave-to {
@@ -691,5 +569,4 @@ const showDetailPanel = (review) => {
     transform: translateX(0%);
   }
 }
->>>>>>> origin/frontend
 </style>

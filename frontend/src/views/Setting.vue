@@ -1,10 +1,6 @@
 <template>
   <div class="setting-page">
-<<<<<<< HEAD
-    <h2>Settings</h2>
-=======
     <h2>This is a setting-page</h2>
->>>>>>> origin/frontend
   </div>
 </template>
 
