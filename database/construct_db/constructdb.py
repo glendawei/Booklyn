@@ -1,4 +1,11 @@
 import pandas as pd
+from psycopg2.extras import execute_values
+from db_connection import get_connection
+import random
+from datetime import datetime, timedelta
+import ast
+
+
 # Read dataset/books_data.csv
 df_books = pd.read_csv('dataset/books_data.csv')
 print(df_books.head())
@@ -6,11 +13,6 @@ df_ratings = pd.read_csv('dataset/Books_rating.csv')
 df_ratings.rename(columns={'Id': 'book_id'}, inplace=True)
 print(df_ratings.head())
 
-import pandas as pd
-import ast
-from psycopg2.extras import execute_values
-from db_connection import get_connection
-from datetime import datetime
 def parse_date(date_str):
     if pd.isna(date_str):
         return None
