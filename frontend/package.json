@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "generate:data": "node scripts/generateDataFiles.js",
+    "generate:data": "node src/generateDataFiles.js",
     "dev": "npm run generate:data && vite",
     "build": "npm run generate:data && vite build",
     "preview": "vite preview",
