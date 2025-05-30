@@ -3,6 +3,7 @@
     <!-- 叉叉按鈕，回到首頁 -->
     <router-link to="/" class="close-btn">✕</router-link>
 
+<<<<<<< HEAD
     <aside class="sidebar">
       <ul>
         <li :class="{ active: $route.path === '/profile-settings/personal-info' }">
@@ -19,6 +20,22 @@
       <!-- Logout 按鈕 -->
       <button class="logout-btn" @click="logout">Logout</button>
     </aside>
+=======
+<aside class="sidebar">
+  <ul>
+    <li :class="{ active: $route.path === '/profile-settings/personal-info' }">
+      <router-link to="/profile-settings/personal-info">Personal Info</router-link>
+    </li>
+    <li :class="{ active: $route.path === '/profile-settings/book-preference' }">
+      <router-link to="/profile-settings/book-preference">Revise Book Preference</router-link>
+    </li>
+    <li>
+      <button class="logout-btn" @click="logout">Logout</button>
+    </li>
+  </ul>
+</aside>
+
+>>>>>>> origin/frontend
 
     <main class="main">
       <router-view />
@@ -92,9 +109,12 @@ export default {
 }
 
 .logout-btn {
+<<<<<<< HEAD
   position: absolute;
   bottom: 16px;
   left: 20px;
+=======
+>>>>>>> origin/frontend
   padding: 8px 16px;
   background-color: #BC6C25;
   color: #FEFAE0;

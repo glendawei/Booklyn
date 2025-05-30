@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # macOS
 .DS_Store
 
@@ -5,3 +6,14 @@
 node_modules/
 dist/
 .env
+=======
+<<<<<<<< HEAD:.gitignore
+.*.swp
+.env
+/database/construct_db/dataset/
+========
+.DS_Store
+.DS_Store
+node_modules/
+>>>>>>>> origin/frontend:frontend/.gitignore
+>>>>>>> origin/frontend

@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/HomePage.vue'
 import MyBook from '../views/MyBooks.vue'
 import Community from '../views/Community.vue'
-import Category from '../views/Category.vue' // 修正這一行
+import Category from '../views/BrowseCategory.vue' // 修正這一行
 import BookDetail from '../views/BookDetail.vue'
 import Profile from '../views/Profile.vue' //作者公開頁
 import Login from '../views/Login.vue'

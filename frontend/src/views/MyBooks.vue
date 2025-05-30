@@ -34,6 +34,7 @@ export default {
   components: { Sidebar, BookHeader, ChooseBook },
   data() {
     return {
+      isLoggedIn: false,
       booksByShelf: {},
       selectedShelf: '',
       nextId: 1000,
@@ -53,9 +54,13 @@ export default {
     }
   },
   created() {
-    this.booksByShelf = JSON.parse(JSON.stringify(bookshelves))
-    this.selectedShelf = Object.keys(this.booksByShelf)[0] || ''
-    console.log('初始書櫃：', this.booksByShelf)
+    // 讀取 localStorage 登入狀態
+    this.isLoggedIn = localStorage.getItem('loggedIn') === 'true'
+    if (this.isLoggedIn) {
+      this.booksByShelf = JSON.parse(JSON.stringify(bookshelves))
+      this.selectedShelf = Object.keys(this.booksByShelf)[0] || ''
+      console.log('初始書櫃：', this.booksByShelf)
+    }
   },
   methods: {
     handleShelfSelect(name) {
@@ -72,37 +77,43 @@ export default {
       console.log('新增後書櫃列表：', this.booksByShelf)
     },
     handleRemoveShelf(name) {
-      const totalShelves = Object.keys(this.booksByShelf).length
-      if (totalShelves <= 1) {
-        alert('至少要保留一個書櫃！')
-        return
-      }
-
-      const bookCount = this.booksByShelf[name].length
-      let confirmMessage = `確定要刪除書櫃「${name}」嗎？`
-      if (bookCount > 0) {
-        confirmMessage = `「${name}」內含 ${bookCount} 本書，確定要刪除？`
-      }
-
-      if (confirm(confirmMessage)) {
-        delete this.booksByShelf[name]
-        this.booksByShelf = { ...this.booksByShelf }
-        const remaining = Object.keys(this.booksByShelf)
-        this.selectedShelf = remaining[0] || ''
-        console.log('刪除後書櫃列表：', this.booksByShelf)
-      }
-    },
-    handleChooseBook(bookList) {
-  for (const book of bookList) {
-    this.booksByShelf[this.selectedShelf].push({
-      ...book,
-      id: this.nextId++,
-    })
+  // 禁止刪除 "All" 書櫃
+  if (name === 'All') {
+    alert('「All」書櫃不能被刪除！')
+    return
   }
-  this.showChoose = false
-  console.log('新增書籍後列表：', this.booksByShelf)
-}
-,
+
+  const totalShelves = Object.keys(this.booksByShelf).length
+  if (totalShelves <= 1) {
+    alert('至少要保留一個書櫃！')
+    return
+  }
+
+  const bookCount = this.booksByShelf[name].length
+  let confirmMessage = `確定要刪除書櫃「${name}」嗎？`
+  if (bookCount > 0) {
+    confirmMessage = `「${name}」內含 ${bookCount} 本書，確定要刪除？`
+  }
+
+  if (confirm(confirmMessage)) {
+    delete this.booksByShelf[name]
+    this.booksByShelf = { ...this.booksByShelf }
+    const remaining = Object.keys(this.booksByShelf)
+    this.selectedShelf = remaining[0] || ''
+    console.log('刪除後書櫃列表：', this.booksByShelf)
+  }
+},
+
+    handleChooseBook(bookList) {
+      for (const book of bookList) {
+        this.booksByShelf[this.selectedShelf].push({
+          ...book,
+          id: this.nextId++
+        })
+      }
+      this.showChoose = false
+      console.log('新增書籍後列表：', this.booksByShelf)
+    },
     removeBook(bookId) {
       const list = this.booksByShelf[this.selectedShelf]
       this.booksByShelf[this.selectedShelf] = list.filter(b => b.id !== bookId)
@@ -111,7 +122,6 @@ export default {
   }
 }
 </script>
-
 <style scoped>
 .main-container {
   display: flex;
