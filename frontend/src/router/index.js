@@ -29,7 +29,7 @@ const router = createRouter({
     { path: '/Setting', component: Setting },
     { path: '/Signin', component: Signin },
     {
-      path: '/BookDetail/:id',
+      path: '/books/:id',
       name: 'BookDetail',
       component: BookDetail
     },
@@ -55,7 +55,7 @@ const router = createRouter({
       ]
     },
     {
-      path: '/Profile/:id',
+      path: '/authors/:id',
       name: 'Profile',
       component: Profile
     },

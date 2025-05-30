@@ -1,16 +1,16 @@
 <template>
   <td>
-    <router-link :to="`/BookDetail/${book.id}`" class="text-link">
+    <router-link :to="`/books/${book.id}`" class="text-link">
       {{ book.title }}
     </router-link>
   </td>
   <td>
-    <router-link :to="`/BookDetail/${book.id}`">
+    <router-link :to="`/books/${book.id}`">
       <img :src="book.cover" alt="Book Cover" style="width: 60%;" />
     </router-link>
   </td>
   <td>
-    <router-link :to="`/Profile/${book.author}`" class="text-link">
+    <router-link :to="`/authors/${book.author,id}`" class="text-link">
       <strong>{{ book.author }}</strong>
     </router-link>
   </td>
