@@ -1,4 +1,4 @@
-import api from './client'
+import api from './client.js'
 
 // 获取单一作者详情
 export function getAuthor(authorId) {

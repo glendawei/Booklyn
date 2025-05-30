@@ -1,4 +1,4 @@
-import api from './client'
+import api from './client.js'
 
 // 获取所有书籍
 export function getAllBooks() {
