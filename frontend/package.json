@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "generate:data": "node src/generateDataFiles.js",
-    "dev": "npm run generate:data && vite",
-    "build": "npm run generate:data && vite build",
+    "dev": "vite",
+    "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint . --fix",
     "format": "prettier --write src/"
