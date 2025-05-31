@@ -11,7 +11,7 @@ use crate::database;
 use crate::error::Error;
 
 /* default maximum number of returned books */
-const LIMIT: i64 = 500;
+const LIMIT: i64 = 1000;
 
 #[derive(Serialize, ToSchema, Default)]
 pub struct Book {
