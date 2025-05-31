@@ -24,7 +24,7 @@ cd Booklyn
 Build and start the containers:
 
 ```bash
-docker-compose up --build
+docker-compose up --build # around 500 s
 ```
 
 This will launch two services:
@@ -50,10 +50,16 @@ The application requires two CSV files from the [Amazon Books Reviews dataset on
    python constructdb.py
    ```
 
-4. Set up review_ai, run
+4. Set up review_ai, run ( too inefficient, 1hr 1000 comments )
    ```
    source ./.env # set your OPENAI_API_KEY in .env
    database/construct_db/LLM_review.ipynb
+   ```
+
+5. For frontend to read data, run
+   ```
+   cd frontend
+   npm run generate:data
    ```
 
 This script will:
@@ -62,16 +68,6 @@ This script will:
 * Load raw data into staging tables
 * Transform and insert data into production tables
 
-## Usage
-
-* Frontend: Open your browser and navigate to `http://localhost:5173`.
-* Backend API: Available at `http://localhost:8000/api` (adjust port if configured).
-
-Example API call:
-
-```bash
-curl http://localhost:8000/api/books?limit=10
-```
 
 ## Project Structure
 

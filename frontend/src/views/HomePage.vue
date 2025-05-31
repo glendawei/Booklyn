@@ -8,7 +8,7 @@
       <Carousel v-bind="carouselConfig" style="height: 430px;">
         <Slide v-for="book in group.books" :key="book.id" class="custom-slide">
           <div class="carousel__item">
-            <router-link :to="`/BookDetail/${book.id}`">
+            <router-link :to="`/books/${book.id}`">
               <img :src="book.cover" :alt="book.title"
                 style="width: 200px; height: 300px; object-fit: cover; border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem;" />
             </router-link>

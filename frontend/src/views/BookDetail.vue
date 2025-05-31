@@ -90,9 +90,7 @@
           </span>
         </div>
         <div class="review-comment mt-3 text-gray-700 italic">
-          “This is a mockup review that summarizes comments from all major book
-          websites. The book is widely appreciated for its narrative style and
-          character depth, although some readers noted pacing issues.”
+          {{ book.summary_ai || "There's no review yet!" }}
         </div>
       </div>
     </div>
