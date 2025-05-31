@@ -50,6 +50,7 @@
   
     // 登入成功
     localStorage.setItem('loggedIn', 'true')
+    localStorage.setItem('currentUser', email.value)
     errorMessage.value = ''
     successMessage.value = ' Login successful!'
     setTimeout(() => router.push('/'), 800)

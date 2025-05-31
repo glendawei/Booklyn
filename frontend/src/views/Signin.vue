@@ -92,10 +92,44 @@ function onRegister() {
     successMessage.value = ''
     return
   }
-  successMessage.value = 'Registered successfully!'
-  errorMessage.value   = ''
+
+  if (!accepted.value) {
+    errorMessage.value = '請同意條款與隱私權政策'
+    successMessage.value = ''
+    return
+  }
+
+  // 檢查是否已有相同 email
+  let users = JSON.parse(localStorage.getItem('users')) || []
+  const duplicate = users.find(u => u.email === email.value)
+
+  if (duplicate) {
+    errorMessage.value = '該 Email 已註冊，請改用其他 Email'
+    successMessage.value = ''
+    return
+  }
+
+  // 建立新使用者資料
+  const newUser = {
+    name: name.value,
+    email: email.value,
+    password: password.value,
+    preference: [] 
+  }
+
+  users.push(newUser)
+  localStorage.setItem('users', JSON.stringify(users))
+
+  // 登入狀態 & 儲存目前使用者 email
   localStorage.setItem('loggedIn', 'true')
-  setTimeout(() => router.push('/interests'), 800)
+  localStorage.setItem('currentUser', email.value)
+
+  errorMessage.value = ''
+  successMessage.value = '註冊成功！'
+
+  setTimeout(() => {
+    router.push('/interests')  // 下一頁是選興趣
+  }, 800)
 }
 
 function goToLogin() {
