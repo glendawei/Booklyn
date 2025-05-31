@@ -3,14 +3,7 @@
 
 ## Installation
 
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/your-username/Booklyn.git
-cd Booklyn
-```
-
-### 2. Docker Setup
+### 1. Docker Setup
 
 Build and start the containers:
 
@@ -23,7 +16,7 @@ This will launch two services:
 * **frontend**: Vue 3 application at `http://localhost:5173`
 * **backend**: Python API connected to PostgreSQL on port `5433`
 
-### 3. Database Initialization
+### 2. Database Initialization
 
 
 1. Download and extract the dataset.
