@@ -46,6 +46,17 @@ http://localhost:8080/swagger-ui/#/
 
 
 
+## For frontend people
+
+api at 
+` frontend/src/api `
+if needed
+
+example usage at `frontend/src/generateDataFiles.js`
+
+but basically don't needed, just use the data from `/Users/yl/Booklyn/frontend/src/data`
+
+-> will be updated when service launched
 
 ----------------
 ## For frontend to read data, run （Yoyo part)
