@@ -82,6 +82,11 @@
       // 登入成功，response.data 是後端傳回來的 User 結構
       successMessage.value = 'Login successful!'
       errorMessage.value = ''
+      // ✅ 儲存登入狀態與使用者 ID
+    localStorage.setItem('user_id', response.data.user_id)
+    localStorage.setItem('loggedIn', 'true')
+    console.log('✅ user_id 是：', response.data.user_id)
+
 
       // 可儲存登入資訊，例如使用者資料或 JWT（未來擴充）
       // localStorage.setItem('user', JSON.stringify(response.data))

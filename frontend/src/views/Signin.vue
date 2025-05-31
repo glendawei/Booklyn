@@ -120,6 +120,8 @@ async function onRegister() {
     // 儲存登入狀態（這裡你可以儲存 user 或 token）
     localStorage.setItem('loggedIn', 'true')
     localStorage.setItem('user', JSON.stringify(response.data))
+    localStorage.setItem('user_id', response.data.user_id)
+    console.log('✅ user_id 是：', response.data.user_id)
 
     setTimeout(() => router.push('/interests'), 1000)
   } catch (err) {
