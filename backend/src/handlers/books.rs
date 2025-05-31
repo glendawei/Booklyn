@@ -11,7 +11,7 @@ use crate::database;
 use crate::error::Error;
 
 /* default maximum number of returned books */
-const LIMIT: i64 = 10000;
+const LIMIT: i64 = 100;
 
 #[derive(Serialize, ToSchema, Default)]
 pub struct Book {
@@ -43,7 +43,6 @@ pub struct SearchQuery {
     pub limit: Option<i64>,
 }
 
-/* TODO: Current implementation is considered inefficient. Redesign the whole procedure to improve performance. */
 #[utoipa::path(
     tag = "books",
     params(
@@ -92,21 +91,22 @@ pub async fn get_books(data: web::Data<AppData>, query: web::Query<SearchQuery>)
         query.category
     )
         .fetch_all(&data.db_conn)
-        .await?;
+        .await?
+        .iter()
+        .map(|record| record.book_id)
+        .collect::<Vec<i64>>();
 
     if book_ids.len() == 0 {
         return Ok(HttpResponse::NotFound().finish());
     }
 
-    let mut books = Vec::new();
+    let books = database::get_books(&data.db_conn, &book_ids).await?;
 
-    for id in book_ids {
-        if let Some(book) = database::get_book_by_id(&data.db_conn, id.book_id).await? {
-            books.push(book);
-        }
+    if books.len() == 0 {
+        Ok(HttpResponse::NotFound().finish())
+    } else {
+        Ok(HttpResponse::Ok().json(books))
     }
-
-    if books.len() > 0 { Ok(HttpResponse::Ok().json(books)) } else { Ok(HttpResponse::NotFound().finish()) }
 }
 
 #[utoipa::path(
