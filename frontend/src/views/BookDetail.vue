@@ -191,7 +191,7 @@
 <script setup>
 import { useRoute } from "vue-router";
 import { ref, computed, onMounted } from "vue";
-import { getBook } from "../api/books.js"; // ✅ import API function
+import axios from "axios";
 import fullStar from "../assets/FullStar.png";
 import halfStar from "../assets/Star.png";
 import emptyStar from "@/assets/FullStar.png";
@@ -201,14 +201,14 @@ const route = useRoute();
 const book = ref(route.state?.book); // initial state from router
 const isLoggedIn = localStorage.getItem("loggedIn") === "true";
 
-// Fetch book via API if not passed through router state
+// Fetch book via direct Axios API call if not passed through router state
 onMounted(async () => {
   if (!book.value) {
     const bookId = Number(route.params.id);
     try {
-      const result = await getBook(bookId);
-      book.value = result;
-      console.log("📘 書籍資料已載入:", result);
+      const response = await axios.get(`http://localhost:8080/books/${bookId}`);
+      book.value = response.data;
+      console.log("📘 書籍資料已載入:", response.data);
     } catch (err) {
       console.error(`❌ 無法從 API 取得書籍 ID ${bookId}`, err);
     }
@@ -258,6 +258,7 @@ const showDetailPanel = (review) => {
   isDetailPanelVisible.value = true;
 };
 </script>
+
 
 
 <style scoped>
