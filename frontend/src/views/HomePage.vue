@@ -47,11 +47,14 @@ const carouselConfig = {
   pauseAutoplayOnHover: true,
 }
 const bookGroups = ref(
-  Object.entries(bookshelves).map(([genre, books]) => ({
-    genre,
-    books
-  }))
+  Object.entries(bookshelves)
+    .filter(([genre]) => genre !== 'All') // Exclude "All"
+    .map(([genre, books]) => ({
+      genre,
+      books
+    }))
 )
+
 </script>
 
 <style scoped>
