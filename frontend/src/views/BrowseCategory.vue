@@ -125,7 +125,19 @@ const filteredAuthors = computed(() => {
   );
 });
 
-// 📚 根據篩選條件顯示書籍
+// Handle genre selection
+const handleGenreChange = (genre) => {
+  if (genre === "All") {
+    selectedGenres.value = ["All"];
+  } else {
+    selectedGenres.value = selectedGenres.value.filter((g) => g !== "All");
+    if (selectedGenres.value.length === 0) {
+      selectedGenres.value = ["All"];
+    }
+  }
+};
+
+// Main filter logic
 const filteredBooks = computed(() => {
   const seen = new Set();
 
