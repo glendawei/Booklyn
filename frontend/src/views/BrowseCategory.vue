@@ -114,12 +114,13 @@ const handleGenreChange = (genre) => {
   } else {
     selectedGenres.value = selectedGenres.value.filter((g) => g !== "All");
     if (selectedGenres.value.length === 0) {
-      selectedGenres.value = ["All"];
+      selectedGenres.value = ["All"]; // fallback to All if nothing else is selected
     }
   }
 };
 
-// Main filter logic
+
+// Books filtered by selected genres, authors, and minimum rating
 const filteredBooks = computed(() => {
   const genresToInclude =
     selectedGenres.value.includes("All") || selectedGenres.value.length === 0
