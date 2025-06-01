@@ -188,7 +188,7 @@
 <script setup>
 import { useRoute } from "vue-router";
 import { ref, computed, onMounted } from "vue";
-import { getBook } from "@/api/books.js"; // ✅ import API function
+import { getBook } from "../api/books.js"; // ✅ import API function
 import fullStar from "../assets/FullStar.png";
 import halfStar from "../assets/Star.png";
 import emptyStar from "@/assets/FullStar.png";
