@@ -187,25 +187,30 @@
 
 <script setup>
 import { useRoute } from "vue-router";
-import { ref, computed } from "vue";
-import { bookshelves } from "../data/mockBookshelves.js";
+import { ref, computed, onMounted } from "vue";
+import { getBook } from "@/api/books.js"; // ✅ import API function
 import fullStar from "../assets/FullStar.png";
 import halfStar from "../assets/Star.png";
 import emptyStar from "@/assets/FullStar.png";
 import ProgressCircle from "../components/ProgressCircle.vue";
 
 const route = useRoute();
-const book = ref(route.state?.book);
+const book = ref(route.state?.book); // initial state from router
+const isLoggedIn = localStorage.getItem("loggedIn") === "true";
 
-if (!book.value) {
-  const bookId = Number(route.params.id);
-  const allBooks = Object.values(bookshelves).flat();
-  book.value = allBooks.find((b) => b.id === bookId);
-
+// Fetch book via API if not passed through router state
+onMounted(async () => {
   if (!book.value) {
-    console.warn(`Book with ID ${bookId} not found in fallback.`);
+    const bookId = Number(route.params.id);
+    try {
+      const result = await getBook(bookId);
+      book.value = result;
+      console.log("📘 書籍資料已載入:", result);
+    } catch (err) {
+      console.error(`❌ 無法從 API 取得書籍 ID ${bookId}`, err);
+    }
   }
-}
+});
 
 const searchTerm = ref("");
 const sortOrder = ref("desc");
@@ -213,6 +218,7 @@ const userRating = ref(0);
 
 const ratingBreakdown = computed(() => {
   const breakdown = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+  if (!book.value?.reviews) return breakdown;
   book.value.reviews.forEach((r) => {
     const floored = Math.floor(r.rating);
     breakdown[floored]++;
@@ -220,14 +226,14 @@ const ratingBreakdown = computed(() => {
   return breakdown;
 });
 
-const isLoggedIn = localStorage.getItem('loggedIn') === 'true'
-
 const averageRating = computed(() => {
+  if (!book.value?.reviews?.length) return 0;
   const total = book.value.reviews.reduce((sum, r) => sum + r.rating, 0);
   return total / book.value.reviews.length;
 });
 
 const filteredReviews = computed(() => {
+  if (!book.value?.reviews) return [];
   let results = book.value.reviews.filter((r) =>
     r.comment.toLowerCase().includes(searchTerm.value.toLowerCase())
   );
@@ -248,8 +254,8 @@ const showDetailPanel = (review) => {
   selectedReview.value = review;
   isDetailPanelVisible.value = true;
 };
-
 </script>
+
 
 <style scoped>
 /* [Styling is unchanged — kept from your original version] */
