@@ -158,37 +158,42 @@ export default {
       console.log('新增書籍後列表：', this.booksByShelf)
     },
   async removeBook(itemId) {
-  const userId = localStorage.getItem('user_id')
+  const userId = localStorage.getItem('user_id');
   if (!userId) {
-    alert('請先登入')
-    return
+    alert('請先登入');
+    return;
   }
 
-  const list = this.booksByShelf[this.selectedShelf]
-  const book = list.find(b => b.id === itemId) // ✅ 正確變數名稱
+  const list = this.booksByShelf[this.selectedShelf];
+  const book = list.find(b => b.id === itemId);
 
   if (!book) {
-    alert('找不到要刪除的書籍')
-    return
+    alert('找不到要刪除的書籍');
+    return;
   }
 
-  const deleteUrl = `http://localhost:8080/users/${userId}/reading-list/${itemId}`
+  const deleteUrl = `http://localhost:8080/users/${userId}/reading-list/${itemId}`;
+  console.log("🧾 userId:", userId, "| itemId:", itemId);
+
 
   try {
-    console.log('🛰️ 發送 DELETE 請求:', deleteUrl)
-    const response = await axios.delete(deleteUrl)
+    console.log('🛰️ 發送 DELETE 請求:', deleteUrl);
+    const response = await fetch(deleteUrl, {
+      method: 'DELETE'
+    });
 
-    if (response.status === 200) {
-      this.booksByShelf[this.selectedShelf] = list.filter(b => b.id !== itemId)
-      console.log('✅ 書籍已刪除')
+    if (response.ok) {
+      this.booksByShelf[this.selectedShelf] = list.filter(b => b.id !== itemId);
+      console.log('✅ 書籍已刪除');
     } else {
-      alert('刪除失敗，請稍後再試')
+      alert('刪除失敗，請稍後再試');
     }
   } catch (err) {
-    console.error('❌ DELETE 發生錯誤:', err)
-    alert('刪除時發生錯誤')
+    console.error('❌ DELETE 發生錯誤:', err);
+    alert('刪除時發生錯誤');
   }
 }
+
 
 
 

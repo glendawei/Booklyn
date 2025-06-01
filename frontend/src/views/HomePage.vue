@@ -32,10 +32,10 @@
     </div>
   </div>
 </template>
-
 <script setup>
+
 import { ref, onMounted } from 'vue'
-import { getAllBooks } from '@/api/books.js'
+import axios from 'axios'
 import 'vue3-carousel/carousel.css'
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
 
@@ -48,40 +48,49 @@ const carouselConfig = {
 }
 
 const bookGroups = ref([])
-const isLoading = ref(true)
-const error = ref(null)
 
-onMounted(async () => {
-  try {
-    const books = await getAllBooks()
-
-    // Group by genre/category
-    const genreMap = {}
-
-    books.forEach(book => {
-      book.categories.forEach(cat => {
-        if (!genreMap[cat]) genreMap[cat] = []
-        genreMap[cat].push(book)
+const groupBooksByCategory = (books) => {
+  const map = {}
+  books.forEach((book) => {
+    if (Array.isArray(book.categories)) {
+      book.categories.forEach((cat) => {
+        if (!map[cat]) map[cat] = []
+        map[cat].push({
+          id: book.book_id,
+          title: book.title,
+          author: book.authors?.map(a => a.name).join(", "),
+          rate: book.reviews?.length ? (book.reviews.reduce((sum, r) => sum + r.rating, 0) / book.reviews.length).toFixed(1) : 'N/A',
+          cover: book.cover_url || '/default-cover.png',
+        })
       })
-    })
+    }
+  })
 
-    // Convert to array of { genre, books }, exclude "All"
-    bookGroups.value = Object.entries(genreMap)
-      .filter(([genre]) => genre !== 'All')
-      .map(([genre, books]) => ({
-        genre,
-        books
-      }))
-  } catch (err) {
-    console.error('Failed to load books for homepage:', err)
-    error.value = 'Could not load books.'
-  } finally {
-    isLoading.value = false
+  // 固定顯示這五個類別
+  const fixedCategories = [
+    "Fiction",
+    "Religion",
+    "History",
+    "Juvenile Fiction",
+    "Biography & Autobiography"
+  ]
+  return fixedCategories.filter(cat => map[cat]).map((genre) => ({
+    genre,
+    books: map[genre]
+  }))
+}
+
+const fetchBooks = async () => {
+  try {
+    const res = await axios.get("http://localhost:8080/books")
+    bookGroups.value = groupBooksByCategory(res.data)
+  } catch (e) {
+    console.error("❌ 無法取得書籍列表：", e.message)
   }
-})
+}
+
+onMounted(fetchBooks)
 </script>
-
-
 <style scoped>
 .custom-slide {
   max-width: 200px;
