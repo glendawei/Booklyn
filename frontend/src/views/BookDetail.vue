@@ -47,6 +47,7 @@
             border-top-left-radius: 0.5rem;
             border-top-right-radius: 0.5rem;
           " />
+<<<<<<< Updated upstream
           <div>
             <div style="display: grid; grid-template-columns: auto 30px;">
               <h1 class="book-title">{{ book.title }}</h1>
@@ -54,6 +55,15 @@
                 style="height: 30px; border-radius: 5px; border: none; background-color: #BC6C25; color: white; font-size: 20px;">
                 +
               </button>
+=======
+        <div>
+          <div style="display: grid; grid-template-columns: auto 30px;">
+            <h1 class="book-title">{{ book.title }}</h1>
+            <button v-if="isLoggedIn" @click="goToMyBooks"
+              style="height: 30px; border-radius: 5px; border: none; background-color: #BC6C25; color: white; font-size: 20px;">
+              +
+            </button>
+>>>>>>> Stashed changes
 
             </div>
             <p class="author">Author: {{ book.author }}</p>
