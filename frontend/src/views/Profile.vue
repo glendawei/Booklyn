@@ -1,57 +1,107 @@
 <template>
-  <div v-if="author">
+  <div v-if="error" class="not-found">
+    {{ error }}
+  </div>
+
+  <div v-else-if="author">
     <div class="top">
       <AuthorInfo :author="author" />
-
     </div>
 
-      <button @click="followAuthor" class="follow-button">
-        {{ isFollowing ? 'Following' : 'Follow' }}
-      </button>
+    <button @click="followAuthor" class="follow-button">
+      {{ isFollowing ? 'Following' : 'Follow' }}
+    </button>
 
     <div class="profile-page">
       <div class="left">
         <Description :author="author" />
       </div>
       <div class="right">
-        <BookList :books="author.books" />
+        <BookList :books="books" />
       </div>
     </div>
   </div>
 
-  <div v-else class="not-found">
-    Author not found.
+  <div v-else>
+    Loading...
   </div>
 </template>
 
+
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { authors } from '@/data/authors'
 import AuthorInfo from '@/components/Profile/AuthorInfo.vue'
-import BookList from '@/components/Profile/BookList.vue'
 import Description from '@/components/Profile/Description.vue'
+import BookList from '@/components/Profile/BookList.vue'
 
-// 取得路由參數中的 id，並解碼成作者名稱
+// 路由
 const route = useRoute()
-const decodedName = decodeURIComponent(route.params.id)
+const authorId = route.params.id
 
-// 根據名稱找對應的作者
-let author = null
-for (const key in authors) {
-  if (authors[key].name === decodedName) {
-    author = authors[key]
-    break
+// 狀態管理
+const author = ref(null)
+const books = ref([])
+const isFollowing = ref(false)
+const error = ref(null)
+
+// 取得作者資料
+async function fetchAuthor() {
+  try {
+    const res = await fetch(`http://localhost:8080/authors/${authorId}`)
+    if (!res.ok) {
+      error.value = res.status === 404 ? 'Author not found.' : 'Internal server error.'
+      return
+    }
+
+    const data = await res.json()
+    author.value = data
+
+    // 拿到作者名稱後，取得他的作品
+    await fetchBooksByAuthor(data.name)
+  } catch (e) {
+    console.error(e)
+    error.value = 'Network error.'
   }
 }
 
-// 追蹤邏輯
-const isFollowing = ref(false)
+// 取得該作者作品
+async function fetchBooksByAuthor(authorName) {
+  try {
+    const query = encodeURIComponent(authorName)
+    const url = `http://localhost:8080/books?author_name=${query}`
+    console.log('📘 API URL:', url) // 🧪 Step 1：印出實際 API 呼叫路徑
+
+    const res = await fetch(url)
+    const rawText = await res.text()
+    console.log('📘 Raw response:', rawText) // 🧪 Step 2：印出原始回應內容
+
+    if (!res.ok) {
+      console.warn('⚠️ books response not OK')
+      books.value = []
+      return
+    }
+
+    const data = JSON.parse(rawText)
+    console.log('📘 Parsed books:', data) // 🧪 Step 3：印出 JSON 解析結果
+    books.value = data
+  } catch (e) {
+    console.error('❌ Error fetching books:', e)
+    books.value = []
+  }
+}
+
+
+// 追蹤作者
 function followAuthor() {
   isFollowing.value = !isFollowing.value
-  console.log(`${isFollowing.value ? 'Followed' : 'Unfollowed'} ${decodedName}`)
-  alert(`${isFollowing.value ? 'You followed' : 'You unfollowed'} ${decodedName}`)
+  alert(`${isFollowing.value ? 'You followed' : 'You unfollowed'} ${author.value?.name}`)
 }
+
+// 初始化
+onMounted(() => {
+  fetchAuthor()
+})
 </script>
 
 <style scoped>

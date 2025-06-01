@@ -74,6 +74,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import axios from 'axios'
 
 const router = useRouter()
 
@@ -86,13 +87,53 @@ const accepted = ref(false)
 const errorMessage   = ref('')
 const successMessage = ref('')
 
-function onRegister() {
+// ⬇️ 這裡請確認和你後端一致，如果用 VITE_API_BASE_URL 更好
+const baseURL = 'http://localhost:8080'
+
+async function onRegister() {
   if (password.value !== confirm.value) {
-    errorMessage.value   = '密碼與確認密碼不符'
+    errorMessage.value = '密碼與確認密碼不符'
     successMessage.value = ''
     return
   }
 
+  if (!accepted.value) {
+    errorMessage.value = '請先同意服務條款與隱私政策'
+    successMessage.value = ''
+    return
+  }
+
+
+  try {
+    const response = await axios.post(`${baseURL}/signup`, {
+      display_name: name.value,
+      email: email.value,
+      password_hash: password.value,
+      role: 'reader',         // 預設註冊為一般使用者
+      bio: "a",
+      avatar: "https://example.com/avatar.png",
+      website: "https://example.com"
+    })
+
+    successMessage.value = '註冊成功！'
+    errorMessage.value = ''
+
+    // 儲存登入狀態（這裡你可以儲存 user 或 token）
+    localStorage.setItem('loggedIn', 'true')
+    localStorage.setItem('user', JSON.stringify(response.data))
+    localStorage.setItem('user_id', response.data.user_id)
+    console.log('✅ user_id 是：', response.data.user_id)
+
+    setTimeout(() => router.push('/interests'), 1000)
+  } catch (err) {
+    if (err.response?.status === 409) {
+      errorMessage.value = '該 Email 已註冊過，請登入或換個 Email'
+    } else {
+      errorMessage.value = '註冊失敗，請稍後再試'
+    }
+    successMessage.value = ''
+  }
+=======
   if (!accepted.value) {
     errorMessage.value = '請同意條款與隱私權政策'
     successMessage.value = ''
@@ -130,6 +171,7 @@ function onRegister() {
   setTimeout(() => {
     router.push('/interests')  // 下一頁是選興趣
   }, 800)
+
 }
 
 function goToLogin() {

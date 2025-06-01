@@ -1,5 +1,7 @@
+<!-- BookCard.vue -->
 <template>
-  <td>
+  <tr>
+      <td>
     <router-link :to="`/books/${book.id}`" class="text-link">
       {{ book.title }}
     </router-link>
@@ -10,7 +12,8 @@
     </router-link>
   </td>
   <td>
-    <router-link :to="`/authors/${book.author,id}`" class="text-link">
+    <router-link :to="`/authors/${book.author_id}`" class="text-link">
+
       <strong>{{ book.author }}</strong>
     </router-link>
   </td>
@@ -18,16 +21,24 @@
     {{ book.rate }}
     <button @click="$emit('remove-book', book.id)" class="close-btn">X</button>
   </td>
+  </tr>
 </template>
 
 <script>
 export default {
+  name: 'BookCard',
   props: {
-    book: Object
-  },
-  emits: ['remove-book']  // ✅ 這行是關鍵
+    book: {
+      type: Object,
+      required: true
+    }
+  }
 }
 </script>
+
+
+
+
 <style scoped>
 .card-cell {
   padding: 0;

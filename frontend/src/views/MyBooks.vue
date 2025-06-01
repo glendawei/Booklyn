@@ -28,7 +28,9 @@
 import Sidebar from '@/components/MyBooks/Sidebar.vue'
 import BookHeader from '@/components/MyBooks/Bookheader.vue'
 import ChooseBook from '@/components/MyBooks/ChooseBook.vue'
-import { bookshelves } from '@/data/mockBookshelves.js'
+import axios from 'axios'
+
+const baseURL = 'http://localhost:8080'
 
 export default {
   components: { Sidebar, BookHeader, ChooseBook },
@@ -53,15 +55,56 @@ export default {
       return this.booksByShelf[this.selectedShelf] || []
     }
   },
-  created() {
-    // 讀取 localStorage 登入狀態
-    this.isLoggedIn = localStorage.getItem('loggedIn') === 'true'
-    if (this.isLoggedIn) {
-      this.booksByShelf = JSON.parse(JSON.stringify(bookshelves))
-      this.selectedShelf = Object.keys(this.booksByShelf)[0] || ''
-      console.log('初始書櫃：', this.booksByShelf)
+  async created() {
+  this.isLoggedIn = localStorage.getItem('loggedIn') === 'true'
+  if (!this.isLoggedIn) return
+
+  const userId = localStorage.getItem('user_id')
+  if (!userId) {
+    console.warn('⚠️ 找不到 user_id')
+    return
+  }
+
+  try {
+    const res = await axios.get(`http://localhost:8080/users/${userId}/reading-list`)
+    const rawList = res.data
+
+    const detailedList = await Promise.all(
+      rawList.map(async (item) => {
+        try {
+          const bookRes = await axios.get(`http://localhost:8080/books/${item.book_id}`)
+          const book = bookRes.data
+          return {
+            id: item.item_id,
+            title: book.title,
+            cover: book.cover_url,
+            status: item.status,
+            createdAt: item.created_at,
+            bookId: book.book_id,
+            author: book.authors?.[0]?.name || '未知作者',
+            author_id: book.authors?.[0]?.author_id || null,
+            rate: book.ratings_count ?? 0
+          }
+        } catch (e) {
+          console.error(`❌ 無法取得書籍 ${item.book_id}`, e)
+          return null
+        }
+      })
+    )
+
+    this.booksByShelf = {
+      All: detailedList.filter(Boolean)
     }
-  },
+    this.selectedShelf = 'All'
+
+    console.log('📚 完整書籍資料:', this.booksByShelf.All)
+  } catch (err) {
+    console.error('❌ 抓取 reading list 失敗:', err)
+    alert('無法取得你的書籍資料，請稍後再試')
+  }
+}
+
+,
   methods: {
     handleShelfSelect(name) {
       this.selectedShelf = name
@@ -114,11 +157,42 @@ export default {
       this.showChoose = false
       console.log('新增書籍後列表：', this.booksByShelf)
     },
-    removeBook(bookId) {
-      const list = this.booksByShelf[this.selectedShelf]
+  async removeBook(bookId) {
+  const userId = localStorage.getItem('user_id')
+  if (!userId) {
+    alert('請先登入')
+    return
+  }
+
+  const list = this.booksByShelf[this.selectedShelf]
+  const book = list.find(b => b.id === bookId)
+  if (!book) {
+    alert('找不到要刪除的書籍')
+    return
+  }
+
+  const itemId = book.id  // 注意：這是 reading-list 的 item_id，不是書本的 book_id
+  const deleteUrl = `http://localhost:8080/users/${userId}/reading-list/${itemId}`
+
+  try {
+    // ✅ 印出實際 DELETE 請求的 URL
+    console.log('🛰️ 發送 DELETE 請求:', deleteUrl)
+
+    const response = await axios.delete(deleteUrl)
+
+    if (response.status === 200) {
       this.booksByShelf[this.selectedShelf] = list.filter(b => b.id !== bookId)
-      console.log('刪除書籍後列表：', this.booksByShelf)
+      console.log('✅ 書籍已刪除')
+    } else {
+      alert('刪除失敗，請稍後再試')
     }
+  } catch (err) {
+    console.error('❌ DELETE 發生錯誤:', err)
+    alert('刪除時發生錯誤')
+  }
+}
+
+
   }
 }
 </script>
