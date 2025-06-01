@@ -133,7 +133,7 @@ async function onRegister() {
     }
     successMessage.value = ''
   }
-=======
+
   if (!accepted.value) {
     errorMessage.value = '請同意條款與隱私權政策'
     successMessage.value = ''
