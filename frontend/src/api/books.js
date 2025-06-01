@@ -16,7 +16,7 @@ export async function getAllBooks() {
   // 找出出现次数 >= 5 的合法分类
   const validCategories = new Set(
     Object.entries(categoryCount)
-      .filter(([, count]) => count >= 5)
+      .filter(([, count]) => count >= 20)
       .map(([cat]) => cat)
   )
 

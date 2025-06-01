@@ -1,10 +1,10 @@
 <template>
-  <router-link :to="`/BookDetail/${book.id}`" class="book-card-link">
+  <router-link :to="`/BookDetail/${book.book_id}`" class="book-card-link">
     <div class="book-card">
-      <img :src="book.image" class="book-cover" />
+      <img :src="book.cover_url" class="book-cover" />
       <div class="book-content">
         <h4 class="book-title">{{ book.title }}</h4>
-        <p class="book-body">{{ book.body }}</p>
+        <p class="book-body">{{ book.description }}</p>
       </div>
     </div>
   </router-link>

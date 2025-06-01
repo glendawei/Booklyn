@@ -34,8 +34,8 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { bookshelves } from '@/data/mockBookshelves.js'
+import { ref, onMounted } from 'vue'
+import { getAllBooks } from '@/api/books.js'
 import 'vue3-carousel/carousel.css'
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
 
@@ -46,13 +46,41 @@ const carouselConfig = {
   gap: 10,
   pauseAutoplayOnHover: true,
 }
-const bookGroups = ref(
-  Object.entries(bookshelves).map(([genre, books]) => ({
-    genre,
-    books
-  }))
-)
+
+const bookGroups = ref([])
+const isLoading = ref(true)
+const error = ref(null)
+
+onMounted(async () => {
+  try {
+    const books = await getAllBooks()
+
+    // Group by genre/category
+    const genreMap = {}
+
+    books.forEach(book => {
+      book.categories.forEach(cat => {
+        if (!genreMap[cat]) genreMap[cat] = []
+        genreMap[cat].push(book)
+      })
+    })
+
+    // Convert to array of { genre, books }, exclude "All"
+    bookGroups.value = Object.entries(genreMap)
+      .filter(([genre]) => genre !== 'All')
+      .map(([genre, books]) => ({
+        genre,
+        books
+      }))
+  } catch (err) {
+    console.error('Failed to load books for homepage:', err)
+    error.value = 'Could not load books.'
+  } finally {
+    isLoading.value = false
+  }
+})
 </script>
+
 
 <style scoped>
 .custom-slide {

@@ -22,21 +22,14 @@
       return {
         interests: [
           { name: 'Fiction', icon: '📖' },
-          { name: 'Fantasy & Science Fiction', icon: '🧙‍♂️' },
-          { name: 'Mystery & Thriller', icon: '🕵️‍♂️' },
-          { name: 'Business & Management', icon: '💼' },
-          { name: 'Finance & Investment', icon: '💰' },
-          { name: 'Psychology & Self-Development', icon: '🧠' },
-          { name: 'Relationships & Romance', icon: '💞' },
-          { name: 'History & Culture', icon: '🏛️' },
-          { name: 'Philosophy & Social Issues', icon: '📚' },
-          { name: 'Technology & Programming', icon: '💻' },
-          { name: 'Science & Medicine', icon: '🧬' },
-          { name: 'Art & Design', icon: '🎨' },
-          { name: 'Travel & Lifestyle', icon: '🧳' },
-          { name: 'Language & Learning', icon: '📝' },
-          { name: 'Manga & Light Novels', icon: '📙' },
-          { name: 'Children & Young Adult', icon: '🧒' }
+          { name: 'Religion', icon: '✝️' },
+          { name: 'History', icon: '🏛️' },
+          { name: 'Biography & Autobiography', icon: '🧬' },
+          { name: 'Sports & Recreation', icon: '🏀' },
+          { name: 'Body, Mind & Spirit', icon: '🧘‍♀️' },
+          { name: 'Juvenile Fiction', icon: '📚' },
+          { name: 'Business & Economics', icon: '💰' },
+          { name: 'Juvenile Nonfiction', icon: '🧒' }
         ],
         selected: []
       };
@@ -50,9 +43,29 @@
           this.selected.splice(index, 1);
         }
       },
-      submit() {
-        console.log('Selected interests:', this.selected);
-        this.$router.push('/profile-settings') ;
+      submit() 
+      {
+        const currentUserEmail = localStorage.getItem('currentUser');
+        if (!currentUserEmail) {
+          alert('請先登入！');
+          return;
+        }
+
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        const userIndex = users.findIndex(u => u.email === currentUserEmail);
+
+        if (userIndex !== -1) {
+          users[userIndex].preference = [...this.selected];
+        } else {
+          users.push({
+            email: currentUserEmail,
+            password: '',
+            preference: [...this.selected]
+          });
+        }
+
+        localStorage.setItem('users', JSON.stringify(users));
+        this.$router.push('/profile-settings');
       }
     }
   };

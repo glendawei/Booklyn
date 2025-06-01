@@ -21,7 +21,7 @@
     </div>
   </template>
   
-  <script setup>
+  <!-- <script setup>
   import { ref } from 'vue'
   import { useRouter } from 'vue-router'
   import { users } from '@/data/user.js'  // 匯入使用者資料
@@ -50,6 +50,7 @@
   
     // 登入成功
     localStorage.setItem('loggedIn', 'true')
+    localStorage.setItem('currentUser', email.value)
     errorMessage.value = ''
     successMessage.value = ' Login successful!'
     setTimeout(() => router.push('/'), 800)
@@ -57,6 +58,58 @@
   
   function goToSignup() {
     router.push('/Signin') // 假設有 Signin 頁面
+  }
+  </script> -->
+  <script setup>
+  import { ref } from 'vue'
+  import { useRouter } from 'vue-router'
+  import axios from 'axios'
+
+  const router = useRouter()
+
+  const email = ref('')
+  const password = ref('')
+  const errorMessage = ref('')
+  const successMessage = ref('')
+
+  // 假設你不使用雜湊（只是 plain-text 測試階段），則用 password 傳入 password_hash 欄位
+  async function handleLogin() {
+    try {
+      const response = await axios.post('http://localhost:8080/login', {
+        email: email.value,
+        password_hash: password.value,  // 傳到後端的欄位名稱是 password_hash
+      })
+
+      // 登入成功，response.data 是後端傳回來的 User 結構
+      successMessage.value = 'Login successful!'
+      errorMessage.value = ''
+      // ✅ 儲存登入狀態與使用者 ID
+    localStorage.setItem('user_id', response.data.user_id)
+    localStorage.setItem('loggedIn', 'true')
+    console.log('✅ user_id 是：', response.data.user_id)
+
+
+      // 可儲存登入資訊，例如使用者資料或 JWT（未來擴充）
+      // localStorage.setItem('user', JSON.stringify(response.data))
+
+      setTimeout(() => router.push('/'), 800)
+    } catch (err) {
+      if (err.response && err.response.status === 401) {
+        errorMessage.value = 'X The account does not exist or the password is wrong.'
+      } else if (err.response && err.response.status === 500) {
+        errorMessage.value = 'X Internal server error.'
+      } else {
+        errorMessage.value = 'X An unexpected error occurred.'
+        console.log(err)
+        console.log(err.response?.status)
+        console.log(err.response?.data)
+      }
+      successMessage.value = ''
+    }
+  }
+
+  function goToSignup() {
+    router.push('/Signin')
   }
   </script>
   

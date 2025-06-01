@@ -11,6 +11,7 @@ use dotenv::dotenv;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 use api_doc::ApiDoc;
+use actix_cors::Cors; // ⬅️ 要加這行在最上面
 
 const DB_CONN_MAX: u32 = 32;
 
@@ -36,6 +37,12 @@ async fn main() -> std::io::Result<()> {
     let server = HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(AppData { db_conn: pool.clone() }))
+            .wrap(
+            Cors::default()
+                .allow_any_origin()        // ⬅️ 測試階段先全開，日後請加嚴
+                .allow_any_method()
+                .allow_any_header()
+            )
             .wrap(middleware::Logger::default())
             .configure(handlers::config)
             .service(

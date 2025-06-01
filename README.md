@@ -1,25 +1,9 @@
 # Booklyn
 
-A web application for exploring and reviewing books using Amazon reviews data.
-
-
-## Prerequisites
-
-Make sure you have the following installed:
-
-* [Docker](https://docs.docker.com/get-docker/) & [docker-compose](https://docs.docker.com/compose/install/)
-* Python 3.8+ (for local script execution)
 
 ## Installation
 
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/your-username/Booklyn.git
-cd Booklyn
-```
-
-### 2. Docker Setup
+### 1. Docker Setup
 
 Build and start the containers:
 
@@ -32,11 +16,13 @@ This will launch two services:
 * **frontend**: Vue 3 application at `http://localhost:5173`
 * **backend**: Python API connected to PostgreSQL on port `5433`
 
-### 3. Database Initialization
+### 2. Database Initialization
+
+
+1. Download and extract the dataset.
 
 The application requires two CSV files from the [Amazon Books Reviews dataset on Kaggle](https://www.kaggle.com/datasets/mohamedbakhet/amazon-books-reviews).
 
-1. Download and extract the dataset.
 2. Copy the following files into the project directory:
 
    ```
@@ -50,24 +36,36 @@ The application requires two CSV files from the [Amazon Books Reviews dataset on
    python constructdb.py
    ```
 
-4. Set up review_ai, run ( too inefficient, 1hr 1000 comments )
-   ```
-   source ./.env # set your OPENAI_API_KEY in .env
-   database/construct_db/LLM_review.ipynb
-   ```
+Frontend:
 
-5. For frontend to read data, run
+http://localhost:5173
+
+Backend:
+
+http://localhost:8080/swagger-ui/#/
+
+
+
+## For frontend people
+
+api at 
+` frontend/src/api `
+if needed
+
+example usage at `frontend/src/generateDataFiles.js`
+
+but basically don't needed, just use the data from `/Users/yl/Booklyn/frontend/src/data`
+
+-> will be updated when service launched
+
+----------------
+## For frontend to read data, run （Yoyo part)
+.env should contain OPENAI_API_KEY
    ```
    cd frontend
+   source ../.env
    npm run generate:data
    ```
-
-This script will:
-
-* Create the `booksdb` database schema
-* Load raw data into staging tables
-* Transform and insert data into production tables
-
 
 ## Project Structure
 

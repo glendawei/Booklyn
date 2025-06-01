@@ -1,3 +1,4 @@
+<!-- BookHeader.vue -->
 <template>
   <div class="header-wrapper">
     <table class="header-table">
@@ -10,31 +11,32 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="book in books" :key="book.id">
-  <BookCard :book="book" @remove-book="$emit('remove-book', $event)" />
-</tr>
-
+        <BookCard
+          v-for="book in books"
+          :key="book.id"
+          :book="book"
+          @remove-book="$emit('remove-book', $event)"
+        />
       </tbody>
     </table>
   </div>
 </template>
 
 <script>
-import BookCard from './BookCard.vue';
+import BookCard from './BookCard.vue'
 
 export default {
   name: 'BookHeader',
-  components: {
-    BookCard
-  },
+  components: { BookCard },
   props: {
     books: {
       type: Array,
       required: true
     }
   }
-};
+}
 </script>
+
 
 <style scoped>
 .header-wrapper {

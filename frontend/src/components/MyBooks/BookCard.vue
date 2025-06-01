@@ -1,33 +1,59 @@
+
 <template>
-  <td>
-    <router-link :to="`/books/${book.id}`" class="text-link">
-      {{ book.title }}
-    </router-link>
-  </td>
-  <td>
-    <router-link :to="`/books/${book.id}`">
-      <img :src="book.cover" alt="Book Cover" style="width: 60%;" />
-    </router-link>
-  </td>
-  <td>
-    <router-link :to="`/authors/${book.author,id}`" class="text-link">
-      <strong>{{ book.author }}</strong>
-    </router-link>
-  </td>
-  <td style="position: relative;">
-    {{ book.rate }}
-    <button @click="$emit('remove-book', book.id)" class="close-btn">X</button>
-  </td>
+  <tr>
+    <td>
+      <router-link
+        :to="`/books/${book.bookId}`"
+        class="text-link"
+        @click="storeBookId(book.bookId)"
+      >
+        {{ book.title }}
+      </router-link>
+    </td>
+    <td>
+      <router-link
+        :to="`/books/${book.bookId}`"
+        @click="storeBookId(book.bookId)"
+      >
+        <img :src="book.cover" alt="Book Cover" style="width: 60%;" />
+      </router-link>
+    </td>
+    <td>
+      <router-link
+        :to="`/authors/${book.author_id}`"
+        class="text-link"
+      >
+        <strong>{{ book.author }}</strong>
+      </router-link>
+    </td>
+    <td style="position: relative;">
+      {{ book.rate }}
+      <button @click="$emit('remove-book', book.id)" class="close-btn">X</button>
+    </td>
+  </tr>
 </template>
 
 <script>
 export default {
+  name: 'BookCard',
   props: {
-    book: Object
+    book: {
+      type: Object,
+      required: true
+    }
   },
-  emits: ['remove-book']  // ✅ 這行是關鍵
+  methods: {
+    storeBookId(id) {
+      localStorage.setItem('selectedBookId', id)
+    }
+  }
 }
 </script>
+
+
+
+
+
 <style scoped>
 .card-cell {
   padding: 0;

@@ -45,16 +45,14 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue";
-import { bookshelves } from "../data/mockBookshelves.js";
+import { ref, computed, watch, onMounted } from "vue";
 import BookCard from "../components/BrowsingBookCard.vue";
-
 import { useRoute } from "vue-router";
+import { getAllBooks } from "../api/books.js";
 
 const route = useRoute();
 const searchQuery = ref(route.query.q || "");
 
-// Watch for route changes in case user navigates again with new search
 watch(
   () => route.query.q,
   (newQ) => {
@@ -62,21 +60,46 @@ watch(
   }
 );
 
-const selectedGenres = ref(["All"]); // Default to All selected
+const selectedGenres = ref(["All"]);
 const selectedAuthors = ref([]);
 const minAvgRating = ref(0);
 const authorSearch = ref("");
 
-// Flatten all books for filtering
-const allBooks = computed(() => Object.values(bookshelves).flat());
+const allBooks = ref([]);
+const isLoading = ref(true);
+const error = ref(null);
 
-// Unique authors across all books, sorted
+// Grouped bookshelves, like the original mockBookshelves
+const bookshelves = computed(() => {
+  const shelves = {};
+  allBooks.value.forEach((book) => {
+    book.categories.forEach((cat) => {
+      if (!shelves[cat]) shelves[cat] = [];
+      shelves[cat].push(book);
+    });
+  });
+  return shelves;
+});
+
+// Fetch books on mount
+onMounted(async () => {
+  try {
+    const books = await getAllBooks();
+    allBooks.value = books;
+  } catch (err) {
+    console.error("Failed to fetch books:", err);
+    error.value = "Could not load books.";
+  } finally {
+    isLoading.value = false;
+  }
+});
+
+// Authors
 const uniqueAuthors = computed(() => {
   const authorsSet = new Set(allBooks.value.map((book) => book.author));
   return Array.from(authorsSet).sort();
 });
 
-// Filter authors based on authorSearch input
 const filteredAuthors = computed(() => {
   const search = authorSearch.value.toLowerCase();
   return uniqueAuthors.value.filter((author) =>
@@ -84,6 +107,7 @@ const filteredAuthors = computed(() => {
   );
 });
 
+// Handle genre selection
 const handleGenreChange = (genre) => {
   if (genre === "All") {
     selectedGenres.value = ["All"];
@@ -98,22 +122,19 @@ const handleGenreChange = (genre) => {
 
 // Books filtered by selected genres, authors, and minimum rating
 const filteredBooks = computed(() => {
-  // If "All" genre selected or no genres selected, consider all genres
   const genresToInclude =
     selectedGenres.value.includes("All") || selectedGenres.value.length === 0
-      ? Object.keys(bookshelves)
+      ? Object.keys(bookshelves.value)
       : selectedGenres.value;
 
-  // Collect books from selected genres
   const booksToFilter = genresToInclude.flatMap(
-    (genre) => bookshelves[genre] || []
+    (genre) => bookshelves.value[genre] || []
   );
 
   const seenIds = new Set();
 
   return booksToFilter.filter((book) => {
     const reviews = Array.isArray(book.reviews) ? book.reviews : [];
-
     const avgRating =
       reviews.length > 0
         ? reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length
@@ -139,6 +160,7 @@ const filteredBooks = computed(() => {
   });
 });
 </script>
+
 
 <style scoped>
 .book-search-page {

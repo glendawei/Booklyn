@@ -2,7 +2,9 @@
   <div class="author-info">
     <img :src="author.avatar" class="avatar" />
     <h2 class="name">{{ author.name }}</h2>
-    <p class="meta">Works: {{ author.works }} | Follower: {{ author.followers.toLocaleString() }}</p>
+   <p v-if="author.created_at">Created at: {{ new Date(author.created_at).toLocaleString() }}</p>
+<p v-else>Created at: Unknown</p>
+
   </div>
 </template>
 

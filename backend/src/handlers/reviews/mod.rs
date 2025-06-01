@@ -10,12 +10,13 @@ use serde::Serialize;
 use time::OffsetDateTime;
 use bigdecimal::BigDecimal;
 use utoipa::{schema, ToSchema};
+use sqlx::FromRow;
 
 use crate::database;
 use crate::AppData;
 use crate::error::Error;
 
-#[derive(Serialize, ToSchema)]
+#[derive(Serialize, FromRow, ToSchema)]
 pub struct Review {
     pub review_id: i64,
     pub book_id: Option<i64>,
