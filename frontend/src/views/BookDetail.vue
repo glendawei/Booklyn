@@ -238,7 +238,10 @@ const ratingBreakdown = computed(() => {
   return breakdown;
 });
 const addToReadingList = async () => {
-  const userId = localStorage.getItem("userId") || 1; // 根據你的登入邏輯取得 ID
+  const userId = localStorage.getItem('user_id');
+console.log('📌 目前儲存在 localStorage 的 user_id 是：', userId);
+
+  
   try {
     const payload = {
       book_id: book.value.book_id,
