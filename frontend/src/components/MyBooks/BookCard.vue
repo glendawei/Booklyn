@@ -1,20 +1,19 @@
-<!-- BookCard.vue -->
-<!-- BookCard.vue -->
+
 <template>
   <tr>
     <td>
       <router-link
-        :to="`/books/${book.id}`"
+        :to="`/books/${book.bookId}`"
         class="text-link"
-        @click="storeBookId(book.id)"
+        @click="storeBookId(book.bookId)"
       >
         {{ book.title }}
       </router-link>
     </td>
     <td>
       <router-link
-        :to="`/books/${book.id}`"
-        @click="storeBookId(book.id)"
+        :to="`/books/${book.bookId}`"
+        @click="storeBookId(book.bookId)"
       >
         <img :src="book.cover" alt="Book Cover" style="width: 60%;" />
       </router-link>
