@@ -196,5 +196,6 @@ pub async fn delete_reading_list_item_by_id(
         .execute(&mut *tx)
         .await?;
 
+    tx.commit().await?;
     if result.rows_affected() == 0 { Ok(HttpResponse::NotFound().finish()) } else { Ok(HttpResponse::Ok().finish()) }
 }
