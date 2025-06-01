@@ -25,39 +25,55 @@ export default {
     return {
       genres: [
         { name: 'Fiction', icon: '📖' },
-          { name: 'Fantasy & Science Fiction', icon: '🧙‍♂️' },
-          { name: 'Mystery & Thriller', icon: '🕵️‍♂️' },
-          { name: 'Business & Management', icon: '💼' },
-          { name: 'Finance & Investment', icon: '💰' },
-          { name: 'Psychology & Self-Development', icon: '🧠' },
-          { name: 'Relationships & Romance', icon: '💞' },
-          { name: 'History & Culture', icon: '🏛️' },
-          { name: 'Philosophy & Social Issues', icon: '📚' },
-          { name: 'Technology & Programming', icon: '💻' },
-          { name: 'Science & Medicine', icon: '🧬' },
-          { name: 'Art & Design', icon: '🎨' },
-          { name: 'Travel & Lifestyle', icon: '🧳' },
-          { name: 'Language & Learning', icon: '📝' },
-          { name: 'Manga & Light Novels', icon: '📙' },
-          { name: 'Children & Young Adult', icon: '🧒' }
+        { name: 'Religion', icon: '✝️' },
+        { name: 'History', icon: '🏛️' },
+        { name: 'Biography & Autobiography', icon: '🧬' },
+        { name: 'Sports & Recreation', icon: '🏀' },
+        { name: 'Body, Mind & Spirit', icon: '🧘‍♀️' },
+        { name: 'Juvenile Fiction', icon: '📚' },
+        { name: 'Business & Economics', icon: '💰' },
+        { name: 'Juvenile Nonfiction', icon: '🧒' }
       ],
       selected: []
     }
   },
+  mounted() {
+    const currentUserEmail = localStorage.getItem('currentUser');
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const user = users.find(u => u.email === currentUserEmail);
+    if (user && user.preference) {
+      this.selected = [...user.preference];
+    }
+  },
   methods: {
     toggleGenre(name) {
-      const index = this.selected.indexOf(name)
+      const index = this.selected.indexOf(name);
       if (index === -1) {
-        this.selected.push(name)
+        this.selected.push(name);
       } else {
-        this.selected.splice(index, 1)
+        this.selected.splice(index, 1);
       }
     },
     savePreferences() {
-      alert('你選擇的書籍偏好：' + this.selected.join(', '))
+      const currentUserEmail = localStorage.getItem('currentUser');
+      if (!currentUserEmail) {
+        alert('請先登入');
+        return;
+      }
+
+      let users = JSON.parse(localStorage.getItem('users')) || [];
+      const userIndex = users.findIndex(u => u.email === currentUserEmail);
+
+      if (userIndex !== -1) {
+        users[userIndex].preference = [...this.selected];
+        localStorage.setItem('users', JSON.stringify(users));
+        alert('偏好已更新為：' + this.selected.join(', '));
+      } else {
+        alert('找不到使用者資料');
+      }
     }
   }
-}
+};
 </script>
 
 <style scoped>
