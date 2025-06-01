@@ -1,26 +1,36 @@
 <!-- BookCard.vue -->
+<!-- BookCard.vue -->
 <template>
   <tr>
-      <td>
-    <router-link :to="`/books/${book.id}`" class="text-link">
-      {{ book.title }}
-    </router-link>
-  </td>
-  <td>
-    <router-link :to="`/books/${book.id}`">
-      <img :src="book.cover" alt="Book Cover" style="width: 60%;" />
-    </router-link>
-  </td>
-  <td>
-    <router-link :to="`/authors/${book.author_id}`" class="text-link">
-
-      <strong>{{ book.author }}</strong>
-    </router-link>
-  </td>
-  <td style="position: relative;">
-    {{ book.rate }}
-    <button @click="$emit('remove-book', book.id)" class="close-btn">X</button>
-  </td>
+    <td>
+      <router-link
+        :to="`/books/${book.id}`"
+        class="text-link"
+        @click="storeBookId(book.id)"
+      >
+        {{ book.title }}
+      </router-link>
+    </td>
+    <td>
+      <router-link
+        :to="`/books/${book.id}`"
+        @click="storeBookId(book.id)"
+      >
+        <img :src="book.cover" alt="Book Cover" style="width: 60%;" />
+      </router-link>
+    </td>
+    <td>
+      <router-link
+        :to="`/authors/${book.author_id}`"
+        class="text-link"
+      >
+        <strong>{{ book.author }}</strong>
+      </router-link>
+    </td>
+    <td style="position: relative;">
+      {{ book.rate }}
+      <button @click="$emit('remove-book', book.id)" class="close-btn">X</button>
+    </td>
   </tr>
 </template>
 
@@ -32,9 +42,15 @@ export default {
       type: Object,
       required: true
     }
+  },
+  methods: {
+    storeBookId(id) {
+      localStorage.setItem('selectedBookId', id)
+    }
   }
 }
 </script>
+
 
 
 
