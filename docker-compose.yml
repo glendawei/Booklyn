@@ -52,4 +52,5 @@ services:
 
 networks:
   booklyn_network:
+    name: booklyn_network
     driver: bridge
