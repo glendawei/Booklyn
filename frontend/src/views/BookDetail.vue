@@ -53,7 +53,19 @@
 
 
           </div>
-          <p class="author">Author: {{ book.authors?.map(a => a.name).join(", ") || "N/A" }}</p>
+          <p class="author">
+  Author:
+  <template v-if="book?.authors?.length">
+    <span v-for="(author, index) in book.authors" :key="author.author_id">
+      <router-link :to="`/authors/${author.author_id}`" class="author-link">
+        {{ author.name }}
+      </router-link>
+      <span v-if="index < book.authors.length - 1">, </span>
+    </span>
+  </template>
+  <span v-else>N/A</span>
+</p>
+
 
           <p class="rating">Rating: {{ book.rate ?? 'N/A' }}</p>
         </div>
