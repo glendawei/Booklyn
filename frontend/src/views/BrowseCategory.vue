@@ -4,7 +4,7 @@
       <h2>Genres</h2>
       <div v-for="(books, genre) in bookshelves" :key="genre">
         <label>
-          <input type="checkbox" :value="genre" v-model="selectedGenres" />
+          <input type="checkbox" :value="genre" v-model="selectedGenres" @change="handleGenreChange(genre)"/>
           {{ genre }}
         </label>
       </div>
@@ -83,6 +83,18 @@ const filteredAuthors = computed(() => {
     author.toLowerCase().includes(search)
   );
 });
+
+const handleGenreChange = (genre) => {
+  if (genre === "All") {
+    selectedGenres.value = ["All"];
+  } else {
+    selectedGenres.value = selectedGenres.value.filter((g) => g !== "All");
+    if (selectedGenres.value.length === 0) {
+      selectedGenres.value = ["All"]; // fallback to All if nothing else is selected
+    }
+  }
+};
+
 
 // Books filtered by selected genres, authors, and minimum rating
 const filteredBooks = computed(() => {
