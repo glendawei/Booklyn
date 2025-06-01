@@ -44,12 +44,14 @@
           <div style="display: grid; grid-template-columns: auto 30px;">
             <h1 class="book-title">{{ book.title }}</h1>
             <button
-              v-if="isLoggedIn"
-              @click="goToMyBooks"
-              style="height: 30px; border-radius: 5px; border: none; background-color: #BC6C25; color: white; font-size: 20px;"
-            >
-              +
-            </button>
+  v-if="isLoggedIn"
+  @click="addToReadingList"
+  style="height: 30px; border-radius: 5px; border: none; background-color: #BC6C25; color: white; font-size: 20px;"
+>
+  +
+</button>
+
+
           </div>
           <p class="author">Author: {{ book.authors?.map(a => a.name).join(", ") || "N/A" }}</p>
 
@@ -169,6 +171,7 @@
 </template>
 
 <script setup>
+import axios from 'axios'
 
 import { useRoute } from "vue-router";
 import { ref, computed, onMounted } from "vue";
@@ -234,7 +237,22 @@ const ratingBreakdown = computed(() => {
   });
   return breakdown;
 });
-
+const addToReadingList = async () => {
+  const userId = localStorage.getItem("userId") || 1; // 根據你的登入邏輯取得 ID
+  try {
+    const payload = {
+      book_id: book.value.book_id,
+      note: "想讀這本書",
+      status: "want-to-read",
+    };
+    const response = await axios.post(`http://localhost:8080/users/${userId}/reading-list`, payload);
+    console.log("✅ 已加入閱讀清單", response.data);
+    alert("已成功加入閱讀清單！");
+  } catch (err) {
+    console.error("❌ 加入閱讀清單失敗：", err.message);
+    alert("加入失敗，請稍後再試。");
+  }
+};
 const averageRating = computed(() => {
   if (!book.value || !book.value.reviews || book.value.reviews.length === 0) return 0;
   const total = book.value.reviews.reduce((sum, r) => sum + r.rating, 0);

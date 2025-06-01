@@ -2,9 +2,9 @@
   <div class="book-search-page">
     <aside class="filters">
       <h2>Genres</h2>
-      <div v-for="(books, genre) in bookshelves" :key="genre">
+      <div v-for="genre in availableGenres" :key="genre">
         <label>
-          <input type="checkbox" :value="genre" v-model="selectedGenres" @change="handleGenreChange(genre)"/>
+          <input type="checkbox" :value="genre" v-model="selectedGenres" />
           {{ genre }}
         </label>
       </div>
@@ -29,13 +29,18 @@
       <input type="range" min="0" max="5" step="0.1" v-model="minAvgRating" />
       <span style="margin-left: 15px">{{ minAvgRating }}</span>
     </aside>
+
     <main class="book-results">
       <h1 class="page-title">Books</h1>
       <p v-if="searchQuery" style="margin-bottom: 5px">
         Showing results for "{{ searchQuery }}"
       </p>
       <div class="book-grid">
-        <BookCard v-for="book in filteredBooks" :key="book.id" :book="book" />
+        <BookCard
+          v-for="book in filteredBooks"
+          :key="book.book_id"
+          :book="{ ...book, id: book.book_id }"
+        />
         <p v-if="filteredBooks.length === 0">
           No books match the current filters.
         </p>
@@ -46,120 +51,120 @@
 
 <script setup>
 import { ref, computed, watch, onMounted } from "vue";
+import axios from "axios";
 import BookCard from "../components/BrowsingBookCard.vue";
 import { useRoute } from "vue-router";
-import { getAllBooks } from "../api/books.js";
 
 const route = useRoute();
 const searchQuery = ref(route.query.q || "");
 
-watch(
-  () => route.query.q,
-  (newQ) => {
-    searchQuery.value = newQ || "";
-  }
-);
-
-const selectedGenres = ref(["All"]);
+const selectedGenres = ref([]);
 const selectedAuthors = ref([]);
 const minAvgRating = ref(0);
 const authorSearch = ref("");
 
 const allBooks = ref([]);
-const isLoading = ref(true);
-const error = ref(null);
+const availableGenres = ref([]);
 
-// Grouped bookshelves, like the original mockBookshelves
-const bookshelves = computed(() => {
-  const shelves = {};
-  allBooks.value.forEach((book) => {
-    book.categories.forEach((cat) => {
-      if (!shelves[cat]) shelves[cat] = [];
-      shelves[cat].push(book);
-    });
-  });
-  return shelves;
-});
-
-// Fetch books on mount
-onMounted(async () => {
+// 📦 載入 genre 清單（全書）
+const fetchGenres = async () => {
   try {
-    const books = await getAllBooks();
-    allBooks.value = books;
+    const res = await axios.get("http://localhost:8080/books");
+    const genreSet = new Set();
+    (res.data || []).forEach((b) =>
+      b.categories?.forEach((c) => genreSet.add(c))
+    );
+    availableGenres.value = Array.from(genreSet).sort();
   } catch (err) {
-    console.error("Failed to fetch books:", err);
-    error.value = "Could not load books.";
-  } finally {
-    isLoading.value = false;
+    console.error("❌ 無法取得 genre 清單", err.message);
   }
+};
+
+// 🔍 根據 title 查詢書籍（from searchQuery）
+const fetchBooks = async () => {
+  try {
+    const params = {};
+    if (searchQuery.value) {
+      params.title = searchQuery.value;
+    }
+    const res = await axios.get("http://localhost:8080/books", { params });
+    allBooks.value = res.data || [];
+  } catch (err) {
+    console.error("❌ 無法載入書籍資料", err.message);
+  }
+};
+
+// 📌 初始載入：抓 genres + 根據 query 抓書籍
+onMounted(async () => {
+  await fetchGenres();
+  await fetchBooks();
 });
 
-// Authors
+// 🔁 監聽搜尋字串變動 → 重新 fetch 書籍
+watch(
+  () => route.query.q,
+  async (newQ) => {
+    searchQuery.value = newQ || "";
+    await fetchBooks();
+  }
+);
+
+// 🧑‍🎨 作者過濾邏輯
 const uniqueAuthors = computed(() => {
-  const authorsSet = new Set(allBooks.value.map((book) => book.author));
-  return Array.from(authorsSet).sort();
+  const set = new Set();
+  allBooks.value.forEach((b) =>
+    b.authors?.forEach((a) => set.add(a.name))
+  );
+  return Array.from(set).sort();
 });
 
 const filteredAuthors = computed(() => {
   const search = authorSearch.value.toLowerCase();
-  return uniqueAuthors.value.filter((author) =>
-    author.toLowerCase().includes(search)
+  return uniqueAuthors.value.filter((a) =>
+    a.toLowerCase().includes(search)
   );
 });
 
-// Handle genre selection
-const handleGenreChange = (genre) => {
-  if (genre === "All") {
-    selectedGenres.value = ["All"];
-  } else {
-    selectedGenres.value = selectedGenres.value.filter((g) => g !== "All");
-    if (selectedGenres.value.length === 0) {
-      selectedGenres.value = ["All"]; // fallback to All if nothing else is selected
-    }
-  }
-};
-
-
-// Books filtered by selected genres, authors, and minimum rating
+// 📚 根據篩選條件顯示書籍
 const filteredBooks = computed(() => {
-  const genresToInclude =
-    selectedGenres.value.includes("All") || selectedGenres.value.length === 0
-      ? Object.keys(bookshelves.value)
-      : selectedGenres.value;
+  const seen = new Set();
 
-  const booksToFilter = genresToInclude.flatMap(
-    (genre) => bookshelves.value[genre] || []
-  );
+  return allBooks.value.filter((book) => {
+    const matchesGenre =
+      selectedGenres.value.length === 0 ||
+      book.categories?.some((c) => selectedGenres.value.includes(c));
 
-  const seenIds = new Set();
-
-  return booksToFilter.filter((book) => {
-    const reviews = Array.isArray(book.reviews) ? book.reviews : [];
     const avgRating =
-      reviews.length > 0
-        ? reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length
+      book.reviews?.length > 0
+        ? book.reviews.reduce((acc, r) => acc + r.rating, 0) / book.reviews.length
         : 0;
 
     const matchesAuthor =
       selectedAuthors.value.length === 0 ||
-      selectedAuthors.value.includes(book.author);
+      book.authors?.some((a) => selectedAuthors.value.includes(a.name));
 
     const matchesSearch =
       !searchQuery.value ||
       book.title.toLowerCase().includes(searchQuery.value.toLowerCase());
 
-    const isMatch =
-      avgRating >= minAvgRating.value && matchesAuthor && matchesSearch;
-
-    const isDuplicate = seenIds.has(book.id);
-    if (isMatch && !isDuplicate) {
-      seenIds.add(book.id);
+    const isDuplicate = seen.has(book.book_id);
+    if (
+      matchesGenre &&
+      avgRating >= minAvgRating.value &&
+      matchesAuthor &&
+      matchesSearch &&
+      !isDuplicate
+    ) {
+      seen.add(book.book_id);
       return true;
     }
     return false;
   });
 });
 </script>
+
+
+
 
 
 <style scoped>

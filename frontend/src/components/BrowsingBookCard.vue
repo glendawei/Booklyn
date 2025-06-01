@@ -1,18 +1,31 @@
 <template>
-    <router-link :to="`/books/${book.id}`" class="book-card">
-        <img :src="book.cover" :alt="book.title" class="book-cover" />
+  <router-link :to="`/books/${book.book_id}`" class="book-card">
+    <img
+      :src="book.cover_url || 'https://d28hgpri8am2if.cloudfront.net/book_images/onix/cvr9781787550360/classic-book-cover-foiled-journal-9781787550360_lg.jpg'"
+      :alt="book.title"
+      class="book-cover"
+    />
 
-        <div class="book-info">
-            <h3 class="book-title">{{ book.title }}</h3>
-            <p class="book-author">{{ book.author }}</p>
-            <p class="book-rate">{{ book.rate }}</p>
-        </div>
-    </router-link>
+    <div class="book-info">
+      <h3 class="book-title">{{ book.title }}</h3>
+      <p class="book-author">{{ book.authors?.map(a => a.name).join(', ') }}</p>
+      <p class="book-rate">
+        {{
+          book.reviews?.length
+            ? (book.reviews.reduce((sum, r) => sum + r.rating, 0) / book.reviews.length).toFixed(1)
+            : 'No ratings'
+        }}
+      </p>
+    </div>
+  </router-link>
 </template>
 
 <script setup>
 defineProps({ book: Object });
 </script>
+
+
+
 
 <style scoped>
 .book-card {
