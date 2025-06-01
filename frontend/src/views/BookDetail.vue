@@ -8,63 +8,99 @@
         <h2 class="drawer-title">{{ selectedReview.title }}</h2>
         <p class="drawer-meta">
           Reviewed by {{ selectedReview.reviewer }} on
-          {{ selectedReview.date || "N/A" }} from {{ selectedReview.source || "N/A" }}
+          {{ selectedReview.date || "N/A" }} from
+          {{ selectedReview.source || "N/A" }}
         </p>
-        <div style="display: grid; grid-template-columns: auto 1fr; column-gap: 10px;">
+        <div
+          style="
+            display: grid;
+            grid-template-columns: auto 1fr;
+            column-gap: 10px;
+          "
+        >
           <p class="drawer-rating">{{ selectedReview.rating }}</p>
           <div class="review-rating">
             <span v-for="n in 5" :key="n" class="star">
-              <img v-if="n <= Math.floor(selectedReview.rating)" :src="fullStar" alt="Full Star" class="star" />
-              <img v-else-if="
-                n === Math.ceil(selectedReview.rating) &&
-                !Number.isInteger(selectedReview.rating)
-              " :src="halfStar" alt="Half Star" class="star" />
-              <img v-else :src="emptyStar" alt="Empty Star" class="star" style="filter: grayscale(1); opacity: 0.3" />
+              <img
+                v-if="n <= Math.floor(selectedReview.rating)"
+                :src="fullStar"
+                alt="Full Star"
+                class="star"
+              />
+              <img
+                v-else-if="
+                  n === Math.ceil(selectedReview.rating) &&
+                  !Number.isInteger(selectedReview.rating)
+                "
+                :src="halfStar"
+                alt="Half Star"
+                class="star"
+              />
+              <img
+                v-else
+                :src="emptyStar"
+                alt="Empty Star"
+                class="star"
+                style="filter: grayscale(1); opacity: 0.3"
+              />
             </span>
           </div>
         </div>
         <p class="drawer-comment">{{ selectedReview.comment }}</p>
-        <div style="display: grid; grid-template-columns: 150px auto;">
-          <ProgressCircle height="150" width="150" color="#BC6C25" :name="ad" :progress=selectedReview.aiRating
-            style="padding:20px;" />
-          <div style="padding-top:65px; color: #BC6C25;">Is this AI-generated?</div>
+        <div style="display: grid; grid-template-columns: 150px auto">
+          <ProgressCircle
+            height="150"
+            width="150"
+            color="#BC6C25"
+            :name="ad"
+            :progress="selectedReview.aiRating"
+            style="padding: 20px"
+          />
+          <div style="padding-top: 65px; color: #bc6c25">
+            Is this AI-generated?
+          </div>
         </div>
       </div>
     </div>
 
     <div class="book-detail">
       <div v-if="book">
-        <div style="
-          display: grid;
-          grid-template-columns: 200px 1fr;
-          column-gap: 50px;
-          margin-bottom: 25px;
-        ">
-          <img :src="book.cover" :alt="book.title" style="
-            width: 200px;
-            height: 300px;
-            object-fit: cover;
-            border-top-left-radius: 0.5rem;
-            border-top-right-radius: 0.5rem;
-          " />
-<<<<<<< Updated upstream
+        <div
+          style="
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            column-gap: 50px;
+            margin-bottom: 25px;
+          "
+        >
+          <img
+            :src="book.cover"
+            :alt="book.title"
+            style="
+              width: 200px;
+              height: 300px;
+              object-fit: cover;
+              border-top-left-radius: 0.5rem;
+              border-top-right-radius: 0.5rem;
+            "
+          />
           <div>
-            <div style="display: grid; grid-template-columns: auto 30px;">
+            <div style="display: grid; grid-template-columns: auto 30px">
               <h1 class="book-title">{{ book.title }}</h1>
-              <button v-if="isLoggedIn" @click="goToMyBooks"
-                style="height: 30px; border-radius: 5px; border: none; background-color: #BC6C25; color: white; font-size: 20px;">
+              <button
+                v-if="isLoggedIn"
+                @click="goToMyBooks"
+                style="
+                  height: 30px;
+                  border-radius: 5px;
+                  border: none;
+                  background-color: #bc6c25;
+                  color: white;
+                  font-size: 20px;
+                "
+              >
                 +
               </button>
-=======
-        <div>
-          <div style="display: grid; grid-template-columns: auto 30px;">
-            <h1 class="book-title">{{ book.title }}</h1>
-            <button v-if="isLoggedIn" @click="goToMyBooks"
-              style="height: 30px; border-radius: 5px; border: none; background-color: #BC6C25; color: white; font-size: 20px;">
-              +
-            </button>
->>>>>>> Stashed changes
-
             </div>
             <p class="author">Author: {{ book.author }}</p>
             <p class="rating">Rating: {{ book.rate }}</p>
@@ -75,30 +111,48 @@
         </div>
 
         <div class="reviews-section border-t pt-6">
-          <h1 style="
-            font-size: 1.25rem; /* Tailwind's text-xl = 20px = 1.25rem */
-            font-weight: 600; /* Tailwind's font-semibold = 600 */
-            margin-bottom: 1.25rem;
-          ">
+          <h1
+            style="
+              font-size: 1.25rem; /* Tailwind's text-xl = 20px = 1.25rem */
+              font-weight: 600; /* Tailwind's font-semibold = 600 */
+              margin-bottom: 1.25rem;
+            "
+          >
             AI Smart Summary
           </h1>
           <div class="review-header flex items-center justify-between">
             <div class="user-info flex items-center space-x-3">
               <div
-                class="user-avatar w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-white font-bold">
-              </div>
+                class="user-avatar w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-white font-bold"
+              ></div>
               <div class="user-name font-medium">Our AI</div>
             </div>
             <div class="review-date text-sm text-gray-500">May 2025</div>
           </div>
           <div class="review-rating mt-2 text-yellow-500">
             <span v-for="n in 5" :key="n" class="star">
-              <img v-if="n <= Math.floor(averageRating)" :src="fullStar" alt="Full Star" class="star" />
-              <img v-else-if="
-                n === Math.ceil(averageRating) &&
-                !Number.isInteger(averageRating)
-              " :src="halfStar" alt="Half Star" class="star" />
-              <img v-else :src="emptyStar" alt="Empty Star" class="star" style="opacity: 0.3; filter: grayscale(1)" />
+              <img
+                v-if="n <= Math.floor(averageRating)"
+                :src="fullStar"
+                alt="Full Star"
+                class="star"
+              />
+              <img
+                v-else-if="
+                  n === Math.ceil(averageRating) &&
+                  !Number.isInteger(averageRating)
+                "
+                :src="halfStar"
+                alt="Half Star"
+                class="star"
+              />
+              <img
+                v-else
+                :src="emptyStar"
+                alt="Empty Star"
+                class="star"
+                style="opacity: 0.3; filter: grayscale(1)"
+              />
             </span>
           </div>
           <div class="review-comment mt-3 text-gray-700 italic">
@@ -117,12 +171,28 @@
           <div class="rating-value">{{ averageRating.toFixed(1) }}</div>
           <div class="stars">
             <span v-for="n in 5" :key="n" class="star">
-              <img v-if="n <= Math.floor(averageRating)" :src="fullStar" alt="Full Star" class="star" />
-              <img v-else-if="
-                n === Math.ceil(averageRating) &&
-                !Number.isInteger(averageRatinging)
-              " :src="halfStar" alt="Half Star" class="star" />
-              <img v-else :src="emptyStar" alt="Empty Star" class="star" style="opacity: 0.3; filter: grayscale(1)" />
+              <img
+                v-if="n <= Math.floor(averageRating)"
+                :src="fullStar"
+                alt="Full Star"
+                class="star"
+              />
+              <img
+                v-else-if="
+                  n === Math.ceil(averageRating) &&
+                  !Number.isInteger(averageRatinging)
+                "
+                :src="halfStar"
+                alt="Half Star"
+                class="star"
+              />
+              <img
+                v-else
+                :src="emptyStar"
+                alt="Empty Star"
+                class="star"
+                style="opacity: 0.3; filter: grayscale(1)"
+              />
             </span>
           </div>
           <div class="review-count">
@@ -134,10 +204,13 @@
           <div v-for="star in [5, 4, 3, 2, 1]" :key="star" class="rating-bar">
             <span class="rating-label">{{ star }}★</span>
             <div class="rating-bar-background">
-              <div class="rating-bar-fill" :style="{
-                width:
-                  (ratingBreakdown[star] / book.reviews.length) * 100 + '%',
-              }"></div>
+              <div
+                class="rating-bar-fill"
+                :style="{
+                  width:
+                    (ratingBreakdown[star] / book.reviews.length) * 100 + '%',
+                }"
+              ></div>
             </div>
             <span class="rating-count">{{ ratingBreakdown[star] }}</span>
           </div>
@@ -146,12 +219,20 @@
 
       <div class="user-rating-input">
         <h3>Rate this book</h3>
-        <StarRating v-model="userRating" :max-stars="5" @ratingData="updateRating" />
+        <StarRating
+          v-model="userRating"
+          :max-stars="5"
+          @ratingData="updateRating"
+        />
         <p class="selected-rating">Your rating: {{ userRating }}</p>
       </div>
 
       <div v-if="book.reviews && book.reviews.length" class="filter-sort-bar">
-        <input v-model="searchTerm" placeholder="Search reviews" class="search-input" />
+        <input
+          v-model="searchTerm"
+          placeholder="Search reviews"
+          class="search-input"
+        />
         <select v-model="sortOrder" class="sort-select">
           <option value="desc">Sort by: Highest rating</option>
           <option value="asc">Sort by: Lowest rating</option>
@@ -159,7 +240,11 @@
       </div>
 
       <ul class="filtered-reviews">
-        <li v-for="(review, index) in filteredReviews" :key="index" class="filtered-review-card">
+        <li
+          v-for="(review, index) in filteredReviews"
+          :key="index"
+          class="filtered-review-card"
+        >
           <div class="review-header">
             <div class="user-info">
               <div class="user-avatar"></div>
@@ -167,22 +252,40 @@
             </div>
             <div class="review-date">{{ review.date || "N/A" }}</div>
           </div>
-          <div style="
-            display: grid;
-            grid-template-columns: min-content auto;
-            column-gap: 10px;
-          ">
+          <div
+            style="
+              display: grid;
+              grid-template-columns: min-content auto;
+              column-gap: 10px;
+            "
+          >
             <div class="review-score" style="font-weight: bold">
               {{ review.rating }}
             </div>
             <div class="review-rating">
               <span v-for="n in 5" :key="n" class="star">
-                <img v-if="n <= Math.floor(review.rating)" :src="fullStar" alt="Full Star" class="star" />
-                <img v-else-if="
-                  n === Math.ceil(review.rating) &&
-                  !Number.isInteger(review.rating)
-                " :src="halfStar" alt="Half Star" class="star" />
-                <img v-else :src="emptyStar" alt="Empty Star" class="star" style="filter: grayscale(1); opacity: 0.3" />
+                <img
+                  v-if="n <= Math.floor(review.rating)"
+                  :src="fullStar"
+                  alt="Full Star"
+                  class="star"
+                />
+                <img
+                  v-else-if="
+                    n === Math.ceil(review.rating) &&
+                    !Number.isInteger(review.rating)
+                  "
+                  :src="halfStar"
+                  alt="Half Star"
+                  class="star"
+                />
+                <img
+                  v-else
+                  :src="emptyStar"
+                  alt="Empty Star"
+                  class="star"
+                  style="filter: grayscale(1); opacity: 0.3"
+                />
               </span>
             </div>
           </div>
@@ -268,7 +371,6 @@ const showDetailPanel = (review) => {
   isDetailPanelVisible.value = true;
 };
 </script>
-
 
 
 <style scoped>
@@ -500,9 +602,7 @@ const showDetailPanel = (review) => {
   border: none;
   border-radius: 0.5rem;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  transition:
-    background-color 0.2s ease,
-    transform 0.1s ease;
+  transition: background-color 0.2s ease, transform 0.1s ease;
   cursor: pointer;
 }
 
