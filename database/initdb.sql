@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS books (
     published_date DATE,                                    -- 出版日期 (books_data->publishedDate)
     categories TEXT[],                                      -- 書籍分類 (books_data->categories)
     ratings_count INT DEFAULT 0,                            -- 評分次數 (books_data->ratingsCount)
+    ai_summary TEXT,                                         -- AI 生成的書籍摘要
     isbn_13 CHAR(13) UNIQUE,                                -- ISBN 碼，唯一
     created_at TIMESTAMPTZ DEFAULT now()                    -- 書籍資料建立時間
 );

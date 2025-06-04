@@ -59,14 +59,14 @@ books_df['published_date'] = books_df['published_date'].apply(parse_date)
 insert_books = """
     INSERT INTO books (
         title, description, cover_url, preview_link, info_link,
-        publisher, published_date, categories, ratings_count
+        publisher, published_date, categories, ratings_count, ai_summary
     ) VALUES %s
     ON CONFLICT (title) DO NOTHING;
 """
 
 book_values = [(
     row.title, row.description, row.cover_url, row.preview_link, row.info_link,
-    row.publisher, row.published_date, row.categories, row.ratings_count
+    row.publisher, row.published_date, row.categories, row.ratings_count, row.ai_summary
 ) for _, row in books_df.iterrows()]
 
 with get_connection() as conn:
