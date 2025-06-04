@@ -7,7 +7,8 @@ CREATE TABLE IF NOT EXISTS users (
     bio TEXT,                                               -- 簡介             
     avatar TEXT,                                            -- 頭像連結
     website TEXT,                                           -- 個人網站連結                          
-    created_at TIMESTAMPTZ DEFAULT now()                    -- 註冊時間
+    created_at TIMESTAMPTZ DEFAULT now(),                   -- 註冊時間
+    preferred_topics TEXT[] CHECK (cardinality(preferred_topics) <= 5) -- 最多五個主題
 );
 
 CREATE TABLE IF NOT EXISTS authors (
