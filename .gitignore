@@ -1,4 +1,4 @@
-database/construct_db/dataset/
+database/construct_db/dataset/raw
 .DS_Store
 .env
 __pycache__/
