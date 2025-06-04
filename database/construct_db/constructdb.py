@@ -34,7 +34,7 @@ books_df = pd.read_csv('dataset/books_data.csv')
 books_df.head()
 books_df.columns = [
     'title', 'description', 'authors', 'cover_url', 'preview_link', 
-    'publisher', 'published_date', 'info_link', 'categories', 'ratings_count'
+    'publisher', 'published_date', 'info_link', 'categories', 'ratings_count', 'ai_summary'
 ]
 #Change ratings_count NaN to 0
 books_df['ratings_count'] = books_df['ratings_count'].fillna(int(0))
