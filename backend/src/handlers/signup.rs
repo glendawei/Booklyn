@@ -35,7 +35,7 @@ pub async fn signup(data: web::Data<AppData>, body: web::Json<Signup>) -> Result
     let mut tx = data.db_conn.begin().await?;
     
     if !check_preffered_topics(&signup.preffered_topics) {
-        return Ok(HttpResponse::BadRequest().body("The amount of the preffered topics is restricted in [1, 5]."));
+        return Ok(HttpResponse::BadRequest().content_type("text/plain; charset=utf-8").body("The amount of the preffered topics is restricted in [1, 5]."));
     }
 
     match sqlx::query_as!(
@@ -62,7 +62,7 @@ pub async fn signup(data: web::Data<AppData>, body: web::Json<Signup>) -> Result
             tx.commit().await?;
             Ok(HttpResponse::Created().json(user))
         },
-        None => Ok(HttpResponse::Conflict().body("The email is already signed up."))
+        None => Ok(HttpResponse::Conflict().content_type("text/plain; charset=utf-8").body("The email is already signed up."))
     }
 }
 

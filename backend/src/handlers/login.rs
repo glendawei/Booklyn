@@ -38,7 +38,7 @@ pub async fn login(data: web::Data<AppData>, body: web::Json<Login>) -> Result<i
         .await?
     {
         Some(user) => Ok(HttpResponse::Ok().json(user)),
-        None => Ok(HttpResponse::Unauthorized().body("The account does not exist or the password is wrong."))
+        None => Ok(HttpResponse::Unauthorized().content_type("text/plain; charset=utf-8").body("The account does not exist or the password is wrong."))
     }
 }
 

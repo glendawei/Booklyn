@@ -78,7 +78,7 @@ pub async fn update_user_by_id(data: web::Data<AppData>, id: web::Path<i64>, bod
     let mut tx = data.db_conn.begin().await?;
 
     if body.preffered_topics.is_some() && !check_preffered_topics(body.preffered_topics.as_ref().unwrap()) {
-        return Ok(HttpResponse::BadRequest().body("The amount of the preffered topics is restricted in [1, 5]."));
+        return Ok(HttpResponse::BadRequest().content_type("text/plain; charset=utf-8").body("The amount of the preffered topics is restricted in [1, 5]."));
     }
     
     if let Some(user) = sqlx::query_as!(
