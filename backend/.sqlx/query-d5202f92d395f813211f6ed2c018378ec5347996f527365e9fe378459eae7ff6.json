@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n        UPDATE \"users\" SET\n            \"display_name\" = COALESCE($1, \"display_name\"),\n            \"avatar\"       = COALESCE($2, \"avatar\"),\n            \"bio\"          = COALESCE($3, \"bio\"),\n            \"website\"      = COALESCE($4, \"website\")\n        WHERE \"user_id\" = $5\n        RETURNING \"user_id\", \"display_name\", \"email\", \"role\", \"bio\", \"avatar\", \"website\", \"created_at\";\n        ",
+  "query": "\n        INSERT INTO \"users\" (\"email\", \"password_hash\", \"display_name\", \"role\", \"bio\", \"avatar\", \"website\", \"created_at\", \"preffered_topics\")\n        VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), $8)\n        ON CONFLICT (\"email\") DO NOTHING\n        RETURNING \"user_id\", \"email\", \"display_name\", \"role\", \"bio\", \"avatar\", \"website\", \"created_at\", \"preffered_topics\";\n        ",
   "describe": {
     "columns": [
       {
@@ -10,12 +10,12 @@
       },
       {
         "ordinal": 1,
-        "name": "display_name",
+        "name": "email",
         "type_info": "Text"
       },
       {
         "ordinal": 2,
-        "name": "email",
+        "name": "display_name",
         "type_info": "Text"
       },
       {
@@ -42,6 +42,11 @@
         "ordinal": 7,
         "name": "created_at",
         "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 8,
+        "name": "preffered_topics",
+        "type_info": "TextArray"
       }
     ],
     "parameters": {
@@ -50,11 +55,15 @@
         "Text",
         "Text",
         "Text",
-        "Int8"
+        "Text",
+        "Text",
+        "Text",
+        "TextArray"
       ]
     },
     "nullable": [
       false,
+      true,
       false,
       true,
       true,
@@ -64,5 +73,5 @@
       true
     ]
   },
-  "hash": "808ebbd40b751f7dc09fb15519710dfe0c982a1c9b651b8ba46534d2587e069f"
+  "hash": "d5202f92d395f813211f6ed2c018378ec5347996f527365e9fe378459eae7ff6"
 }

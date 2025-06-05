@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n        SELECT \"user_id\", \"email\", \"display_name\", \"role\", \"bio\", \"avatar\", \"website\", \"created_at\" \n        FROM \"users\" \n        WHERE \"email\" = $1 AND \"password_hash\" = $2;\n        ",
+  "query": "\n        SELECT \"user_id\", \"email\", \"display_name\", \"role\", \"bio\", \"avatar\", \"website\", \"created_at\", \"preffered_topics\"\n        FROM \"users\"\n        WHERE \"user_id\" = $1;\n        ",
   "describe": {
     "columns": [
       {
@@ -42,12 +42,16 @@
         "ordinal": 7,
         "name": "created_at",
         "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 8,
+        "name": "preffered_topics",
+        "type_info": "TextArray"
       }
     ],
     "parameters": {
       "Left": [
-        "Text",
-        "Text"
+        "Int8"
       ]
     },
     "nullable": [
@@ -58,8 +62,9 @@
       true,
       true,
       true,
+      true,
       true
     ]
   },
-  "hash": "554c45b9775ed60e75da43e7e19885bffa9b13af574a34032225716df3667c1b"
+  "hash": "56898aacc394f916c0749734a3dbdc9a1e4b7fedfd9311a27420c8350336b1c8"
 }
