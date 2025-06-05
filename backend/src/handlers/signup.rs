@@ -4,7 +4,7 @@ use serde::Deserialize;
 use utoipa::ToSchema;
 
 use crate::AppData;
-use crate::handlers::users::User;
+use crate::handlers::users::{User, check_preferred_topics};
 use crate::error::Error;
 
 #[derive(Deserialize, ToSchema)]
@@ -16,6 +16,7 @@ pub struct Signup {
     pub bio: Option<String>,
     pub avatar: Option<String>,
     pub website: Option<String>,
+    pub preferred_topics: Vec<String>,
 }
 
 #[utoipa::path(
@@ -23,6 +24,7 @@ pub struct Signup {
     request_body = Signup,
     responses(
         (status = 201, description = "Signup succeed.", body = User),
+        (status = 400, description = "Bad request. The amount of the preffered topics is invalid.", body = String),
         (status = 409, description = "Conflict. Maybe the email is already signed up.", body = String),
         (status = 500, description = "Internal server error.", body = String)
     )
@@ -31,14 +33,18 @@ pub struct Signup {
 pub async fn signup(data: web::Data<AppData>, body: web::Json<Signup>) -> Result<impl Responder, Error> {
     let signup = body.into_inner();
     let mut tx = data.db_conn.begin().await?;
+    
+    if !check_preferred_topics(&signup.preferred_topics) {
+        return Ok(HttpResponse::BadRequest().content_type("text/plain; charset=utf-8").body("The amount of the preffered topics is restricted in [1, 5]."));
+    }
 
     match sqlx::query_as!(
         User,
         r#"
-        INSERT INTO "users" ("email", "password_hash", "display_name", "role", "bio", "avatar", "website", "created_at")
-        VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
+        INSERT INTO "users" ("email", "password_hash", "display_name", "role", "bio", "avatar", "website", "created_at", "preferred_topics")
+        VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), $8)
         ON CONFLICT ("email") DO NOTHING
-        RETURNING "user_id", "email", "display_name", "role", "bio", "avatar", "website", "created_at";
+        RETURNING "user_id", "email", "display_name", "role", "bio", "avatar", "website", "created_at", "preferred_topics";
         "#,
         signup.email,
         signup.password_hash,
@@ -46,7 +52,8 @@ pub async fn signup(data: web::Data<AppData>, body: web::Json<Signup>) -> Result
         signup.role,
         signup.bio,
         signup.avatar,
-        signup.website
+        signup.website,
+        &signup.preferred_topics
     )
         .fetch_optional(&mut *tx)
         .await?
@@ -55,7 +62,7 @@ pub async fn signup(data: web::Data<AppData>, body: web::Json<Signup>) -> Result
             tx.commit().await?;
             Ok(HttpResponse::Created().json(user))
         },
-        None => Ok(HttpResponse::Conflict().body("The email is already signed up."))
+        None => Ok(HttpResponse::Conflict().content_type("text/plain; charset=utf-8").body("The email is already signed up."))
     }
 }
 

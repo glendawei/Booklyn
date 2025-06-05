@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n        UPDATE \"users\" SET\n            \"display_name\" = COALESCE($1, \"display_name\"),\n            \"avatar\"       = COALESCE($2, \"avatar\"),\n            \"bio\"          = COALESCE($3, \"bio\"),\n            \"website\"      = COALESCE($4, \"website\")\n        WHERE \"user_id\" = $5\n        RETURNING \"user_id\", \"display_name\", \"email\", \"role\", \"bio\", \"avatar\", \"website\", \"created_at\";\n        ",
+  "query": "\n        SELECT \"user_id\", \"email\", \"display_name\", \"role\", \"bio\", \"avatar\", \"website\", \"created_at\", \"preferred_topics\"\n        FROM \"users\" \n        WHERE \"email\" = $1 AND \"password_hash\" = $2;\n        ",
   "describe": {
     "columns": [
       {
@@ -10,12 +10,12 @@
       },
       {
         "ordinal": 1,
-        "name": "display_name",
+        "name": "email",
         "type_info": "Text"
       },
       {
         "ordinal": 2,
-        "name": "email",
+        "name": "display_name",
         "type_info": "Text"
       },
       {
@@ -42,19 +42,22 @@
         "ordinal": 7,
         "name": "created_at",
         "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 8,
+        "name": "preferred_topics",
+        "type_info": "TextArray"
       }
     ],
     "parameters": {
       "Left": [
         "Text",
-        "Text",
-        "Text",
-        "Text",
-        "Int8"
+        "Text"
       ]
     },
     "nullable": [
       false,
+      true,
       false,
       true,
       true,
@@ -64,5 +67,5 @@
       true
     ]
   },
-  "hash": "808ebbd40b751f7dc09fb15519710dfe0c982a1c9b651b8ba46534d2587e069f"
+  "hash": "43a5fdcc9d69c74a2dbddbd17ea4b368c9f36c53762cb41698e21623b26c2f64"
 }
