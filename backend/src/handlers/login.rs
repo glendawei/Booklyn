@@ -27,7 +27,7 @@ pub async fn login(data: web::Data<AppData>, body: web::Json<Login>) -> Result<i
     match sqlx::query_as!(
         User,
         r#"
-        SELECT "user_id", "email", "display_name", "role", "bio", "avatar", "website", "created_at", "preffered_topics"
+        SELECT "user_id", "email", "display_name", "role", "bio", "avatar", "website", "created_at", "preferred_topics"
         FROM "users" 
         WHERE "email" = $1 AND "password_hash" = $2;
         "#,

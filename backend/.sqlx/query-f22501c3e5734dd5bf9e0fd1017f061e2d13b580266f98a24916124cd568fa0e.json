@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n        SELECT \"user_id\", \"email\", \"display_name\", \"role\", \"bio\", \"avatar\", \"website\", \"created_at\", \"preffered_topics\"\n        FROM \"users\" \n        WHERE \"email\" = $1 AND \"password_hash\" = $2;\n        ",
+  "query": "\n        UPDATE \"users\" SET\n            \"display_name\"     = COALESCE($1, \"display_name\"),\n            \"avatar\"           = COALESCE($2, \"avatar\"),\n            \"bio\"              = COALESCE($3, \"bio\"),\n            \"website\"          = COALESCE($4, \"website\"),\n            \"preferred_topics\" = COALESCE($5, \"preferred_topics\")\n        WHERE \"user_id\" = $6\n        RETURNING \"user_id\", \"display_name\", \"email\", \"role\", \"bio\", \"avatar\", \"website\", \"created_at\", \"preferred_topics\";\n        ",
   "describe": {
     "columns": [
       {
@@ -10,12 +10,12 @@
       },
       {
         "ordinal": 1,
-        "name": "email",
+        "name": "display_name",
         "type_info": "Text"
       },
       {
         "ordinal": 2,
-        "name": "display_name",
+        "name": "email",
         "type_info": "Text"
       },
       {
@@ -45,20 +45,24 @@
       },
       {
         "ordinal": 8,
-        "name": "preffered_topics",
+        "name": "preferred_topics",
         "type_info": "TextArray"
       }
     ],
     "parameters": {
       "Left": [
         "Text",
-        "Text"
+        "Text",
+        "Text",
+        "Text",
+        "TextArray",
+        "Int8"
       ]
     },
     "nullable": [
       false,
-      true,
       false,
+      true,
       true,
       true,
       true,
@@ -67,5 +71,5 @@
       true
     ]
   },
-  "hash": "c6837601b8c00fbf707d31683e97a8221621eb0c4e6eba1dad5f0b3afbafad6d"
+  "hash": "f22501c3e5734dd5bf9e0fd1017f061e2d13b580266f98a24916124cd568fa0e"
 }

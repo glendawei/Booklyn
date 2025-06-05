@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n        INSERT INTO \"users\" (\"email\", \"password_hash\", \"display_name\", \"role\", \"bio\", \"avatar\", \"website\", \"created_at\", \"preffered_topics\")\n        VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), $8)\n        ON CONFLICT (\"email\") DO NOTHING\n        RETURNING \"user_id\", \"email\", \"display_name\", \"role\", \"bio\", \"avatar\", \"website\", \"created_at\", \"preffered_topics\";\n        ",
+  "query": "\n        SELECT \"user_id\", \"email\", \"display_name\", \"role\", \"bio\", \"avatar\", \"website\", \"created_at\", \"preferred_topics\"\n        FROM \"users\" \n        WHERE \"email\" = $1 AND \"password_hash\" = $2;\n        ",
   "describe": {
     "columns": [
       {
@@ -45,20 +45,14 @@
       },
       {
         "ordinal": 8,
-        "name": "preffered_topics",
+        "name": "preferred_topics",
         "type_info": "TextArray"
       }
     ],
     "parameters": {
       "Left": [
         "Text",
-        "Text",
-        "Text",
-        "Text",
-        "Text",
-        "Text",
-        "Text",
-        "TextArray"
+        "Text"
       ]
     },
     "nullable": [
@@ -73,5 +67,5 @@
       true
     ]
   },
-  "hash": "d5202f92d395f813211f6ed2c018378ec5347996f527365e9fe378459eae7ff6"
+  "hash": "43a5fdcc9d69c74a2dbddbd17ea4b368c9f36c53762cb41698e21623b26c2f64"
 }

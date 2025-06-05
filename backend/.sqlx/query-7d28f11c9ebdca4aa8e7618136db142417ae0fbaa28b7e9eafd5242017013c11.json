@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n        SELECT \"user_id\", \"email\", \"display_name\", \"role\", \"bio\", \"avatar\", \"website\", \"created_at\", \"preffered_topics\"\n        FROM \"users\"\n        WHERE \"user_id\" = $1;\n        ",
+  "query": "\n        SELECT \"user_id\", \"email\", \"display_name\", \"role\", \"bio\", \"avatar\", \"website\", \"created_at\", \"preferred_topics\"\n        FROM \"users\"\n        WHERE \"user_id\" = $1;\n        ",
   "describe": {
     "columns": [
       {
@@ -45,7 +45,7 @@
       },
       {
         "ordinal": 8,
-        "name": "preffered_topics",
+        "name": "preferred_topics",
         "type_info": "TextArray"
       }
     ],
@@ -66,5 +66,5 @@
       true
     ]
   },
-  "hash": "56898aacc394f916c0749734a3dbdc9a1e4b7fedfd9311a27420c8350336b1c8"
+  "hash": "7d28f11c9ebdca4aa8e7618136db142417ae0fbaa28b7e9eafd5242017013c11"
 }

@@ -288,7 +288,7 @@ pub async fn get_user_by_id(db_conn: &PgPool, id: i64) -> Result<Option<User>, E
     sqlx::query_as!(
         User,
         r#"
-        SELECT "user_id", "email", "display_name", "role", "bio", "avatar", "website", "created_at", "preffered_topics"
+        SELECT "user_id", "email", "display_name", "role", "bio", "avatar", "website", "created_at", "preferred_topics"
         FROM "users"
         WHERE "user_id" = $1;
         "#,

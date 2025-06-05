@@ -4,7 +4,7 @@ use serde::Deserialize;
 use utoipa::ToSchema;
 
 use crate::AppData;
-use crate::handlers::users::{User, check_preffered_topics};
+use crate::handlers::users::{User, check_preferred_topics};
 use crate::error::Error;
 
 #[derive(Deserialize, ToSchema)]
@@ -16,7 +16,7 @@ pub struct Signup {
     pub bio: Option<String>,
     pub avatar: Option<String>,
     pub website: Option<String>,
-    pub preffered_topics: Vec<String>,
+    pub preferred_topics: Vec<String>,
 }
 
 #[utoipa::path(
@@ -34,17 +34,17 @@ pub async fn signup(data: web::Data<AppData>, body: web::Json<Signup>) -> Result
     let signup = body.into_inner();
     let mut tx = data.db_conn.begin().await?;
     
-    if !check_preffered_topics(&signup.preffered_topics) {
+    if !check_preferred_topics(&signup.preferred_topics) {
         return Ok(HttpResponse::BadRequest().content_type("text/plain; charset=utf-8").body("The amount of the preffered topics is restricted in [1, 5]."));
     }
 
     match sqlx::query_as!(
         User,
         r#"
-        INSERT INTO "users" ("email", "password_hash", "display_name", "role", "bio", "avatar", "website", "created_at", "preffered_topics")
+        INSERT INTO "users" ("email", "password_hash", "display_name", "role", "bio", "avatar", "website", "created_at", "preferred_topics")
         VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), $8)
         ON CONFLICT ("email") DO NOTHING
-        RETURNING "user_id", "email", "display_name", "role", "bio", "avatar", "website", "created_at", "preffered_topics";
+        RETURNING "user_id", "email", "display_name", "role", "bio", "avatar", "website", "created_at", "preferred_topics";
         "#,
         signup.email,
         signup.password_hash,
@@ -53,7 +53,7 @@ pub async fn signup(data: web::Data<AppData>, body: web::Json<Signup>) -> Result
         signup.bio,
         signup.avatar,
         signup.website,
-        &signup.preffered_topics
+        &signup.preferred_topics
     )
         .fetch_optional(&mut *tx)
         .await?

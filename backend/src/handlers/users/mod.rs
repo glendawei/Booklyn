@@ -23,7 +23,7 @@ pub struct User {
     pub website: Option<String>,
     #[schema(value_type = String)]
     pub created_at: Option<OffsetDateTime>,
-    pub preffered_topics: Option<Vec<String>>,
+    pub preferred_topics: Option<Vec<String>>,
 }
 
 #[derive(Deserialize, ToSchema)]
@@ -32,10 +32,10 @@ pub struct UpdateUser {
     pub bio: Option<String>,
     pub avatar: Option<String>,
     pub website: Option<String>,
-    pub preffered_topics: Option<Vec<String>>,
+    pub preferred_topics: Option<Vec<String>>,
 }
 
-pub fn check_preffered_topics(topics: &Vec<String>) -> bool {
+pub fn check_preferred_topics(topics: &Vec<String>) -> bool {
     topics.len() > 0 && topics.len() <= 5
 }
 
@@ -77,7 +77,7 @@ pub async fn update_user_by_id(data: web::Data<AppData>, id: web::Path<i64>, bod
     let id = id.into_inner();
     let mut tx = data.db_conn.begin().await?;
 
-    if body.preffered_topics.is_some() && !check_preffered_topics(body.preffered_topics.as_ref().unwrap()) {
+    if body.preferred_topics.is_some() && !check_preferred_topics(body.preferred_topics.as_ref().unwrap()) {
         return Ok(HttpResponse::BadRequest().content_type("text/plain; charset=utf-8").body("The amount of the preffered topics is restricted in [1, 5]."));
     }
     
@@ -89,15 +89,15 @@ pub async fn update_user_by_id(data: web::Data<AppData>, id: web::Path<i64>, bod
             "avatar"           = COALESCE($2, "avatar"),
             "bio"              = COALESCE($3, "bio"),
             "website"          = COALESCE($4, "website"),
-            "preffered_topics" = COALESCE($5, "preffered_topics")
+            "preferred_topics" = COALESCE($5, "preferred_topics")
         WHERE "user_id" = $6
-        RETURNING "user_id", "display_name", "email", "role", "bio", "avatar", "website", "created_at", "preffered_topics";
+        RETURNING "user_id", "display_name", "email", "role", "bio", "avatar", "website", "created_at", "preferred_topics";
         "#,
         body.display_name,
         body.avatar,
         body.bio,
         body.website,
-        body.preffered_topics.as_deref(),
+        body.preferred_topics.as_deref(),
         id
     )
         .fetch_optional(&mut *tx)
