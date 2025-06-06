@@ -27,6 +27,7 @@ struct BookRecord {
     pub cover_url: Option<String>,
     pub preview_link: Option<String>,
     pub info_link: Option<String>,
+    pub ai_summary: Option<String>,
 }
 
 impl BookRecord {
@@ -45,6 +46,7 @@ impl BookRecord {
         book.cover_url = self.cover_url;
         book.preview_link = self.preview_link;
         book.info_link = self.info_link;
+        book.ai_summary = self.ai_summary;
         book
     }
 }
@@ -91,7 +93,8 @@ pub async fn get_book_by_id(db_conn: &PgPool, id: i64) -> Result<Option<Book>, E
             "created_at",
             "cover_url",
             "preview_link",
-            "info_link"
+            "info_link",
+            "ai_summary"
         FROM "books"
         WHERE "book_id" = $1;
         "#,
@@ -173,7 +176,8 @@ pub async fn get_books(db_conn: &PgPool, ids: &[i64]) -> Result<Vec<Book>, Error
             "created_at",
             "cover_url",
             "preview_link",
-            "info_link"
+            "info_link",
+            "ai_summary"
         FROM "books"
         WHERE "book_id" IN ({});
         "#,

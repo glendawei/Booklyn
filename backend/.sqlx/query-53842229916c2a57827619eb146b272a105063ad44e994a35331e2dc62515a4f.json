@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n        SELECT\n            \"book_id\",\n            \"title\",\n            \"description\",\n            \"isbn_13\",\n            \"publisher\",\n            \"published_date\",\n            \"categories\",\n            \"ratings_count\",\n            \"created_at\",\n            \"cover_url\",\n            \"preview_link\",\n            \"info_link\"\n        FROM \"books\"\n        WHERE \"book_id\" = $1;\n        ",
+  "query": "\n        SELECT\n            \"book_id\",\n            \"title\",\n            \"description\",\n            \"isbn_13\",\n            \"publisher\",\n            \"published_date\",\n            \"categories\",\n            \"ratings_count\",\n            \"created_at\",\n            \"cover_url\",\n            \"preview_link\",\n            \"info_link\",\n            \"ai_summary\"\n        FROM \"books\"\n        WHERE \"book_id\" = $1;\n        ",
   "describe": {
     "columns": [
       {
@@ -62,6 +62,11 @@
         "ordinal": 11,
         "name": "info_link",
         "type_info": "Text"
+      },
+      {
+        "ordinal": 12,
+        "name": "ai_summary",
+        "type_info": "Text"
       }
     ],
     "parameters": {
@@ -81,8 +86,9 @@
       true,
       true,
       true,
+      true,
       true
     ]
   },
-  "hash": "17077f50a147570db4452a1c3f8c279c0329655d5907d04505bbf0737930b6a0"
+  "hash": "53842229916c2a57827619eb146b272a105063ad44e994a35331e2dc62515a4f"
 }
