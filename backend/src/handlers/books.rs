@@ -31,6 +31,7 @@ pub struct Book {
     pub cover_url: Option<String>,
     pub preview_link: Option<String>,
     pub info_link: Option<String>,
+    pub ai_summary: Option<String>,
 }
 
 #[derive(Deserialize, ToSchema, IntoParams)]
