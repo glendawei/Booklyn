@@ -15,61 +15,79 @@
       <button class="submit-btn" @click="submit">Get started</button>
     </div>
   </template>
-  
   <script>
-  export default {
-    data() {
-      return {
-        interests: [
-          { name: 'Fiction', icon: '📖' },
-          { name: 'Religion', icon: '✝️' },
-          { name: 'History', icon: '🏛️' },
-          { name: 'Biography & Autobiography', icon: '🧬' },
-          { name: 'Sports & Recreation', icon: '🏀' },
-          { name: 'Body, Mind & Spirit', icon: '🧘‍♀️' },
-          { name: 'Juvenile Fiction', icon: '📚' },
-          { name: 'Business & Economics', icon: '💰' },
-          { name: 'Juvenile Nonfiction', icon: '🧒' }
-        ],
-        selected: []
-      };
-    },
-    methods: {
-      toggleInterest(name) {
-        const index = this.selected.indexOf(name);
-        if (index === -1) {
-          this.selected.push(name);
-        } else {
-          this.selected.splice(index, 1);
-        }
-      },
-      submit() 
-      {
-        const currentUserEmail = localStorage.getItem('currentUser');
-        if (!currentUserEmail) {
-          alert('請先登入！');
-          return;
-        }
+import axios from 'axios';
 
-        let users = JSON.parse(localStorage.getItem('users')) || [];
-        const userIndex = users.findIndex(u => u.email === currentUserEmail);
+export default {
+  data() {
+    return {
+      interests: [],
+      selected: [],
+      emojiMap: [
+        '📖', '✝️', '🏛️', '🧬', '🏀', '🧘‍♀️', '📚', '💰', '🧒', '🎨', '🌍', '📐', '🔬'
+      ]
+    };
+  },
+  mounted() {
+    this.fetchCategoriesFromBooks();
+  },
+  methods: {
+    async fetchCategoriesFromBooks() {
+      try {
+        const response = await axios.get('http://localhost:8080/books'); // 或你的實際 API URL
+        const books = response.data;
 
-        if (userIndex !== -1) {
-          users[userIndex].preference = [...this.selected];
-        } else {
-          users.push({
-            email: currentUserEmail,
-            password: '',
-            preference: [...this.selected]
-          });
-        }
+        const categorySet = new Set();
+        books.forEach(book => {
+          (book.categories || []).forEach(cat => categorySet.add(cat));
+        });
 
-        localStorage.setItem('users', JSON.stringify(users));
-        this.$router.push('/profile-settings');
+        const allCategories = Array.from(categorySet);
+
+        // 將類別轉成 { name, icon } 格式，icon 可依照類別指定或隨機
+        this.interests = allCategories.map((name, index) => ({
+          name,
+          icon: this.emojiMap[index % this.emojiMap.length]
+        }));
+      } catch (error) {
+        console.error('無法取得書籍類別：', error);
       }
+    },
+    toggleInterest(name) {
+      const index = this.selected.indexOf(name);
+      if (index === -1) {
+        this.selected.push(name);
+      } else {
+        this.selected.splice(index, 1);
+      }
+    },
+    submit() {
+      const currentUserEmail = localStorage.getItem('currentUser');
+      if (!currentUserEmail) {
+        alert('請先登入！');
+        return;
+      }
+
+      let users = JSON.parse(localStorage.getItem('users')) || [];
+      const userIndex = users.findIndex(u => u.email === currentUserEmail);
+
+      if (userIndex !== -1) {
+        users[userIndex].preference = [...this.selected];
+      } else {
+        users.push({
+          email: currentUserEmail,
+          password: '',
+          preference: [...this.selected]
+        });
+      }
+
+      localStorage.setItem('users', JSON.stringify(users));
+      this.$router.push('/profile-settings');
     }
-  };
-  </script>
+  }
+};
+</script>
+
   
   <style scoped>
   .interest-page {
