@@ -131,7 +131,8 @@ pub async fn get_book_by_id(db_conn: &PgPool, id: i64) -> Result<Option<Book>, E
             "content",
             "helpful_yes" AS "upvotes",
             "helpful_total" - "helpful_yes" AS "downvotes",
-            "ra"."credibility_score"
+            "ra"."credibility_score",
+            "ra"."summary_ai"
             FROM "reviews" as "r"
                 LEFT JOIN "review_ai" AS "ra" ON "r"."review_id" = "ra"."review_id"
                 JOIN "books" AS "b" ON "r"."book_id" = "b"."book_id"
@@ -154,12 +155,9 @@ pub async fn get_book_by_id(db_conn: &PgPool, id: i64) -> Result<Option<Book>, E
 
 pub async fn get_books(db_conn: &PgPool, ids: &[i64]) -> Result<Vec<Book>, Error> {
     let mut tx = db_conn.begin().await?;
-    let id_list = ids.into_iter()
-        .map(|id| id.to_string())
-        .collect::<Vec<String>>()
-        .join(",");
 
-    let query_books = format!(
+    let book_records = sqlx::query_as!(
+        BookRecord,
         r#"
         SELECT
             "book_id",
@@ -175,27 +173,26 @@ pub async fn get_books(db_conn: &PgPool, ids: &[i64]) -> Result<Vec<Book>, Error
             "preview_link",
             "info_link"
         FROM "books"
-        WHERE "book_id" IN ({});
+        WHERE "book_id" = ANY($1)
         "#,
-        id_list
-    );
-    let book_records: Vec<BookRecord> = sqlx::query_as(&query_books)
+        ids
+    )
         .fetch_all(&mut *tx)
         .await?;
 
     if book_records.len() > 0 {
         let mut bookid2authors: HashMap<i64, Vec<Author>> = HashMap::new();
-        let query_authors = format!(
+        let author_records: Vec<AuthorRecord> = sqlx::query_as!(
+            AuthorRecord,
             r#"
             SELECT "ba"."book_id", "a"."author_id", "user_id", "name", "bio", "website", "created_at"
             FROM "book_authors" AS "ba"
                 JOIN "authors" AS "a" ON "ba"."author_id" = "a"."author_id"
-            WHERE "ba"."book_id" IN ({})
+            WHERE "ba"."book_id" = ANY($1)
             ORDER BY "ba"."book_id";
             "#,
-            id_list
-        );
-        let author_records: Vec<AuthorRecord> = sqlx::query_as(&query_authors)
+            ids
+        )
             .fetch_all(&mut *tx)
             .await?;
 
@@ -209,64 +206,58 @@ pub async fn get_books(db_conn: &PgPool, ids: &[i64]) -> Result<Vec<Book>, Error
             });
 
         let mut bookid2reviews: HashMap<i64, Vec<Review>> = HashMap::new();
-        let query_reviews = format!(
+        let reviews: Vec<Review> = sqlx::query_as!(
+            Review,
             r#"
             SELECT 
             "r"."review_id",
             "r"."book_id",
-            "user_id",
-            "is_external",
-            "source",
-            "source_review_id",
-            "user_id_src",
-            "profile_name",
-            "rating",
-            "review_time",
-            "summary",
-            "content",
-            "helpful_yes" AS "upvotes",
-            "helpful_total" - "helpful_yes" AS "downvotes",
-            "ra"."credibility_score"
+            "r"."user_id",
+            "r"."is_external",
+            "r"."source",
+            "r"."source_review_id",
+            "r"."user_id_src",
+            "r"."profile_name",
+            "r"."rating",
+            "r"."review_time",
+            "r"."summary",
+            "r"."content",
+            "r"."helpful_yes" AS "upvotes",
+            "r"."helpful_total" - "r"."helpful_yes" AS "downvotes",
+            "ra"."credibility_score",
+            "ra"."summary_ai"
             FROM "reviews" as "r"
                 LEFT JOIN "review_ai" AS "ra" ON "r"."review_id" = "ra"."review_id"
                 JOIN "books" AS "b" ON "r"."book_id" = "b"."book_id"
-            WHERE "r"."book_id" IN ({});
+            WHERE "r"."book_id" = ANY($1);
             "#,
-            id_list
-        );
-        let reviews: Vec<Review> = sqlx::query_as(&query_reviews)
+            ids
+        )
             .fetch_all(&mut *tx)
             .await?;
 
         reviews.into_iter()
-            .for_each(|r| {
-                let book_id = r.book_id.unwrap();
-                
-                if bookid2reviews.contains_key(&book_id) {
-                    bookid2reviews.get_mut(&book_id).unwrap().push(r);
+            .for_each(|review| {
+                if bookid2reviews.contains_key(&review.book_id.unwrap()) {
+                    bookid2reviews.get_mut(&review.book_id.unwrap()).unwrap().push(review);
                 } else {
-                    bookid2reviews.insert(book_id, vec![r]);
+                    bookid2reviews.insert(review.book_id.unwrap(), vec![review]);
                 }
             });
- 
-        let mut books: Vec<Book> = Vec::with_capacity(book_records.len());
-        
-        for book_record in book_records.into_iter() {
-            let mut book = book_record.into_book();
 
-            book.authors = match bookid2authors.get_mut(&book.book_id) {
-                Some(authors) => Some(std::mem::take(authors)),
-                None => None,
-            };
-            book.reviews = match bookid2reviews.get_mut(&book.book_id) {
-                Some(reviews) => Some(std::mem::take(reviews)),
-                None => None
-            };
-            books.push(book);
-        }
+        let books = book_records.into_iter()
+            .map(|record| {
+                let mut book = record.into_book();
+                book.authors = bookid2authors.remove(&book.book_id);
+                book.reviews = bookid2reviews.remove(&book.book_id);
+                book
+            })
+            .collect();
+
+        tx.commit().await?;
         Ok(books)
     } else {
-        Ok(Vec::new())
+        Ok(vec![])
     }
 }
 
@@ -304,20 +295,21 @@ pub async fn get_review_by_id(db_conn: &PgPool, id: i64) -> Result<Option<Review
         r#"
         SELECT 
             "r"."review_id",
-            "book_id",
-            "user_id",
-            "is_external",
-            "source",
-            "source_review_id",
-            "user_id_src",
-            "profile_name",
-            "rating",
-            "review_time",
-            "summary",
-            "content",
-            "helpful_yes" AS "upvotes",
-            "helpful_total" - "helpful_yes" AS "downvotes",
-            "ra"."credibility_score"
+            "r"."book_id",
+            "r"."user_id",
+            "r"."is_external",
+            "r"."source",
+            "r"."source_review_id",
+            "r"."user_id_src",
+            "r"."profile_name",
+            "r"."rating",
+            "r"."review_time",
+            "r"."summary",
+            "r"."content",
+            "r"."helpful_yes" AS "upvotes",
+            "r"."helpful_total" - "r"."helpful_yes" AS "downvotes",
+            "ra"."credibility_score",
+            "ra"."summary_ai"
         FROM "reviews" as "r"
             LEFT JOIN "review_ai" AS "ra" ON "r"."review_id" = "ra"."review_id"
         WHERE "r"."review_id" = $1;

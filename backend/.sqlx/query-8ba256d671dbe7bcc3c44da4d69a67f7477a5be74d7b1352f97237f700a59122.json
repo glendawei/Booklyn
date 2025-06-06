@@ -1,0 +1,112 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT \n            \"r\".\"review_id\",\n            \"r\".\"book_id\",\n            \"user_id\",\n            \"is_external\",\n            \"source\",\n            \"source_review_id\",\n            \"user_id_src\",\n            \"profile_name\",\n            \"rating\",\n            \"review_time\",\n            \"summary\",\n            \"content\",\n            \"helpful_yes\" AS \"upvotes\",\n            \"helpful_total\" - \"helpful_yes\" AS \"downvotes\",\n            \"ra\".\"credibility_score\",\n            \"ra\".\"summary_ai\"\n            FROM \"reviews\" as \"r\"\n                LEFT JOIN \"review_ai\" AS \"ra\" ON \"r\".\"review_id\" = \"ra\".\"review_id\"\n                JOIN \"books\" AS \"b\" ON \"r\".\"book_id\" = \"b\".\"book_id\"\n            WHERE \"r\".\"book_id\" = $1;\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "review_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "book_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 2,
+        "name": "user_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 3,
+        "name": "is_external",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 4,
+        "name": "source",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "source_review_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
+        "name": "user_id_src",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 7,
+        "name": "profile_name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 8,
+        "name": "rating",
+        "type_info": "Int2"
+      },
+      {
+        "ordinal": 9,
+        "name": "review_time",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 10,
+        "name": "summary",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 11,
+        "name": "content",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 12,
+        "name": "upvotes",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 13,
+        "name": "downvotes",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 14,
+        "name": "credibility_score",
+        "type_info": "Numeric"
+      },
+      {
+        "ordinal": 15,
+        "name": "summary_ai",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      null,
+      true,
+      true
+    ]
+  },
+  "hash": "8ba256d671dbe7bcc3c44da4d69a67f7477a5be74d7b1352f97237f700a59122"
+}

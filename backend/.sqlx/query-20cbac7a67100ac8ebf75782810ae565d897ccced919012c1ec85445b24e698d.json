@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT \n            \"r\".\"review_id\",\n            \"r\".\"book_id\",\n            \"user_id\",\n            \"is_external\",\n            \"source\",\n            \"source_review_id\",\n            \"user_id_src\",\n            \"profile_name\",\n            \"rating\",\n            \"review_time\",\n            \"summary\",\n            \"content\",\n            \"helpful_yes\" AS \"upvotes\",\n            \"helpful_total\" - \"helpful_yes\" AS \"downvotes\",\n            \"ra\".\"credibility_score\"\n            FROM \"reviews\" as \"r\"\n                LEFT JOIN \"review_ai\" AS \"ra\" ON \"r\".\"review_id\" = \"ra\".\"review_id\"\n                JOIN \"books\" AS \"b\" ON \"r\".\"book_id\" = \"b\".\"book_id\"\n            WHERE \"r\".\"book_id\" = $1;\n            ",
+  "query": "\n            SELECT \n            \"r\".\"review_id\",\n            \"r\".\"book_id\",\n            \"r\".\"user_id\",\n            \"r\".\"is_external\",\n            \"r\".\"source\",\n            \"r\".\"source_review_id\",\n            \"r\".\"user_id_src\",\n            \"r\".\"profile_name\",\n            \"r\".\"rating\",\n            \"r\".\"review_time\",\n            \"r\".\"summary\",\n            \"r\".\"content\",\n            \"r\".\"helpful_yes\" AS \"upvotes\",\n            \"r\".\"helpful_total\" - \"r\".\"helpful_yes\" AS \"downvotes\",\n            \"ra\".\"credibility_score\",\n            \"ra\".\"summary_ai\"\n            FROM \"reviews\" as \"r\"\n                LEFT JOIN \"review_ai\" AS \"ra\" ON \"r\".\"review_id\" = \"ra\".\"review_id\"\n                JOIN \"books\" AS \"b\" ON \"r\".\"book_id\" = \"b\".\"book_id\"\n            WHERE \"r\".\"book_id\" = ANY($1);\n            ",
   "describe": {
     "columns": [
       {
@@ -77,11 +77,16 @@
         "ordinal": 14,
         "name": "credibility_score",
         "type_info": "Numeric"
+      },
+      {
+        "ordinal": 15,
+        "name": "summary_ai",
+        "type_info": "Text"
       }
     ],
     "parameters": {
       "Left": [
-        "Int8"
+        "Int8Array"
       ]
     },
     "nullable": [
@@ -99,8 +104,9 @@
       true,
       true,
       null,
+      true,
       true
     ]
   },
-  "hash": "9f8d3f4798596e0089cd9fa53d9054289dca908dece52c293d6c85de258c3ea7"
+  "hash": "20cbac7a67100ac8ebf75782810ae565d897ccced919012c1ec85445b24e698d"
 }

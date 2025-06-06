@@ -35,6 +35,7 @@ pub struct Review {
     pub downvotes: Option<i32>,
     #[schema(value_type = String)]
     pub credibility_score: Option<BigDecimal>,
+    pub summary_ai: Option<String>,
 }
 
 #[utoipa::path(
