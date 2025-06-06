@@ -112,7 +112,8 @@ async function onRegister() {
       role: 'reader',         // 預設註冊為一般使用者
       bio: "a",
       avatar: "https://example.com/avatar.png",
-      website: "https://example.com"
+      website: "https://example.com",
+      preferred_topics: ["general"] 
     })
 
     successMessage.value = '註冊成功！'
