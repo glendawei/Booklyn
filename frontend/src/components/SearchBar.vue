@@ -71,7 +71,7 @@ function handleUserClick() {
   console.log('user icon clicked')
   const isLoggedIn = localStorage.getItem('loggedIn') === 'true'
   if (isLoggedIn) {
-    router.push('/profile-settings')
+    router.push('/profile-settings/personal-info')
   } else {
     router.push('/Login')
   }

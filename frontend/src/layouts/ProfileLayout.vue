@@ -29,7 +29,7 @@ export default {
   methods: {
     logout() {
       localStorage.removeItem('loggedIn')
-      localStorage.removeItem('currentUser');
+      localStorage.removeItem('user');
       this.$router.push('/login');
     }
   }

@@ -11,6 +11,7 @@ export function updateUser(userId, body) {
   return api.patch(`/users/${userId}`, body).then(res => res.data)
 }
 
+
 // 获取阅读清单
 export function getReadingList(userId) {
   return api.get(`/users/${userId}/reading-list`).then(res => res.data)
