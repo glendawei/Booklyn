@@ -5,7 +5,7 @@
       <div class="drawer-panel">
         <button class="drawer-close" @click="selectedReview = null">×</button>
 
-        <h2 class="drawer-title">{{ selectedReview?.title || 'N/A' }}</h2>
+     
         <p class="drawer-meta">
           Reviewed by {{ selectedReview?.reviewer || "N/A" }} on
           {{ selectedReview?.date || "N/A" }} from {{ selectedReview?.source || "N/A" }}
