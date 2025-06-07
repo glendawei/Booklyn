@@ -33,8 +33,8 @@
     </div>
   </div>
 </template>
-<script setup>
 
+<script setup>
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import 'vue3-carousel/carousel.css'
@@ -50,7 +50,18 @@ const carouselConfig = {
 
 const bookGroups = ref([])
 
-const groupBooksByCategory = (books) => {
+// This will be dynamically set later based on user or fallback
+let preferredCategories = [
+  "Social Science",
+  "Fiction",
+  "Religion",
+  "History",
+  "Juvenile Fiction",
+  "Biography & Autobiography"
+]
+
+// Group books by matching categories
+const groupBooksByCategory = (books, categoriesToShow) => {
   const map = {}
   books.forEach((book) => {
     if (Array.isArray(book.categories)) {
@@ -60,39 +71,47 @@ const groupBooksByCategory = (books) => {
           id: book.book_id,
           title: book.title,
           author: book.authors?.map(a => a.name).join(", "),
-          rate: book.reviews?.length ? (book.reviews.reduce((sum, r) => sum + r.rating, 0) / book.reviews.length).toFixed(1) : 'N/A',
+          rate: book.reviews?.length
+            ? (book.reviews.reduce((sum, r) => sum + r.rating, 0) / book.reviews.length).toFixed(1)
+            : 'N/A',
           cover: book.cover_url || '/default-cover.png',
         })
       })
     }
   })
 
-  // 固定顯示這五個類別
-  const fixedCategories = [
-    "Social Science",
-    "Fiction",
-    "Religion",
-    "History",
-    "Juvenile Fiction",
-    "Biography & Autobiography"
-  ]
-  return fixedCategories.filter(cat => map[cat]).map((genre) => ({
+  return categoriesToShow.filter(cat => map[cat]).map((genre) => ({
     genre,
     books: map[genre]
   }))
 }
 
-const fetchBooks = async () => {
+// Fetch both user preferences and book data
+const fetchData = async () => {
   try {
-    const res = await axios.get("http://localhost:8080/books")
-    bookGroups.value = groupBooksByCategory(res.data)
+    const userId = parseInt(localStorage.getItem('user_id'))
+    
+    // If userId exists, fetch preferences
+    if (!isNaN(userId)) {
+      const userRes = await axios.get(`http://localhost:8080/users/${userId}`)
+      const userPrefs = userRes.data?.preferred_topics
+      if (Array.isArray(userPrefs) && userPrefs.length > 0) {
+        preferredCategories = userPrefs
+      }
+    }
+
+    const booksRes = await axios.get("http://localhost:8080/books")
+    bookGroups.value = groupBooksByCategory(booksRes.data, preferredCategories)
+
   } catch (e) {
-    console.error("❌ 無法取得書籍列表：", e.message)
+    console.error("❌ 無法取得資料：", e.message)
   }
 }
 
-onMounted(fetchBooks)
+onMounted(fetchData)
 </script>
+
+
 <style scoped>
 .custom-slide {
   max-width: 200px;
