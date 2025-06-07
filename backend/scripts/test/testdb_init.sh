@@ -1,7 +1,7 @@
 #!/bin/bash
 # Description:
-#     A simple script to initialize database for tests. This script should be executed before each test.
-#     If you run test through nextest (e.g., cargo nextest run), this script will be executed automatically.
+#     A simple script to initialize database for tests. This script need to be executed before running tests.
+#     If you run tests through nextest (e.g., cargo nextest run), this script will be executed automatically.
 # Usage:
 #     ./init.sh <dbdump>
 
