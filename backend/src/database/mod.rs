@@ -319,8 +319,8 @@ pub async fn get_review_by_id(db_conn: &PgPool, id: i64) -> Result<Option<Review
             "review_time",
             "summary",
             "content",
-            "helpful_yes" AS "upvotes",
-            "helpful_total" - "helpful_yes" AS "downvotes",
+            "helpful_yes" + (SELECT COUNT(*) FROM "review_votes" WHERE "review_id" = $1 AND "vote" = true)::integer AS "upvotes",
+            "helpful_total" + (SELECT COUNT(*) FROM "review_votes" WHERE "review_id" = $1)::integer - "helpful_yes" - (SELECT COUNT(*) FROM "review_votes" WHERE "review_id" = $1 AND "vote" = true)::integer AS "downvotes",
             "ra"."credibility_score"
         FROM "reviews" as "r"
             LEFT JOIN "review_ai" AS "ra" ON "r"."review_id" = "ra"."review_id"

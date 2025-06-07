@@ -1,0 +1,8 @@
+experimental = ["setup-scripts"]
+
+[scripts.setup.testdb_init]
+command = 'scripts/test/testdb_init.sh scripts/test/testdb_init.sql'
+
+[[profile.default.scripts]]
+filter = 'package(booklyn_backend)'
+setup = 'testdb_init'

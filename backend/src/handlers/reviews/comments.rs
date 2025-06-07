@@ -6,7 +6,7 @@ use utoipa::{schema, ToSchema};
 use crate::AppData;
 use crate::error::Error;
 
-#[derive(Serialize, ToSchema)]
+#[derive(Serialize, Deserialize, ToSchema)]
 pub struct Comment {
     pub comment_id: i64,
     pub review_id: Option<i64>,
@@ -17,14 +17,14 @@ pub struct Comment {
     pub created_at: Option<OffsetDateTime>,
 }
 
-#[derive(Deserialize, ToSchema)]
+#[derive(Serialize, Deserialize, ToSchema)]
 pub struct CreateComment {
     pub user_id: Option<i64>,
     pub parent_id: Option<i64>,
     pub content: String,
 }
 
-#[derive(Deserialize, ToSchema)]
+#[derive(Serialize, Deserialize, ToSchema)]
 pub struct UpdateComment {
     pub content: String,
 }
@@ -36,7 +36,6 @@ pub struct UpdateComment {
     ),
     responses(
         (status = 200, description = "Successful operation", body = [Comment]),
-        (status = 404, description = "Comments not found"),
         (status = 500, description = "Internal server error", body = String)
     )
 )]
@@ -54,7 +53,7 @@ pub async fn get_comments(data: web::Data<AppData>, id: web::Path<i64>) -> Resul
         .fetch_all(&data.db_conn)
         .await?;
 
-    if comments.len() == 0 { Ok(HttpResponse::NotFound().finish()) } else { Ok(HttpResponse::Ok().json(comments)) }
+    Ok(HttpResponse::Ok().json(comments))
 }
 
 #[utoipa::path(

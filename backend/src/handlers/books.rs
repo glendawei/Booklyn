@@ -13,7 +13,7 @@ use crate::error::Error;
 /* default maximum number of returned books */
 const LIMIT: i64 = 100;
 
-#[derive(Serialize, ToSchema, Default)]
+#[derive(Serialize, Deserialize, ToSchema, Default)]
 pub struct Book {
     pub book_id: i64,
     pub title: String,

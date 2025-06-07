@@ -5,14 +5,14 @@ use utoipa::ToSchema;
 use crate::AppData;
 use crate::error::Error;
 
-#[derive(Serialize, ToSchema)]
+#[derive(Serialize, Deserialize, ToSchema)]
 pub struct Vote {
     pub user_id: i64,
     pub review_id: i64,
     pub vote: bool,
 }
 
-#[derive(Deserialize, ToSchema)]
+#[derive(Serialize, Deserialize, ToSchema)]
 pub struct CreateVote {
     pub user_id: i64,
     pub helpful: bool,
@@ -67,19 +67,6 @@ pub async fn create_vote(
         .await?
     {
         Some(vote) => {
-            sqlx::query!(
-                r#"
-                UPDATE "reviews" SET
-                    "helpful_total" = "helpful_total" + 1,
-                    "helpful_yes" = "helpful_yes" + $1
-                WHERE "review_id" = $2;
-                "#,
-                vote.vote as i64,
-                review_id
-            )
-                .execute(&mut *tx)
-                .await?;
-
             tx.commit().await?;
             Ok(HttpResponse::Ok().json(vote))
         },

@@ -6,7 +6,7 @@ use utoipa::{schema, ToSchema};
 use crate::AppData;
 use crate::error::Error;
 
-#[derive(Serialize, ToSchema)]
+#[derive(Serialize, Deserialize, ToSchema)]
 pub struct ReadingListItem {
     pub item_id: i64,
     pub user_id: Option<i64>,
@@ -17,14 +17,14 @@ pub struct ReadingListItem {
     pub created_at: Option<OffsetDateTime>,
 }
 
-#[derive(Deserialize, ToSchema)]
+#[derive(Serialize, Deserialize, ToSchema)]
 pub struct CreateReadingListItem {
     pub book_id: i64,
     pub status: String,
     pub note: Option<String>,
 }
 
-#[derive(Deserialize, ToSchema)]
+#[derive(Serialize, Deserialize, ToSchema)]
 pub struct UpdateReadingListItem {
     pub status: Option<String>,
     pub note: Option<String>,
