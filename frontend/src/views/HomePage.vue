@@ -5,7 +5,8 @@
         Because You Like {{ group.genre }}
       </h2>
 
-      <Carousel v-bind="carouselConfig" style="height: 430px;">
+      <Carousel v-bind="{carouselConfig, itemsToShow: Math.min(6, group.books.length),
+    wrapAround: group.books.length > 3, gap: 10, autoplay: 2000, pauseAutoplayOnHover: true,}" style="height: 430px;">
         <Slide v-for="book in group.books" :key="book.id" class="custom-slide">
           <div class="carousel__item">
             <router-link :to="`/books/${book.id}`">
@@ -41,7 +42,7 @@ import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
 
 const carouselConfig = {
   itemsToShow: 6,
-  wrapAround: true,
+  wrapAround: false,
   autoplay: 2000,
   gap: 10,
   pauseAutoplayOnHover: true,
@@ -68,6 +69,7 @@ const groupBooksByCategory = (books) => {
 
   // 固定顯示這五個類別
   const fixedCategories = [
+    "Social Science",
     "Fiction",
     "Religion",
     "History",

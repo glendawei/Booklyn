@@ -23,7 +23,7 @@
         </div>
         <p class="drawer-comment">{{ selectedReview?.comment || 'No comment available.' }}</p>
         <div style="display: grid; grid-template-columns: 150px auto;">
-          <ProgressCircle height="150" width="150" color="#BC6C25" :name="ad" :progress="selectedReview?.aiRating || 0"
+          <ProgressCircle height="150" width="150" color="#BC6C25" :name="ad" :progress="selectedReview?.credibility_score || 0"
             style="padding:20px;" />
           <div style="padding-top:65px; color: #BC6C25;">Is this AI-generated?</div>
         </div>
@@ -90,9 +90,7 @@
             </span>
           </div>
           <div class="review-comment mt-3 text-gray-700 italic">
-            “This is a mockup review that summarizes comments from all major book
-            websites. The book is widely appreciated for its narrative style and
-            character depth, although some readers noted pacing issues.”
+            {{ book.ai_summary }}
           </div>
         </div>
       </div>
@@ -260,7 +258,7 @@ const fetchBook = async () => {
     console.log("📷 封面 URL:", book.value.cover_url);
     console.log("💬 評論數:", book.value.reviews?.length);
     console.log("📝 第一則評論:", book.value.reviews?.[0]?.comment);
-    console.log("🤖 第一則 AI 分數:", book.value.reviews?.[0]?.aiRating);
+    console.log("🤖 AI 整理:", book.value.ai_summary);
     console.log("👤 第一則評論者:", book.value.reviews?.[0]?.reviewer);
     console.log("🌐 第一則評論來源:", book.value.reviews?.[0]?.source);
   } catch (err) {
