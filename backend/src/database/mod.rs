@@ -243,31 +243,26 @@ pub async fn get_books(db_conn: &PgPool, ids: &[i64]) -> Result<Vec<Book>, Error
             .await?;
 
         reviews.into_iter()
-            .for_each(|r| {
-                let book_id = r.book_id.unwrap();
+            .for_each(|review| {
+                let book_id = review.book_id.unwrap();
                 
                 if bookid2reviews.contains_key(&book_id) {
-                    bookid2reviews.get_mut(&book_id).unwrap().push(r);
+                    bookid2reviews.get_mut(&book_id).unwrap().push(review);
                 } else {
-                    bookid2reviews.insert(book_id, vec![r]);
+                    bookid2reviews.insert(book_id, vec![review]);
                 }
             });
  
         let mut books: Vec<Book> = Vec::with_capacity(book_records.len());
         
-        for book_record in book_records.into_iter() {
-            let mut book = book_record.into_book();
+        book_records.into_iter()
+            .for_each(|record| {
+                let mut book = record.into_book();
 
-            book.authors = match bookid2authors.get_mut(&book.book_id) {
-                Some(authors) => Some(std::mem::take(authors)),
-                None => None,
-            };
-            book.reviews = match bookid2reviews.get_mut(&book.book_id) {
-                Some(reviews) => Some(std::mem::take(reviews)),
-                None => None
-            };
-            books.push(book);
-        }
+                book.authors = bookid2authors.remove(&book.book_id);
+                book.reviews = bookid2reviews.remove(&book.book_id);
+                books.push(book);
+            });
         Ok(books)
     } else {
         Ok(Vec::new())
