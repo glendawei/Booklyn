@@ -6,7 +6,7 @@ pub use vote::*;
 
 use actix_web::{get, web, HttpResponse, Responder};
 use actix_web::web::ServiceConfig;
-use serde::Serialize;
+use serde::{Serialize, Deserialize};
 use time::OffsetDateTime;
 use bigdecimal::BigDecimal;
 use utoipa::{schema, ToSchema};
@@ -16,7 +16,7 @@ use crate::database;
 use crate::AppData;
 use crate::error::Error;
 
-#[derive(Serialize, FromRow, ToSchema)]
+#[derive(Serialize, Deserialize, FromRow, ToSchema)]
 pub struct Review {
     pub review_id: i64,
     pub book_id: Option<i64>,

@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n        SELECT \n            \"r\".\"review_id\",\n            \"book_id\",\n            \"user_id\",\n            \"is_external\",\n            \"source\",\n            \"source_review_id\",\n            \"user_id_src\",\n            \"profile_name\",\n            \"rating\",\n            \"review_time\",\n            \"summary\",\n            \"content\",\n            \"helpful_yes\" AS \"upvotes\",\n            \"helpful_total\" - \"helpful_yes\" AS \"downvotes\",\n            \"ra\".\"credibility_score\"\n        FROM \"reviews\" as \"r\"\n            LEFT JOIN \"review_ai\" AS \"ra\" ON \"r\".\"review_id\" = \"ra\".\"review_id\"\n        WHERE \"r\".\"review_id\" = $1;\n        ",
+  "query": "\n        SELECT \n            \"r\".\"review_id\",\n            \"book_id\",\n            \"user_id\",\n            \"is_external\",\n            \"source\",\n            \"source_review_id\",\n            \"user_id_src\",\n            \"profile_name\",\n            \"rating\",\n            \"review_time\",\n            \"summary\",\n            \"content\",\n            \"helpful_yes\" + (SELECT COUNT(*) FROM \"review_votes\" WHERE \"review_id\" = $1 AND \"vote\" = true)::integer AS \"upvotes\",\n            \"helpful_total\" + (SELECT COUNT(*) FROM \"review_votes\" WHERE \"review_id\" = $1)::integer - \"helpful_yes\" - (SELECT COUNT(*) FROM \"review_votes\" WHERE \"review_id\" = $1 AND \"vote\" = true)::integer AS \"downvotes\",\n            \"ra\".\"credibility_score\"\n        FROM \"reviews\" as \"r\"\n            LEFT JOIN \"review_ai\" AS \"ra\" ON \"r\".\"review_id\" = \"ra\".\"review_id\"\n        WHERE \"r\".\"review_id\" = $1;\n        ",
   "describe": {
     "columns": [
       {
@@ -97,10 +97,10 @@
       true,
       true,
       true,
-      true,
+      null,
       null,
       true
     ]
   },
-  "hash": "c448a49bd3388d663ffdbe4811c99581b9e4b9022525b2edb75af59ae0fa2862"
+  "hash": "478b76107fbbb937f55977051cf1e05cffb13b0d5f6cce1ba06c7e7e511c17ce"
 }

@@ -12,7 +12,7 @@ use crate::database;
 use crate::AppData;
 use crate::error::Error;
 
-#[derive(Serialize, ToSchema)]
+#[derive(Serialize, Deserialize, ToSchema)]
 pub struct User {
     pub user_id: i64,
     pub display_name: String,
@@ -26,7 +26,7 @@ pub struct User {
     pub preferred_topics: Option<Vec<String>>,
 }
 
-#[derive(Deserialize, ToSchema)]
+#[derive(Serialize, Deserialize, ToSchema)]
 pub struct UpdateUser {
     pub display_name: Option<String>,
     pub bio: Option<String>,

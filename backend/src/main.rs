@@ -1,23 +1,19 @@
-mod handlers;
-mod database;
-mod api_doc;
-mod error;
-
 use std::net::Ipv4Addr;
 use actix_web::{middleware, web, App, HttpServer};
-use sqlx::postgres::{PgPool, PgPoolOptions};
+use sqlx::postgres::PgPoolOptions;
 use env_logger::Env;
 use dotenv::dotenv;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
-use api_doc::ApiDoc;
 use actix_cors::Cors;
 
-const DB_CONN_MAX: u32 = 32;
+use booklyn_backend::{
+    AppData,
+    handlers,
+    api_doc::ApiDoc,
+};
 
-struct AppData {
-    db_conn: PgPool,
-}
+const DB_CONN_MAX: u32 = 32;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {

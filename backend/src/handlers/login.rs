@@ -1,13 +1,13 @@
 use actix_web::{post, web, HttpResponse, Responder};
 use actix_web::web::ServiceConfig;
-use serde::Deserialize;
+use serde::{Serialize, Deserialize};
 use utoipa::ToSchema;
 
 use crate::AppData;
 use crate::handlers::users::User;
 use crate::error::Error;
 
-#[derive(Deserialize, ToSchema)]
+#[derive(Serialize, Deserialize, ToSchema)]
 pub struct Login {
     pub email: String,
     pub password_hash: String,

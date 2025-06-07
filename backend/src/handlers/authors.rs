@@ -1,6 +1,6 @@
 use actix_web::{get, web, HttpResponse, Responder};
 use actix_web::web::ServiceConfig;
-use serde::Serialize;
+use serde::{Serialize, Deserialize};
 use time::OffsetDateTime;
 use utoipa::{schema, ToSchema};
 
@@ -8,7 +8,7 @@ use crate::database;
 use crate::AppData;
 use crate::error::Error;
 
-#[derive(Serialize, ToSchema)]
+#[derive(Serialize, Deserialize, ToSchema)]
 pub struct Author {
     pub author_id: i64,
     pub user_id: Option<i64>,

@@ -1,5 +1,5 @@
 [package]
-name = "Booklyn_backend"
+name = "booklyn_backend"
 version = "0.1.0"
 edition = "2024"
 
@@ -17,3 +17,5 @@ time = { version = "0.3.41", features = ["serde", "serde-human-readable"] }
 utoipa = { version = "4", features = ["actix_extras"] }
 utoipa-swagger-ui = { version = "4", features = ["actix-web"] }
 actix-cors = "0.7"
+actix-service = "2.0.3"
+actix-http = "3.11.0"
