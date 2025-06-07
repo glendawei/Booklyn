@@ -112,6 +112,7 @@ onMounted(fetchData)
 </script>
 
 
+
 <style scoped>
 .custom-slide {
   max-width: 200px;
