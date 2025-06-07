@@ -32,22 +32,22 @@ struct BookRecord {
 
 impl BookRecord {
     pub fn into_book(self) -> Book {
-        let mut book = Book::default();
-
-        book.book_id = self.book_id;
-        book.title = self.title;
-        book.description = self.description;
-        book.isbn_13 = self.isbn_13;
-        book.publisher = self.publisher;
-        book.published_date = self.published_date;
-        book.categories = self.categories;
-        book.ratings_count = self.ratings_count;
-        book.created_at = self.created_at;
-        book.cover_url = self.cover_url;
-        book.preview_link = self.preview_link;
-        book.info_link = self.info_link;
-        book.ai_summary = self.ai_summary;
-        book
+        Book {
+            book_id: self.book_id,
+            title: self.title,
+            description: self.description,
+            isbn_13: self.isbn_13,
+            publisher: self.publisher,
+            published_date: self.published_date,
+            categories: self.categories,
+            ratings_count: self.ratings_count,
+            created_at: self.created_at,
+            cover_url: self.cover_url,
+            preview_link: self.preview_link,
+            info_link: self.info_link,
+            ai_summary: self.ai_summary,
+            ..Book::default()
+        }
     }
 }
 
@@ -147,8 +147,8 @@ pub async fn get_book_by_id(db_conn: &PgPool, id: i64) -> Result<Option<Book>, E
  
         let mut book = book_record.into_book();
 
-        book.authors = if authors.len() > 0 { Some(authors) } else { None };
-        book.reviews = if reviews.len() > 0 { Some(reviews) } else { None };
+        book.authors = if !authors.is_empty() { Some(authors) } else { None };
+        book.reviews = if !reviews.is_empty() { Some(reviews) } else { None };
         Ok(Some(book))
     } else {
         Ok(None)
@@ -157,12 +157,9 @@ pub async fn get_book_by_id(db_conn: &PgPool, id: i64) -> Result<Option<Book>, E
 
 pub async fn get_books(db_conn: &PgPool, ids: &[i64]) -> Result<Vec<Book>, Error> {
     let mut tx = db_conn.begin().await?;
-    let id_list = ids.into_iter()
-        .map(|id| id.to_string())
-        .collect::<Vec<String>>()
-        .join(",");
 
-    let query_books = format!(
+    let book_records = sqlx::query_as!(
+        BookRecord,
         r#"
         SELECT
             "book_id",
@@ -179,41 +176,37 @@ pub async fn get_books(db_conn: &PgPool, ids: &[i64]) -> Result<Vec<Book>, Error
             "info_link",
             "ai_summary"
         FROM "books"
-        WHERE "book_id" IN ({});
+        WHERE "book_id" = ANY($1);
         "#,
-        id_list
-    );
-    let book_records: Vec<BookRecord> = sqlx::query_as(&query_books)
+        ids
+    )
         .fetch_all(&mut *tx)
         .await?;
 
-    if book_records.len() > 0 {
+    if !book_records.is_empty() {
         let mut bookid2authors: HashMap<i64, Vec<Author>> = HashMap::new();
-        let query_authors = format!(
+        let author_records = sqlx::query_as!(
+            AuthorRecord,
             r#"
             SELECT "ba"."book_id", "a"."author_id", "user_id", "name", "bio", "website", "created_at"
             FROM "book_authors" AS "ba"
                 JOIN "authors" AS "a" ON "ba"."author_id" = "a"."author_id"
-            WHERE "ba"."book_id" IN ({})
+            WHERE "ba"."book_id" = ANY($1)
             ORDER BY "ba"."book_id";
             "#,
-            id_list
-        );
-        let author_records: Vec<AuthorRecord> = sqlx::query_as(&query_authors)
+            ids
+        )
             .fetch_all(&mut *tx)
             .await?;
 
         author_records.into_iter()
             .for_each(|record| {
-                if bookid2authors.contains_key(&record.book_id) {
-                    bookid2authors.get_mut(&record.book_id).unwrap().push(record.into_author());
-                } else {
-                    bookid2authors.insert(record.book_id, vec![record.into_author()]);
-                }
+                bookid2authors.entry(record.book_id).or_default().push(record.into_author());
             });
 
         let mut bookid2reviews: HashMap<i64, Vec<Review>> = HashMap::new();
-        let query_reviews = format!(
+        let reviews = sqlx::query_as!(
+            Review,
             r#"
             SELECT 
             "r"."review_id",
@@ -234,23 +227,17 @@ pub async fn get_books(db_conn: &PgPool, ids: &[i64]) -> Result<Vec<Book>, Error
             FROM "reviews" as "r"
                 LEFT JOIN "review_ai" AS "ra" ON "r"."review_id" = "ra"."review_id"
                 JOIN "books" AS "b" ON "r"."book_id" = "b"."book_id"
-            WHERE "r"."book_id" IN ({});
+            WHERE "r"."book_id" = ANY($1);
             "#,
-            id_list
-        );
-        let reviews: Vec<Review> = sqlx::query_as(&query_reviews)
+            ids
+        )
             .fetch_all(&mut *tx)
             .await?;
 
         reviews.into_iter()
             .for_each(|review| {
-                let book_id = review.book_id.unwrap();
-                
-                if bookid2reviews.contains_key(&book_id) {
-                    bookid2reviews.get_mut(&book_id).unwrap().push(review);
-                } else {
-                    bookid2reviews.insert(book_id, vec![review]);
-                }
+                /* Since we filter the reviews by book IDs, each review must have a non-null book_id and thus unwrap() here won't panic. */
+                bookid2reviews.entry(review.book_id.unwrap()).or_default().push(review);
             });
  
         let mut books: Vec<Book> = Vec::with_capacity(book_records.len());

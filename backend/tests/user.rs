@@ -118,7 +118,7 @@ async fn test_reading_list_basic() {
     let note = "must read";
     /* Create reading list item */
     let create_item = CreateReadingListItem {
-        book_id: book_id,
+        book_id,
         status: status.into(),
         note: Some(note.into()),
     };

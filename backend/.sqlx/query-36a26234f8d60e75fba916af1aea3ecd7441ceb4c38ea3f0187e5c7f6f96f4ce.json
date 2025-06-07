@@ -1,0 +1,94 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT\n            \"book_id\",\n            \"title\",\n            \"description\",\n            \"isbn_13\",\n            \"publisher\",\n            \"published_date\",\n            \"categories\",\n            \"ratings_count\",\n            \"created_at\",\n            \"cover_url\",\n            \"preview_link\",\n            \"info_link\",\n            \"ai_summary\"\n        FROM \"books\"\n        WHERE \"book_id\" = ANY($1);\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "book_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "title",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "description",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "isbn_13",
+        "type_info": "Bpchar"
+      },
+      {
+        "ordinal": 4,
+        "name": "publisher",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "published_date",
+        "type_info": "Date"
+      },
+      {
+        "ordinal": 6,
+        "name": "categories",
+        "type_info": "TextArray"
+      },
+      {
+        "ordinal": 7,
+        "name": "ratings_count",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 8,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 9,
+        "name": "cover_url",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 10,
+        "name": "preview_link",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 11,
+        "name": "info_link",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 12,
+        "name": "ai_summary",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8Array"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "36a26234f8d60e75fba916af1aea3ecd7441ceb4c38ea3f0187e5c7f6f96f4ce"
+}

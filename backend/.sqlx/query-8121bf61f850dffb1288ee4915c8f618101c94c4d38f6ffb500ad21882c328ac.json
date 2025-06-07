@@ -1,0 +1,58 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT \"ba\".\"book_id\", \"a\".\"author_id\", \"user_id\", \"name\", \"bio\", \"website\", \"created_at\"\n            FROM \"book_authors\" AS \"ba\"\n                JOIN \"authors\" AS \"a\" ON \"ba\".\"author_id\" = \"a\".\"author_id\"\n            WHERE \"ba\".\"book_id\" = ANY($1)\n            ORDER BY \"ba\".\"book_id\";\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "book_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "author_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 2,
+        "name": "user_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 3,
+        "name": "name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "bio",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "website",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8Array"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      false,
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "8121bf61f850dffb1288ee4915c8f618101c94c4d38f6ffb500ad21882c328ac"
+}
