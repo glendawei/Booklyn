@@ -1,87 +1,103 @@
 <template>
-  <div class="book-pref-page">
+  <div class="interest-page">
     <h2>Revise your book preference</h2>
-    <p>Choose your book labels:</p>
-
-    <div class="preference-grid">
+    <div class="interest-grid">
       <div
-        v-for="genre in genres"
-        :key="genre.name"
-        :class="['genre-box', selected.includes(genre.name) ? 'selected' : '']"
-        @click="toggleGenre(genre.name)"
+        v-for="interest in interests"
+        :key="interest.name"
+        :class="['interest-item', selected.includes(interest.name) ? 'selected' : '']"
+        @click="toggleInterest(interest.name)"
       >
-        <span class="icon">{{ genre.icon }}</span>
-        <span class="name">{{ genre.name }}</span>
+        <span class="icon">{{ interest.icon }}</span>
+        <span class="label">{{ interest.name }}</span>
       </div>
     </div>
-
-    <button class="save-btn" @click="savePreferences">Save your Preferences</button>
+    <button type="button" class="submit-btn" @click="submit">Save Preferences</button>
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      genres: [
-        { name: 'Fiction', icon: '📖' },
-        { name: 'Religion', icon: '✝️' },
-        { name: 'History', icon: '🏛️' },
-        { name: 'Biography & Autobiography', icon: '🧬' },
-        { name: 'Sports & Recreation', icon: '🏀' },
-        { name: 'Body, Mind & Spirit', icon: '🧘‍♀️' },
-        { name: 'Juvenile Fiction', icon: '📚' },
-        { name: 'Business & Economics', icon: '💰' },
-        { name: 'Juvenile Nonfiction', icon: '🧒' }
-      ],
-      selected: []
-    }
-  },
-  mounted() {
-    const currentUserEmail = localStorage.getItem('currentUser');
-    const users = JSON.parse(localStorage.getItem('users')) || [];
-    const user = users.find(u => u.email === currentUserEmail);
-    if (user && user.preference) {
-      this.selected = [...user.preference];
-    }
-  },
-  methods: {
-    toggleGenre(name) {
-      const index = this.selected.indexOf(name);
-      if (index === -1) {
-        this.selected.push(name);
-      } else {
-        this.selected.splice(index, 1);
-      }
-    },
-    savePreferences() {
-      const currentUserEmail = localStorage.getItem('currentUser');
-      if (!currentUserEmail) {
-        alert('請先登入');
-        return;
-      }
+<script setup>
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
 
-      let users = JSON.parse(localStorage.getItem('users')) || [];
-      const userIndex = users.findIndex(u => u.email === currentUserEmail);
+const interests = ref([])
+const selected = ref([])
 
-      if (userIndex !== -1) {
-        users[userIndex].preference = [...this.selected];
-        localStorage.setItem('users', JSON.stringify(users));
-        alert('偏好已更新為：' + this.selected.join(', '));
-      } else {
-        alert('找不到使用者資料');
-      }
-    }
+const emojiMap = [
+  '📖', '✝️', '🏛️', '🧬', '🏀', '🧘‍♀️', '📚',
+  '💰', '🧒', '🎨', '🌍', '📐', '🔬'
+]
+
+onMounted(async () => {
+  console.log('📌 onMounted trigger')
+  const rawUser = localStorage.getItem('user')
+  console.log('🧩 user from localStorage:', rawUser)
+
+  try {
+    const response = await axios.get('http://localhost:8080/books')
+    const books = response.data
+
+    const categorySet = new Set()
+    books.forEach(book => {
+      (book.categories || []).forEach(cat => categorySet.add(cat))
+    })
+
+    interests.value = Array.from(categorySet).map((name, index) => ({
+      name,
+      icon: emojiMap[index % emojiMap.length]
+    }))
+  } catch (err) {
+    console.error('📚 無法取得書籍分類', err)
   }
-};
+
+  const user = JSON.parse(rawUser || '{}')
+  if (user && user.preferred_topics) {
+    selected.value = [...user.preferred_topics]
+  }
+})
+
+function toggleInterest(name) {
+  const idx = selected.value.indexOf(name)
+  idx === -1
+    ? selected.value.push(name)
+    : selected.value.splice(idx, 1)
+}
+
+async function submit() {
+  console.log('✅ submit called')
+  const rawUser = localStorage.getItem('user')
+  if (!rawUser) {
+    alert('請先登入！')
+    return
+  }
+
+  const user = JSON.parse(rawUser)
+  if (selected.value.length < 1 || selected.value.length > 5) {
+    alert('請選擇 1–5 個興趣')
+    return
+  }
+
+  try {
+    const response = await axios.patch(`http://localhost:8080/users/${user.user_id}`, {
+      preferred_topics: selected.value
+    })
+
+    localStorage.setItem('user', JSON.stringify(response.data))
+    alert('偏好已更新！')
+  } catch (err) {
+    console.error('❌ 偏好更新失敗:', err)
+    alert('更新失敗，請稍後再試')
+  }
+}
 </script>
 
 <style scoped>
-.book-pref-page {
+.interest-page {
   padding: 40px;
   color: #99a56e;
   background-color: #99a56e;
   min-height: 100vh;
+  text-align: center;
 }
 
 h2 {
@@ -90,19 +106,14 @@ h2 {
   color: #FEFAE0;
 }
 
-p {
-  color: #FEFAE0;
-  margin-bottom: 24px;
-}
-
-.preference-grid {
+.interest-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 20px;
   margin-bottom: 30px;
 }
 
-.genre-box {
+.interest-item {
   background-color: #FEFAE0;
   border: 2px solid transparent;
   border-radius: 12px;
@@ -113,11 +124,11 @@ p {
   box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
 }
 
-.genre-box:hover {
+.interest-item:hover {
   border-color: #DDA15E;
 }
 
-.genre-box.selected {
+.interest-item.selected {
   background-color: #283618;
   color: white;
   border-color: #BC6C25;
@@ -129,12 +140,12 @@ p {
   margin-bottom: 10px;
 }
 
-.name {
+.label {
   font-size: 16px;
   font-weight: 500;
 }
 
-.save-btn {
+.submit-btn {
   background-color: #BC6C25;
   color: white;
   padding: 12px 28px;
@@ -145,7 +156,7 @@ p {
   transition: background 0.3s;
 }
 
-.save-btn:hover {
+.submit-btn:hover {
   background-color: #A95A1D;
 }
 </style>

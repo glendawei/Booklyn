@@ -75,7 +75,6 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
-
 const router = useRouter()
 
 const name     = ref('')
@@ -103,30 +102,30 @@ async function onRegister() {
     return
   }
 
-
   try {
     const response = await axios.post(`${baseURL}/signup`, {
       display_name: name.value,
       email: email.value,
       password_hash: password.value,
-      role: 'reader',         // 預設註冊為一般使用者
+      role: 'reader',
       bio: "a",
       avatar: "https://example.com/avatar.png",
       website: "https://example.com",
-      preferred_topics: ["general"] 
+      preferred_topics: ["general"]
     })
+
+    console.log('✅ 寫入 user 到 localStorage:', response.data) // Debug log
+
+    localStorage.setItem('loggedIn', 'true')
+    localStorage.setItem('user', JSON.stringify(response.data))
+    localStorage.setItem('user_id', response.data.user_id)
 
     successMessage.value = '註冊成功！'
     errorMessage.value = ''
 
-    // 儲存登入狀態（這裡你可以儲存 user 或 token）
-    localStorage.setItem('loggedIn', 'true')
-    localStorage.setItem('user', JSON.stringify(response.data))
-    localStorage.setItem('user_id', response.data.user_id)
-    console.log('✅ user_id 是：', response.data.user_id)
-
     setTimeout(() => router.push('/interests'), 1000)
   } catch (err) {
+    console.error('[❌ 註冊失敗]', err)
     if (err.response?.status === 409) {
       errorMessage.value = '該 Email 已註冊過，請登入或換個 Email'
     } else {
@@ -134,45 +133,6 @@ async function onRegister() {
     }
     successMessage.value = ''
   }
-
-  if (!accepted.value) {
-    errorMessage.value = '請同意條款與隱私權政策'
-    successMessage.value = ''
-    return
-  }
-
-  // 檢查是否已有相同 email
-  let users = JSON.parse(localStorage.getItem('users')) || []
-  const duplicate = users.find(u => u.email === email.value)
-
-  if (duplicate) {
-    errorMessage.value = '該 Email 已註冊，請改用其他 Email'
-    successMessage.value = ''
-    return
-  }
-
-  // 建立新使用者資料
-  const newUser = {
-    name: name.value,
-    email: email.value,
-    password: password.value,
-    preference: [] 
-  }
-
-  users.push(newUser)
-  localStorage.setItem('users', JSON.stringify(users))
-
-  // 登入狀態 & 儲存目前使用者 email
-  localStorage.setItem('loggedIn', 'true')
-  localStorage.setItem('currentUser', email.value)
-
-  errorMessage.value = ''
-  successMessage.value = '註冊成功！'
-
-  setTimeout(() => {
-    router.push('/interests')  // 下一頁是選興趣
-  }, 800)
-
 }
 
 function goToLogin() {
