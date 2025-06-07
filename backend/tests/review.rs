@@ -129,7 +129,7 @@ async fn test_vote_basic() {
 
     /* Downvote */
     let create_vote = CreateVote {
-        user_id: user_id,
+        user_id,
         helpful: false,
     };
     let uri = format!("/reviews/{}/vote", review_id);

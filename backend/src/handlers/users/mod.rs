@@ -35,7 +35,7 @@ pub struct UpdateUser {
     pub preferred_topics: Option<Vec<String>>,
 }
 
-pub fn check_preferred_topics(topics: &Vec<String>) -> bool {
+pub fn check_preferred_topics(topics: &[String]) -> bool {
     topics.len() > 0 && topics.len() <= 5
 }
 

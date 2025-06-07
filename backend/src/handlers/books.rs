@@ -97,13 +97,13 @@ pub async fn get_books(data: web::Data<AppData>, query: web::Query<SearchQuery>)
         .map(|record| record.book_id)
         .collect::<Vec<i64>>();
 
-    if book_ids.len() == 0 {
+    if book_ids.is_empty() {
         return Ok(HttpResponse::NotFound().finish());
     }
 
     let books = database::get_books(&data.db_conn, &book_ids).await?;
 
-    if books.len() == 0 {
+    if books.is_empty() {
         Ok(HttpResponse::NotFound().finish())
     } else {
         Ok(HttpResponse::Ok().json(books))

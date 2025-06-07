@@ -1,4 +1,3 @@
-use thiserror;
 use actix_web::error::ResponseError;
 use sqlx::error::Error as SqlxError;
 
