@@ -111,7 +111,7 @@ async function onRegister() {
       bio: "a",
       avatar: "https://example.com/avatar.png",
       website: "https://example.com",
-      preferred_topics: ["general"]
+      preferred_topics: ["none"]
     })
 
     console.log('✅ 寫入 user 到 localStorage:', response.data) // Debug log
