@@ -60,7 +60,6 @@
             </p>
 
 
-            <p class="rating">Rating: {{ book.rate ?? 'N/A' }}</p>
           </div>
         </div>
 
