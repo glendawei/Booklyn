@@ -34,7 +34,6 @@
   </div>
 </template>
 <script setup>
-
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import 'vue3-carousel/carousel.css'
@@ -49,9 +48,20 @@ const carouselConfig = {
 }
 
 const bookGroups = ref([])
+const allCategories = ref([])
+
+const fixedCategories = ref([  // ← 改為 ref，值會依條件變化
+  "Social Science",
+  "Fiction",
+  "Religion",
+  "History",
+  "Juvenile Fiction",
+  "Biography & Autobiography"
+])
 
 const groupBooksByCategory = (books) => {
   const map = {}
+
   books.forEach((book) => {
     if (Array.isArray(book.categories)) {
       book.categories.forEach((cat) => {
@@ -60,23 +70,16 @@ const groupBooksByCategory = (books) => {
           id: book.book_id,
           title: book.title,
           author: book.authors?.map(a => a.name).join(", "),
-          rate: book.reviews?.length ? (book.reviews.reduce((sum, r) => sum + r.rating, 0) / book.reviews.length).toFixed(1) : 'N/A',
+          rate: book.reviews?.length ? (
+            book.reviews.reduce((sum, r) => sum + r.rating, 0) / book.reviews.length
+          ).toFixed(1) : 'N/A',
           cover: book.cover_url || '/default-cover.png',
         })
       })
     }
   })
 
-  // 固定顯示這五個類別
-  const fixedCategories = [
-    "Social Science",
-    "Fiction",
-    "Religion",
-    "History",
-    "Juvenile Fiction",
-    "Biography & Autobiography"
-  ]
-  return fixedCategories.filter(cat => map[cat]).map((genre) => ({
+  return fixedCategories.value.filter(cat => map[cat]).map((genre) => ({
     genre,
     books: map[genre]
   }))
@@ -85,14 +88,56 @@ const groupBooksByCategory = (books) => {
 const fetchBooks = async () => {
   try {
     const res = await axios.get("http://localhost:8080/books")
-    bookGroups.value = groupBooksByCategory(res.data)
+    const books = res.data || []
+
+    // 儲存所有書籍中出現過的分類
+    const categorySet = new Set()
+    books.forEach(book => {
+      (book.categories || []).forEach(cat => categorySet.add(cat))
+    })
+    allCategories.value = Array.from(categorySet)
+
+    await updateFixedCategories()
+    bookGroups.value = groupBooksByCategory(books)
+
   } catch (e) {
     console.error("❌ 無法取得書籍列表：", e.message)
   }
 }
 
+const updateFixedCategories = async () => {
+  try {
+    const userId = localStorage.getItem("user_id")
+
+    if (!userId) {
+      fixedCategories.value = ['None']
+      return
+    }
+
+    const res = await axios.get(`http://localhost:8080/users/${userId}`)
+    const topics = res.data?.preferred_topics || []
+
+    if (topics.length > 0) {
+      fixedCategories.value = topics
+    } else if (allCategories.value.length >= 5) {
+      fixedCategories.value = getRandomCategories(5)
+    } else {
+      fixedCategories.value = ['None']
+    }
+  } catch (err) {
+    console.error("⚠️ 無法取得使用者偏好分類：", err.message)
+    fixedCategories.value = ['None']
+  }
+}
+
+function getRandomCategories(n) {
+  const shuffled = [...allCategories.value].sort(() => 0.5 - Math.random())
+  return shuffled.slice(0, n)
+}
+
 onMounted(fetchBooks)
 </script>
+
 <style scoped>
 .custom-slide {
   max-width: 200px;
