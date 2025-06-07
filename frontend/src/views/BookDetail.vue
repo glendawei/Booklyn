@@ -1,184 +1,208 @@
 <template>
-  <!-- Floating Review Detail Side Panel -->
-  <div v-if="selectedReview" class="drawer-overlay">
-    <div class="drawer-panel">
-      <button class="drawer-close" @click="selectedReview = null">×</button>
+  <div>
+    <!-- Floating Review Detail Side Panel -->
+    <div v-if="selectedReview" class="drawer-overlay">
+      <div class="drawer-panel">
+        <button class="drawer-close" @click="selectedReview = null">×</button>
 
-      <h2 class="drawer-title">{{ selectedReview?.title || 'N/A' }}</h2>
-      <p class="drawer-meta">
-        Reviewed by {{ selectedReview?.reviewer || "N/A" }} on
-        {{ selectedReview?.date || "N/A" }} from {{ selectedReview?.source || "N/A" }}
-      </p>
-      <div style="display: grid; grid-template-columns: auto 1fr; column-gap: 10px;">
-        <p class="drawer-rating">{{ selectedReview?.rating ?? 'N/A' }}</p>
-        <div class="review-rating">
-          <span v-for="n in 5" :key="n" class="star">
-            <img v-if="n <= Math.floor(selectedReview?.rating || 0)" :src="fullStar" alt="Full Star" class="star" />
-            <img
-              v-else-if="n === Math.ceil(selectedReview?.rating || 0) && !Number.isInteger(selectedReview?.rating)"
-              :src="halfStar" alt="Half Star" class="star" />
-            <img v-else :src="emptyStar" alt="Empty Star" class="star" style="filter: grayscale(1); opacity: 0.3" />
-          </span>
-        </div>
-      </div>
-      <p class="drawer-comment">{{ selectedReview?.comment || 'No comment available.' }}</p>
-      <div style="display: grid; grid-template-columns: 150px auto;">
-        <ProgressCircle
-          height="150"
-          width="150"
-          color="#BC6C25"
-          :name="ad"
-          :progress="selectedReview?.aiRating || 0"
-          style="padding:20px;" />
-        <div style="padding-top:65px; color: #BC6C25;">Is this AI-generated?</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="book-detail">
-    <div v-if="book">
-      <div style="display: grid; grid-template-columns: 200px 1fr; column-gap: 50px; margin-bottom: 25px;">
-        <img :src="book.cover_url || '/default-cover.png'" :alt="book.title" style="width: 200px; height: 300px; object-fit: cover; border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem;" />
-
-        <div>
-          <div style="display: grid; grid-template-columns: auto 30px;">
-            <h1 class="book-title">{{ book.title }}</h1>
-            <button
-  v-if="isLoggedIn"
-  @click="addToReadingList"
-  style="height: 30px; border-radius: 5px; border: none; background-color: #BC6C25; color: white; font-size: 20px;"
->
-  +
-</button>
-
-
-          </div>
-          <p class="author">
-  Author:
-  <template v-if="book?.authors?.length">
-    <span v-for="(author, index) in book.authors" :key="author.author_id">
-      <router-link :to="`/authors/${author.author_id}`" class="author-link">
-        {{ author.name }}
-      </router-link>
-      <span v-if="index < book.authors.length - 1">, </span>
-    </span>
-  </template>
-  <span v-else>N/A</span>
-</p>
-
-
-          <p class="rating">Rating: {{ book.rate ?? 'N/A' }}</p>
-        </div>
-      </div>
-
-      <div class="description">
-        <strong>Description:</strong> {{ book.description || 'No description available.' }}
-      </div>
-
-      <div class="reviews-section border-t pt-6">
-        <h1 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1.25rem;">
-          AI Smart Summary
-        </h1>
-        <div class="review-header flex items-center justify-between">
-          <div class="user-info flex items-center space-x-3">
-            <div class="user-avatar w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-white font-bold">
-            </div>
-            <div class="user-name font-medium">Our AI</div>
-          </div>
-          <div class="review-date text-sm text-gray-500">May 2025</div>
-        </div>
-        <div class="review-rating mt-2 text-yellow-500">
-          <span v-for="n in 5" :key="n" class="star">
-            <img v-if="n <= Math.floor(averageRating || 0)" :src="fullStar" alt="Full Star" class="star" />
-            <img v-else-if="n === Math.ceil(averageRating || 0) && !Number.isInteger(averageRating)" :src="halfStar" alt="Half Star" class="star" />
-            <img v-else :src="emptyStar" alt="Empty Star" class="star" style="opacity: 0.3; filter: grayscale(1)" />
-          </span>
-        </div>
-        <div class="review-comment mt-3 text-gray-700 italic">
-          “This is a mockup review that summarizes comments from all major book
-          websites. The book is widely appreciated for its narrative style and
-          character depth, although some readers noted pacing issues.”
-        </div>
-      </div>
-    </div>
-
-    <div v-else>
-      <p class="book-not-found">Book not found.</p>
-    </div>
-
-    <div v-if="book && book.reviews && book.reviews.length" class="rating-summary">
-      <h2>Customer Reviews</h2>
-      <div class="average-rating">
-        <div class="rating-value">{{ averageRating?.toFixed(1) || '0.0' }}</div>
-        <div class="stars">
-          <span v-for="n in 5" :key="n" class="star">
-            <img v-if="n <= Math.floor(averageRating || 0)" :src="fullStar" alt="Full Star" class="star" />
-            <img v-else-if="n === Math.ceil(averageRating || 0) && !Number.isInteger(averageRating)" :src="halfStar" alt="Half Star" class="star" />
-            <img v-else :src="emptyStar" alt="Empty Star" class="star" style="opacity: 0.3; filter: grayscale(1)" />
-          </span>
-        </div>
-        <div class="review-count">
-          Based on {{ book.reviews.length }} reviews
-        </div>
-      </div>
-
-      <div class="ratings-breakdown">
-        <div v-for="star in [5, 4, 3, 2, 1]" :key="star" class="rating-bar">
-          <span class="rating-label">{{ star }}★</span>
-          <div class="rating-bar-background">
-            <div class="rating-bar-fill" :style="{
-              width: ((ratingBreakdown[star] || 0) / book.reviews.length) * 100 + '%',
-            }"></div>
-          </div>
-          <span class="rating-count">{{ ratingBreakdown[star] || 0 }}</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="user-rating-input">
-      <h3>Rate this book</h3>
-      <StarRating v-model="userRating" :max-stars="5" @ratingData="updateRating" />
-      <p class="selected-rating">Your rating: {{ userRating }}</p>
-    </div>
-
-    <div v-if="book && book.reviews && book.reviews.length" class="filter-sort-bar">
-      <input v-model="searchTerm" placeholder="Search reviews" class="search-input" />
-      <select v-model="sortOrder" class="sort-select">
-        <option value="desc">Sort by: Highest rating</option>
-        <option value="asc">Sort by: Lowest rating</option>
-      </select>
-    </div>
-
-    <ul v-if="book && filteredReviews.length" class="filtered-reviews">
-      <li v-for="(review, index) in filteredReviews" :key="index" class="filtered-review-card">
-        <div class="review-header">
-          <div class="user-info">
-            <div class="user-avatar"></div>
-            <div class="user-name">{{ review.reviewer || 'Anonymous' }}</div>
-          </div>
-          <div class="review-date">{{ review.date || "N/A" }}</div>
-        </div>
-        <div style="display: grid; grid-template-columns: min-content auto; column-gap: 10px;">
-          <div class="review-score" style="font-weight: bold">
-            {{ review.rating ?? 0 }}
-          </div>
+        <h2 class="drawer-title">{{ selectedReview?.title || 'N/A' }}</h2>
+        <p class="drawer-meta">
+          Reviewed by {{ selectedReview?.reviewer || "N/A" }} on
+          {{ selectedReview?.date || "N/A" }} from {{ selectedReview?.source || "N/A" }}
+        </p>
+        <div style="display: grid; grid-template-columns: auto 1fr; column-gap: 10px;">
+          <p class="drawer-rating">{{ selectedReview?.rating ?? 'N/A' }}</p>
           <div class="review-rating">
             <span v-for="n in 5" :key="n" class="star">
-              <img v-if="n <= Math.floor(review.rating || 0)" :src="fullStar" alt="Full Star" class="star" />
-              <img
-                v-else-if="n === Math.ceil(review.rating || 0) && !Number.isInteger(review.rating)"
+              <img v-if="n <= Math.floor(selectedReview?.rating || 0)" :src="fullStar" alt="Full Star" class="star" />
+              <img v-else-if="n === Math.ceil(selectedReview?.rating || 0) && !Number.isInteger(selectedReview?.rating)"
                 :src="halfStar" alt="Half Star" class="star" />
               <img v-else :src="emptyStar" alt="Empty Star" class="star" style="filter: grayscale(1); opacity: 0.3" />
             </span>
           </div>
         </div>
-        <span class="review-title">{{ review.title || "" }}</span>
-        <p class="review-comment">"{{ review.comment || '' }}"</p>
-        <button class="styled-button" @click="showDetailPanel(review)">
-          View Details
-        </button>
-      </li>
-    </ul>
+        <p class="drawer-comment">{{ selectedReview?.comment || 'No comment available.' }}</p>
+        <div style="display: grid; grid-template-columns: 150px auto;">
+          <ProgressCircle height="150" width="150" color="#BC6C25" :name="ad" :progress="selectedReview?.aiRating || 0"
+            style="padding:20px;" />
+          <div style="padding-top:65px; color: #BC6C25;">Is this AI-generated?</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="book-detail">
+      <div v-if="book">
+        <div style="display: grid; grid-template-columns: 200px 1fr; column-gap: 50px; margin-bottom: 25px;">
+          <img :src="book.cover_url || '/default-cover.png'" :alt="book.title"
+            style="width: 200px; height: 300px; object-fit: cover; border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem;" />
+
+          <div>
+            <div style="display: grid; grid-template-columns: auto 30px;">
+              <h1 class="book-title">{{ book.title }}</h1>
+              <button v-if="isLoggedIn" @click="addToReadingList"
+                style="height: 30px; border-radius: 5px; border: none; background-color: #BC6C25; color: white; font-size: 20px;">
+                +
+              </button>
+
+
+            </div>
+            <p class="author">
+              Author:
+              <template v-if="book?.authors?.length">
+                <span v-for="(author, index) in book.authors" :key="author.author_id">
+                  <router-link :to="`/authors/${author.author_id}`" class="author-link">
+                    {{ author.name }}
+                  </router-link>
+                  <span v-if="index < book.authors.length - 1">, </span>
+                </span>
+              </template>
+              <span v-else>N/A</span>
+            </p>
+
+
+            <p class="rating">Rating: {{ book.rate ?? 'N/A' }}</p>
+          </div>
+        </div>
+
+        <div class="description">
+          <strong>Description:</strong> {{ book.description || 'No description available.' }}
+        </div>
+
+        <div class="reviews-section border-t pt-6">
+          <h1 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1.25rem;">
+            AI Smart Summary
+          </h1>
+          <div class="review-header flex items-center justify-between">
+            <div class="user-info flex items-center space-x-3">
+              <div
+                class="user-avatar w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-white font-bold">
+              </div>
+              <div class="user-name font-medium">Our AI</div>
+            </div>
+            <div class="review-date text-sm text-gray-500">May 2025</div>
+          </div>
+          <div class="review-rating mt-2 text-yellow-500">
+            <span v-for="n in 5" :key="n" class="star">
+              <img v-if="n <= Math.floor(averageRating || 0)" :src="fullStar" alt="Full Star" class="star" />
+              <img v-else-if="n === Math.ceil(averageRating || 0) && !Number.isInteger(averageRating)" :src="halfStar"
+                alt="Half Star" class="star" />
+              <img v-else :src="emptyStar" alt="Empty Star" class="star" style="opacity: 0.3; filter: grayscale(1)" />
+            </span>
+          </div>
+          <div class="review-comment mt-3 text-gray-700 italic">
+            “This is a mockup review that summarizes comments from all major book
+            websites. The book is widely appreciated for its narrative style and
+            character depth, although some readers noted pacing issues.”
+          </div>
+        </div>
+      </div>
+
+      <div v-else>
+        <p class="book-not-found">Book not found.</p>
+      </div>
+
+      <div v-if="book && book.reviews && book.reviews.length" class="rating-summary">
+        <h2>Customer Reviews</h2>
+        <div class="average-rating">
+          <div class="rating-value">{{ averageRating?.toFixed(1) || '0.0' }}</div>
+          <div class="stars">
+            <span v-for="n in 5" :key="n" class="star">
+              <img v-if="n <= Math.floor(averageRating || 0)" :src="fullStar" alt="Full Star" class="star" />
+              <img v-else-if="n === Math.ceil(averageRating || 0) && !Number.isInteger(averageRating)" :src="halfStar"
+                alt="Half Star" class="star" />
+              <img v-else :src="emptyStar" alt="Empty Star" class="star" style="opacity: 0.3; filter: grayscale(1)" />
+            </span>
+          </div>
+          <div class="review-count">
+            Based on {{ book.reviews.length }} reviews
+          </div>
+        </div>
+
+        <div class="ratings-breakdown">
+          <div v-for="star in [5, 4, 3, 2, 1]" :key="star" class="rating-bar">
+            <span class="rating-label">{{ star }}★</span>
+            <div class="rating-bar-background">
+              <div class="rating-bar-fill" :style="{
+                width: ((ratingBreakdown[star] || 0) / book.reviews.length) * 100 + '%',
+              }"></div>
+            </div>
+            <span class="rating-count">{{ ratingBreakdown[star] || 0 }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="user-rating-input">
+        <h3>Rate this book</h3>
+        <StarRating v-model="userRating" :max-stars="5" @ratingData="updateRating" />
+        <p class="selected-rating">Your rating: {{ userRating }}</p>
+      </div>
+
+      <div v-if="book && book.reviews && book.reviews.length" class="filter-sort-bar">
+        <input v-model="searchTerm" placeholder="Search reviews" class="search-input" />
+        <select v-model="sortOrder" class="sort-select">
+          <option value="desc">Sort by: Highest rating</option>
+          <option value="asc">Sort by: Lowest rating</option>
+        </select>
+      </div>
+
+      <ul v-if="book && filteredReviews.length" class="filtered-reviews">
+        <li v-for="(review, index) in filteredReviews" :key="index" class="filtered-review-card">
+          <div class="review-header">
+            <div class="user-info">
+              <div class="user-avatar"></div>
+              <div class="user-name">{{ review.reviewer || 'Anonymous' }}</div>
+            </div>
+            <div class="review-date">{{ review.date || "N/A" }}</div>
+          </div>
+          <div style="display: grid; grid-template-columns: min-content auto; column-gap: 10px;">
+            <div class="review-score" style="font-weight: bold">
+              {{ review.rating ?? 0 }}
+            </div>
+            <div class="review-rating">
+              <span v-for="n in 5" :key="n" class="star">
+                <img v-if="n <= Math.floor(review.rating || 0)" :src="fullStar" alt="Full Star" class="star" />
+                <img v-else-if="n === Math.ceil(review.rating || 0) && !Number.isInteger(review.rating)" :src="halfStar"
+                  alt="Half Star" class="star" />
+                <img v-else :src="emptyStar" alt="Empty Star" class="star" style="filter: grayscale(1); opacity: 0.3" />
+              </span>
+            </div>
+          </div>
+          <span class="review-title">{{ review.title || "" }}</span>
+          <p class="review-comment">"{{ review.comment || '' }}"</p>
+          <div style="display: grid; grid-template-columns:1fr 1fr 1fr;">
+            <button class="styled-button" @click="showDetailPanel(review)">
+              View Details
+            </button>
+            <div class="review-upvote">
+              <button class="styled-button upvote-button" :disabled="reviewUpvotes[review.title]"
+                @click="upvoteReview(review)">
+                Upvote
+              </button>
+              <span class="upvote-count">{{ review.upvotes || 0 }} upvotes</span>
+            </div>
+          </div>
+
+          <!-- Comment List -->
+          <div class="comments">
+            <p v-for="comment in comments[review.review_id]" :key="comment.comment_id">
+              <strong>user_{{ comment.user_id || 'Anonymous' }}:</strong> {{ comment.content }}
+            </p>
+          </div>
+
+
+
+          <!-- New Comment Input -->
+          <div class="mt-3 flex items-center gap-2">
+            <input type="text" v-model="newComments[review.review_id]"
+              class="flex-grow p-2 border rounded shadow-sm focus:outline-none focus:ring"
+              placeholder="Write a comment..." />
+            <button class="bg-green-500 text-white px-4 py-2 rounded" @click="submitComment(review)">
+              Submit
+            </button>
+          </div>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -186,7 +210,7 @@
 import axios from 'axios'
 
 import { useRoute } from "vue-router";
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, reactive } from "vue";
 import fullStar from "../assets/FullStar.png";
 import halfStar from "../assets/Star.png";
 import emptyStar from "@/assets/FullStar.png";
@@ -201,6 +225,8 @@ const sortOrder = ref("desc");
 const userRating = ref(0);
 
 const bookId = Number(route.params.id);
+// Track new comment input per review
+const newComments = reactive({});
 
 // 🔹 呼叫 API 取得書籍資訊
 const fetchBook = async () => {
@@ -219,6 +245,12 @@ const fetchBook = async () => {
       source: r.source || ""
     })) ?? [];
 
+    if (data?.reviews) {
+      data.reviews.forEach((review) => {
+        newComments[review.review_id] = '';
+      });
+    }
+
     book.value = data;
 
     console.log("📖 書名:", book.value.title);
@@ -236,8 +268,6 @@ const fetchBook = async () => {
   }
 };
 
-onMounted(fetchBook);
-
 const isLoggedIn = localStorage.getItem('loggedIn') === 'true';
 
 const ratingBreakdown = computed(() => {
@@ -249,11 +279,11 @@ const ratingBreakdown = computed(() => {
   });
   return breakdown;
 });
+
 const addToReadingList = async () => {
   const userId = localStorage.getItem('user_id');
-console.log('📌 目前儲存在 localStorage 的 user_id 是：', userId);
+  console.log('📌 目前儲存在 localStorage 的 user_id 是：', userId);
 
-  
   try {
     const payload = {
       book_id: book.value.book_id,
@@ -268,6 +298,7 @@ console.log('📌 目前儲存在 localStorage 的 user_id 是：', userId);
     alert("加入失敗，請稍後再試。");
   }
 };
+
 const averageRating = computed(() => {
   if (!book.value || !book.value.reviews || book.value.reviews.length === 0) return 0;
   const total = book.value.reviews.reduce((sum, r) => sum + r.rating, 0);
@@ -293,8 +324,87 @@ const showDetailPanel = (review) => {
   selectedReview.value = review;
   isDetailPanelVisible.value = true;
 };
-</script>
 
+const reviewUpvotes = ref({});
+
+const upvoteReview = async (review) => {
+  const userId = parseInt(localStorage.getItem('user_id'));
+  if (!reviewUpvotes.value[review.review_id]) {
+    try {
+      const payload = {
+        helpful: true,
+        user_id: userId
+      };
+      const response = await axios.post(`http://localhost:8080/reviews/${review.review_id}/vote`, payload);
+      console.log("✅ 已按讚", response.data);
+      // Optimistically update UI
+      review.upvotes = (review.upvotes || 0) + 1;
+      reviewUpvotes.value[review.review_id] = true;
+    } catch (error) {
+      console.error("Upvote failed:", error);
+    }
+  }
+};
+
+// Post a new comment
+const submitComment = async (review) => {
+  const userId = parseInt(localStorage.getItem('user_id'))
+  const content = newComments[review.review_id]
+
+  if (!content) return
+
+  try {
+    const res = await axios.post(`http://localhost:8080/reviews/${review.review_id}/comments`, {
+      content: content,
+      parent_id: null,
+      user_id: userId,
+    })
+    console.log("✅ 已評論", res.data);
+    // Add new comment optimistically
+    if (!review.comments) review.comments = []
+    review.comments.push(res.data)
+    newComments[review.review_id] = ''
+  } catch (err) {
+    console.error('Failed to post comment:', err)
+  }
+}
+
+const comments = reactive({})
+
+const getCommentsForReview = async (review) => {
+  if (!(review.review_id in comments)) {
+    comments[review.review_id] = null // to avoid duplicate fetches
+    const temp = parseInt(review.review_id)
+
+    try {
+      const res = await axios.get(`http://localhost:8080/reviews/${temp}/comments`)
+      comments[review.review_id] = res.data
+      console.log("comments logged", comments[review.review_id])
+    } catch (err) {
+      if (err.response && err.response.status === 404) {
+        comments[review.review_id] = [] // No comments for this review
+        console.log(`No comments found for review ${temp}. Set to empty array.`)
+      } else {
+        console.error(`Failed to fetch comments for review ${temp}:`, err)
+        throw err // Optional: rethrow for non-404 errors
+      }
+    }
+  }
+  return comments[review.review_id]
+}
+
+onMounted(async () => {
+  await fetchBook()
+  // book.value.reviews may still be undefined/null, so guard it
+  if (book.value?.reviews) {
+    for (const review of book.value.reviews) {
+      await getCommentsForReview(review)
+    }
+  }
+})
+
+
+</script>
 
 
 
@@ -613,5 +723,27 @@ const showDetailPanel = (review) => {
   to {
     transform: translateX(0%);
   }
+}
+
+.upvote-button {
+  background-color: #f4a261;
+  color: white;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  margin-top: 1rem;
+  margin-left: 0.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.upvote-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.upvote-count {
+  margin-left: 10px;
+  font-size: 0.9rem;
+  color: #444;
 }
 </style>
