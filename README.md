@@ -1,93 +1,121 @@
-# Booklyn
+Here's a visually enhanced and more organized version of your `README.md` for **Booklyn**, following best practices for structure, hierarchy, and readability:
 
-# Report URL
-https://docs.google.com/document/d/1TOZOnQRjgVhokk_2AjmXlz0nUZ_3nyptOAf1_2pEXk8/edit?tab=t.0#heading=h.5tlvz7le0vsy
+---
 
-# Website
-http://40.81.200.89:5173
+#  Booklyn
 
+> A book-centric social platform that integrates reviews, AI-powered insights, and personalized recommendations.
 
----------------------------------------------
-For dev:
+---
 
-## Installation
+## Project Links
 
-### 1. Docker Startup
+*  **Website**: [http://40.81.200.89:5173](http://40.81.200.89:5173)
+*  **Report**: [Google Docs Report](https://docs.google.com/document/d/1TOZOnQRjgVhokk_2AjmXlz0nUZ_3nyptOAf1_2pEXk8/edit?tab=t.0#heading=h.5tlvz7le0vsy)
 
-Build and start the containers:
+---
+
+##  Installation Guide (For Developers)
+
+### Step 1: Start with Docker
+
+Build and launch the containers:
 
 ```bash
-docker-compose up --build # around 500 s
+docker-compose up --build 
 ```
 
-This will launch two services:
+This starts two services:
 
-* **frontend**: Vue 3 application at `http://localhost:5173`
-* **backend**: HTTP server listening at `http://localhost:8080`
+*  **Frontend**: Vue 3 app at `http://localhost:5173`
+*  **Backend**: Actix HTTP API at `http://localhost:8080`
 
-### 2. Database Initialization
+---
 
-1. Download and extract the dataset.
+### 🗃️ Step 2: Database Initialization
 
-The application requires two CSV files from the [Amazon Books Reviews dataset on Kaggle](https://www.kaggle.com/datasets/mohamedbakhet/amazon-books-reviews).
+1. **Download dataset**
+   Go to the [Amazon Books Reviews dataset on Kaggle](https://www.kaggle.com/datasets/mohamedbakhet/amazon-books-reviews) and extract:
 
-2. Copy the following files into the project directory:
+   * `books_data.csv`
+   * `Books_rating.csv`
+
+2. **Place files in the project**
 
    ```
    Booklyn/database/construct_db/dataset/books_data.csv
    Booklyn/database/construct_db/dataset/Books_rating.csv
    ```
-3. From the project root, run the database construction script:
+
+3. **Run database construction script**
 
    ```bash
    cd database/construct_db
    python constructdb.py
    ```
-   Note: please ensure that you have packages `psycopg2` and `pandas` installed in your Python environment.
 
-### 3. Done
+   > ⚠️ Make sure `pandas` and `psycopg2` are installed.
 
-The services are now available at the following locations.
+---
 
-Frontend:
+### ✅ Step 3: Service Verification
 
-- http://localhost:5173
+*  Frontend: [http://localhost:5173](http://localhost:5173)
+*  Backend API: [http://localhost:8080](http://localhost:8080)
+*  API Docs (Swagger): [http://localhost:8080/swagger-ui/](http://localhost:8080/swagger-ui/)
 
-Backend:
+---
 
-- HTTP server: http://localhost:8080
-- API doc: http://localhost:8080/swagger-ui/
+## 💻 Frontend Developer Notes
 
-## For frontend people
+### 📁 API Directory
 
-api at 
-` frontend/src/api `
-if needed
+API logic can be found in:
 
-example usage at `frontend/src/generateDataFiles.js`
+```
+frontend/src/api/
+```
 
-but basically don't needed, just use the data from `/Users/yl/Booklyn/frontend/src/data`
+> Usage examples: `frontend/src/generateDataFiles.js`
+> **Note:** You usually don't need to fetch manually. Use mock data from:
 
--> will be updated when service launched
+```
+frontend/src/data/
+```
 
-----------------
-## For frontend to read data, run (Yoyo part)
-.env should contain OPENAI_API_KEY
+---
+
+### 🤖 Generate Frontend Data (Yoyo's Part)
+
+1. Add your OpenAI API key to `.env`:
+
    ```
+   OPENAI_API_KEY=your_key_here
+   ```
+
+2. Run:
+
+   ```bash
    cd frontend
    source ../.env
    npm run generate:data
    ```
 
-## Project Structure
+---
+
+##  Project Structure
 
 ```
 Booklyn/
-├── backend/                # Actix Web framework to provide RESTful APIs
-│   ├── src/
+├── backend/                # Actix Web backend
+│   └── src/                # Backend code
 ├── frontend/               # Vue 3 + Vite frontend
-│   └── src/
+│   └── src/                # Frontend components and assets
 ├── database/
-│   └── construct_db/       # Scripts and dataset for DB init
-└── docker-compose.yml      # Service definitions
+│   └── construct_db/       # DB setup scripts and dataset
+└── docker-compose.yml      # Docker service configuration
 ```
+
+---
+
+Let me know if you'd like me to add badges, license, contribution guide, or convert this into a downloadable `README.md` file 😌
