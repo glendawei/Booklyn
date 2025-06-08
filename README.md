@@ -1,6 +1,3 @@
-Here's a visually enhanced and more organized version of your `README.md` for **Booklyn**, following best practices for structure, hierarchy, and readability:
-
----
 
 #  Booklyn
 
