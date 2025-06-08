@@ -41,6 +41,7 @@ services:
       - POSTGRES_DB=booklyn
     volumes:
       - ./database/initdb.sql:/docker-entrypoint-initdb.d/initdb.sql
+      - pgdata:/var/lib/postgresql/data
     restart: unless-stopped
     networks:
       - booklyn_network
@@ -54,3 +55,7 @@ networks:
   booklyn_network:
     name: booklyn_network
     driver: bridge
+
+volumes:
+  pgdata:
+    name: booklyn_pgdata
