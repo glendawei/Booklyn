@@ -1,5 +1,14 @@
 # Booklyn
 
+# Report URL
+https://docs.google.com/document/d/1TOZOnQRjgVhokk_2AjmXlz0nUZ_3nyptOAf1_2pEXk8/edit?tab=t.0#heading=h.5tlvz7le0vsy
+
+# Website
+http://40.81.200.89:5173
+
+
+---------------------------------------------
+For dev:
 
 ## Installation
 
