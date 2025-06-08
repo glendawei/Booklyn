@@ -3,7 +3,7 @@
 
 ## Installation
 
-### 1. Docker Setup
+### 1. Docker Startup
 
 Build and start the containers:
 
@@ -14,10 +14,9 @@ docker-compose up --build # around 500 s
 This will launch two services:
 
 * **frontend**: Vue 3 application at `http://localhost:5173`
-* **backend**: Python API connected to PostgreSQL on port `5433`
+* **backend**: HTTP server listening at `http://localhost:8080`
 
 ### 2. Database Initialization
-
 
 1. Download and extract the dataset.
 
@@ -35,16 +34,20 @@ The application requires two CSV files from the [Amazon Books Reviews dataset on
    cd database/construct_db
    python constructdb.py
    ```
+   Note: please ensure that you have packages `psycopg2` and `pandas` installed in your Python environment.
+
+### 3. Done
+
+The services are now available at the following locations.
 
 Frontend:
 
-http://localhost:5173
+- http://localhost:5173
 
 Backend:
 
-http://localhost:8080/swagger-ui/#/
-
-
+- HTTP server: http://localhost:8080
+- API doc: http://localhost:8080/swagger-ui/
 
 ## For frontend people
 
@@ -59,7 +62,7 @@ but basically don't needed, just use the data from `/Users/yl/Booklyn/frontend/s
 -> will be updated when service launched
 
 ----------------
-## For frontend to read data, run （Yoyo part)
+## For frontend to read data, run (Yoyo part)
 .env should contain OPENAI_API_KEY
    ```
    cd frontend
@@ -71,8 +74,8 @@ but basically don't needed, just use the data from `/Users/yl/Booklyn/frontend/s
 
 ```
 Booklyn/
-├── backend/                # Python API service
-│   ├── app/                # FastAPI application code
+├── backend/                # Actix Web framework to provide RESTful APIs
+│   ├── src/
 ├── frontend/               # Vue 3 + Vite frontend
 │   └── src/
 ├── database/
