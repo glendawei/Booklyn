@@ -29,7 +29,7 @@ This starts two services:
 
 ---
 
-### 🗃️ Step 2: Database Initialization
+###  Step 2: Database Initialization
 
 1. **Download dataset**
    Go to the [Amazon Books Reviews dataset on Kaggle](https://www.kaggle.com/datasets/mohamedbakhet/amazon-books-reviews) and extract:
@@ -51,11 +51,11 @@ This starts two services:
    python constructdb.py
    ```
 
-   > ⚠️ Make sure `pandas` and `psycopg2` are installed.
+   >  Make sure `pandas` and `psycopg2` are installed.
 
 ---
 
-### ✅ Step 3: Service Verification
+###  Step 3: Service Verification
 
 *  Frontend: [http://localhost:5173](http://localhost:5173)
 *  Backend API: [http://localhost:8080](http://localhost:8080)
@@ -63,9 +63,9 @@ This starts two services:
 
 ---
 
-## 💻 Frontend Developer Notes
+##  Frontend Developer Notes
 
-### 📁 API Directory
+###  API Directory
 
 API logic can be found in:
 
@@ -82,7 +82,7 @@ frontend/src/data/
 
 ---
 
-### 🤖 Generate Frontend Data (Yoyo's Part)
+### Generate Frontend Data (Yoyo's Part)
 
 1. Add your OpenAI API key to `.env`:
 
@@ -113,6 +113,4 @@ Booklyn/
 └── docker-compose.yml      # Docker service configuration
 ```
 
----
 
-Let me know if you'd like me to add badges, license, contribution guide, or convert this into a downloadable `README.md` file 😌
