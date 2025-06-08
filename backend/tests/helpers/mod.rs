@@ -10,12 +10,12 @@ pub async fn setup() -> impl Service<Request, Response = ServiceResponse, Error 
     dotenv().ok();
 
     let db_url = std::env::var("DATABASE_URL_TEST")
-        .expect("Please setup database URL with environment variable DATABASE_URL.");
+        .expect("Please setup test database URL with environment variable DATABASE_URL_TEST.");
     let pool = PgPoolOptions::new()
         .max_connections(8)
         .connect(&db_url)
         .await
-        .expect("Failed to connect database.");
+        .expect("Failed to connect test database.");
 
     test::init_service(
         App::new()
