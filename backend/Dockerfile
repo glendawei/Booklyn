@@ -1,6 +1,6 @@
 FROM rust:1.86.0-alpine AS builder
 WORKDIR /usr/src/booklyn/backend
-RUN apk add --no-cache musl-dev
+RUN apk add --no-cache musl-dev curl
 RUN cargo init --bin
 COPY Cargo.toml Cargo.lock ./
 COPY .sqlx ./.sqlx
